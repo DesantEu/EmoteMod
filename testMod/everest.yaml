@@ -1,0 +1,6 @@
+﻿- Name: testMod
+  Version: 1.0.0
+  DLL: Code/bin/Debug/EmoteMod.dll
+  Dependencies:
+    - Name: Everest
+      Version: 1.0.0
