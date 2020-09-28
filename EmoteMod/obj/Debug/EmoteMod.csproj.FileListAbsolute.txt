@@ -1,0 +1,6 @@
+d:\repos\testMod\testMod\bin\Debug\testMod.dll
+d:\repos\testMod\testMod\bin\Debug\testMod.pdb
+d:\repos\testMod\testMod\obj\Debug\EmoteMod.csproj.CoreCompileInputs.cache
+d:\repos\testMod\testMod\obj\Debug\testMod.dll
+d:\repos\testMod\testMod\obj\Debug\testMod.pdb
+d:\repos\testMod\testMod\obj\Debug\EmoteMod.csprojAssemblyReference.cache
