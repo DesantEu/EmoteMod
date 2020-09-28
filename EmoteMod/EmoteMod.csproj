@@ -7,8 +7,8 @@
     <ProjectGuid>{5BFDEDEB-6562-42A4-8A5C-4C067F40161A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>testMod</RootNamespace>
-    <AssemblyName>testMod</AssemblyName>
+    <RootNamespace>EmoteMod</RootNamespace>
+    <AssemblyName>EmoteMod</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
