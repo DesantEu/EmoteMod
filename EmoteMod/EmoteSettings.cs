@@ -2,19 +2,20 @@
 using Celeste.Mod.UI;
 namespace Celeste.Mod.EmoteMod
 {
-    class EmoteBindings : OuiGenericMenu, OuiModOptions.ISubmenu
-    {
-        public override string MenuName => "Emotes";
+    // class EmoteBindings : OuiGenericMenu, OuiModOptions.ISubmenu
+    // {
+    //     public override string MenuName => "Emotes";
 
-        protected override void addOptionsToMenu(TextMenu menu)
-        {
-            //menu.Add(new TextMenu.Button("Emote 0").Pressed())
-        }
-    }
+    //     protected override void addOptionsToMenu(TextMenu menu)
+    //     {
+    //         //menu.Add(new TextMenu.Button("Emote 0").Pressed())
+    //     }
+    // }
     [SettingName("settings_modname")]
     public class EmoteSettings : EverestModuleSettings
     {
         #region default control and emote settings
+        // emotes
         [SettingName("settings_emote0")]
         public string emote0 { get; set; } = "spin";
         [SettingName("settings_emote0")]

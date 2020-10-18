@@ -10,3 +10,9 @@ D:\repos\testMod\EmoteMod\obj\Debug\EmoteMod.csprojAssemblyReference.cache
 D:\repos\testMod\EmoteMod\obj\Debug\EmoteMod.csproj.CoreCompileInputs.cache
 D:\repos\testMod\EmoteMod\obj\Debug\EmoteMod.dll
 D:\repos\testMod\EmoteMod\obj\Debug\EmoteMod.pdb
+D:\repos\EmoteMod\EmoteMod\bin\Debug\EmoteMod.dll
+D:\repos\EmoteMod\EmoteMod\bin\Debug\EmoteMod.pdb
+D:\repos\EmoteMod\EmoteMod\obj\Debug\EmoteMod.csprojAssemblyReference.cache
+D:\repos\EmoteMod\EmoteMod\obj\Debug\EmoteMod.csproj.CoreCompileInputs.cache
+D:\repos\EmoteMod\EmoteMod\obj\Debug\EmoteMod.dll
+D:\repos\EmoteMod\EmoteMod\obj\Debug\EmoteMod.pdb
