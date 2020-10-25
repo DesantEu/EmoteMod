@@ -47,7 +47,9 @@ namespace Celeste.Mod.EmoteMod
                         if (player.Sprite.Mode == PlayerSpriteMode.Playback)
                             if (animation.ToLower() == "sitdown" || animation.ToLower() == "launch")
                                 break;
-
+                        // if we play bounce skip the sprite thingy
+                        if (animation == "bounce" || animation == "b")
+                            break;
                         // dont do anything if true neutral
                         foreach (string s in true_neutral_emotes)
                         {
@@ -110,9 +112,19 @@ namespace Celeste.Mod.EmoteMod
                     } while (false);
 
                     #endregion
-                    player.Sprite.Play(animation); // do emote
-
-                    EmoteModMain.currentDelay = player.Sprite.Animations[animation].Delay;
+                        
+                    // bounc e
+                    if (animation == "bounce" || animation == "b")
+                    {
+                        EmoteModMain.playerY -= 1;
+                        player.Sprite.Play("spin");
+                        EmoteModMain.currentDelay = player.Sprite.Animations["spin"].Delay;
+                    }
+                    else
+                    {
+                        player.Sprite.Play(animation); // do emote
+                        EmoteModMain.currentDelay = player.Sprite.Animations[animation].Delay;
+                    }
 
                     if (by_command) // command reply only if done by command
                         EmoteModMain.echo($"playing {animation}");
