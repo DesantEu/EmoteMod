@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Monocle;
-using System;
+﻿using Monocle;
 
 namespace Celeste.Mod.EmoteMod
 {
@@ -15,6 +13,12 @@ namespace Celeste.Mod.EmoteMod
             EmoteModMain.celestenetSettings.Interactions = EmoteModMain.interactDefault; // return interactions do their default value
             SaveData.Instance.Assists.Invincible = EmoteModMain.invincibilityDefault;
 
+            if (EmoteModule.playback)
+            { //ex variants fix thing
+                player.ResetSpriteNextFrame(PlayerSpriteMode.Playback);
+                EmoteModule.playback = false;
+            }
+            else
             // if changed sprite get it back
             if (EmoteModMain.changedSprite)
             {
@@ -22,6 +26,7 @@ namespace Celeste.Mod.EmoteMod
                 EmoteModMain.changedSprite = false; // idk why its here twice but im afraid to remove it
                 EmoteModMain.changedSprite = false;
             }
+            EmoteModule.bounced = false;
 
             EmoteModMain.anim_by_game = 0; // tell yourself that no animation is playing
         }

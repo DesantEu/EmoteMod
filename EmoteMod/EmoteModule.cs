@@ -17,6 +17,9 @@ namespace Celeste.Mod.EmoteMod
         // only badeline
         private static string[] baddy_emotes = { "laugh", "spawn", "angry", "pretenddead", "boost" };
 
+        public static bool bounced = false;
+        public static bool playback = false;
+
         public static void Emote(string animation, bool by_command)
         {
             // another way to toggle debug so that you can bind it to numpad
@@ -36,6 +39,8 @@ namespace Celeste.Mod.EmoteMod
                     if (EmoteModMain.anim_by_game == 0)
                         EmoteModMain.invincibilityDefault = SaveData.Instance.Assists.Invincible;
                     SaveData.Instance.Assists.Invincible = true;
+                    if (EmoteModMain.anim_by_game == 0 && player.Sprite.Mode == PlayerSpriteMode.Playback)
+                        playback = true;
 
                     #region sprite changes
 
@@ -56,7 +61,7 @@ namespace Celeste.Mod.EmoteMod
                             if (s.ToLower() == animation.ToLower())
                             {
                                 // return to whiteline
-                                if (EmoteModMain.Settings.Backpack == 3)
+                                if (playback)
                                 {
                                     player.ResetSprite(PlayerSpriteMode.Playback);
                                 }
@@ -112,13 +117,15 @@ namespace Celeste.Mod.EmoteMod
                     } while (false);
 
                     #endregion
-                        
+
                     // bounc e
                     if (animation == "bounce" || animation == "b")
                     {
+                        if(!bounced)
                         EmoteModMain.playerY -= 1;
                         player.Sprite.Play("spin");
                         EmoteModMain.currentDelay = player.Sprite.Animations["spin"].Delay;
+                        bounced = true;
                     }
                     else
                     {

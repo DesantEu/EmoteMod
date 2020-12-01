@@ -1,11 +1,4 @@
 ﻿using Monocle;
-using Microsoft.Xna.Framework;
-using Celeste.Mod.Entities;
-using Microsoft.Xna.Framework;
-using Mono.Cecil.Cil;
-using Monocle;
-using MonoMod.Cil;
-using System;
 
 namespace Celeste.Mod.EmoteMod
 {

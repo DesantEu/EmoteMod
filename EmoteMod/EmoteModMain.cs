@@ -80,7 +80,7 @@ namespace Celeste.Mod.EmoteMod
             On.Celeste.LevelExit.Begin += EmoteCancelModule.LevelExit_Begin;
             On.Celeste.Level.LoadLevel += EmoteCancelModule.LoadLevel;
 
-            On.Celeste.Player.Update += BackpackModule.Player_ResetSprite;
+            //On.Celeste.Player.Update += BackpackModule.Player_ResetSprite;
 
             On.Celeste.Player.Update += SpeedModule.Player_Update;
             On.Celeste.Level.Update += SpeedModule.Level_Update;
@@ -150,7 +150,7 @@ namespace Celeste.Mod.EmoteMod
             On.Celeste.LevelExit.Begin -= EmoteCancelModule.LevelExit_Begin;
             On.Celeste.Level.LoadLevel -= EmoteCancelModule.LoadLevel;
 
-            On.Celeste.Player.Update -= BackpackModule.Player_ResetSprite;
+            //On.Celeste.Player.Update -= BackpackModule.Player_ResetSprite;
 
             On.Celeste.Player.Update -= SpeedModule.Player_Update;
             On.Celeste.Level.Update -= SpeedModule.Level_Update;
