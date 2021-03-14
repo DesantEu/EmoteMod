@@ -19,6 +19,11 @@ namespace Celeste.Mod.EmoteMod
         {
             return $"{speeds[arg]}x";
         };
+        //backpack formatter
+        public static Func<int, string> backpackFormatter = arg =>
+        {
+            return arg == 0 ? "default" : arg == 1 ? "force on" : arg == 2 ? "force off" : arg == 3 ? "white" : "error";
+        };
         public static Player player;
 
         /// <summary>
@@ -80,7 +85,7 @@ namespace Celeste.Mod.EmoteMod
             On.Celeste.LevelExit.Begin += EmoteCancelModule.LevelExit_Begin;
             On.Celeste.Level.LoadLevel += EmoteCancelModule.LoadLevel;
 
-            //On.Celeste.Player.Update += BackpackModule.Player_ResetSprite;
+            On.Celeste.Player.Update += BackpackModule.Player_ResetSprite;
 
             On.Celeste.Player.Update += SpeedModule.Player_Update;
             On.Celeste.Level.Update += SpeedModule.Level_Update;
@@ -150,7 +155,7 @@ namespace Celeste.Mod.EmoteMod
             On.Celeste.LevelExit.Begin -= EmoteCancelModule.LevelExit_Begin;
             On.Celeste.Level.LoadLevel -= EmoteCancelModule.LoadLevel;
 
-            //On.Celeste.Player.Update -= BackpackModule.Player_ResetSprite;
+            On.Celeste.Player.Update -= BackpackModule.Player_ResetSprite;
 
             On.Celeste.Player.Update -= SpeedModule.Player_Update;
             On.Celeste.Level.Update -= SpeedModule.Level_Update;

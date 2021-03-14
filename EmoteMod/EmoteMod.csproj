@@ -44,11 +44,11 @@
       <HintPath>..\..\..\Games\Celeste v1.3.1.2\MMHOOK_Celeste.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Mono.Cecil, Version=0.11.2.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e">
-      <Private>False</Private>
+    <Reference Include="Mono.Cecil">
+      <HintPath>..\..\..\Games\Celeste v1.3.1.2\Mono.Cecil.dll</HintPath>
     </Reference>
-    <Reference Include="MonoMod.Utils, Version=20.5.21.5, Culture=neutral, PublicKeyToken=null">
-      <Private>False</Private>
+    <Reference Include="MonoMod.Utils">
+      <HintPath>..\..\..\Games\Celeste v1.3.1.2\MonoMod.Utils.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />

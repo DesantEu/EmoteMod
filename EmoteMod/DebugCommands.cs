@@ -57,26 +57,26 @@ namespace Celeste.Mod.EmoteMod
                     // tobble backpack
                     if (emote == "bp")
                     {
-                        if (EmoteModMain.Settings.Backpack + 1 > 3)
+                        if (EmoteModMain.Settings.Backpack + 1 > 2)
                             EmoteModMain.Settings.Backpack = 0;
                         else
                             EmoteModMain.Settings.Backpack++;
                         switch (EmoteModMain.Settings.Backpack)
                         {
                             case 0:
-                                BackpackModule.player.ResetSprite(BackpackModule.player.DefaultSpriteMode);
+                                EmoteModMain.player.ResetSprite(BackpackModule.player.DefaultSpriteMode);
                                 EmoteModMain.echo("backpack default");
                                 break;
                             case 1:
-                                BackpackModule.player.ResetSprite(PlayerSpriteMode.Madeline);
+                                EmoteModMain.player.ResetSprite(PlayerSpriteMode.Madeline);
                                 EmoteModMain.echo("backpack force on");
                                 break;
                             case 2:
-                                BackpackModule.player.ResetSprite(PlayerSpriteMode.MadelineNoBackpack);
+                                EmoteModMain.player.ResetSprite(PlayerSpriteMode.MadelineNoBackpack);
                                 EmoteModMain.echo("backpack force off");
                                 break;
                             case 3:
-                                BackpackModule.player.ResetSprite(PlayerSpriteMode.Playback);
+                                EmoteModMain.player.ResetSprite(PlayerSpriteMode.Playback);
                                 EmoteModMain.echo("W H I T E L I N E  A C T I V A T E D");
                                 break;
                         }

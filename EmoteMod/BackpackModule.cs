@@ -1,4 +1,5 @@
 ﻿using Monocle;
+using System;
 
 namespace Celeste.Mod.EmoteMod
 {
@@ -6,6 +7,7 @@ namespace Celeste.Mod.EmoteMod
     {
         public static Player player;
         internal static void Player_ResetSprite(On.Celeste.Player.orig_Update orig, Player self)
+        //internal static void Player_ResetSprite(On.Celeste.Player.orig_ResetSprite orig, Player self, PlayerSpriteMode mode)
         {
             orig(self);
             // so that it doent mess with emotes
@@ -26,8 +28,9 @@ namespace Celeste.Mod.EmoteMod
                 // or badeline
                 else if (EmoteModMain.Settings.Backpack == 0 && SaveData.Instance.Assists.PlayAsBadeline && self.Sprite.Mode != PlayerSpriteMode.MadelineAsBadeline) // default
                     self.ResetSprite(PlayerSpriteMode.MadelineAsBadeline);
+                else
 
-            player = self;
+                    player = self;
 
         }
     }
