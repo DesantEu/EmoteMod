@@ -75,10 +75,23 @@ namespace Celeste.Mod.EmoteMod
                                 EmoteModMain.player.ResetSprite(PlayerSpriteMode.MadelineNoBackpack);
                                 EmoteModMain.echo("backpack force off");
                                 break;
-                            case 3:
-                                EmoteModMain.player.ResetSprite(PlayerSpriteMode.Playback);
-                                EmoteModMain.echo("W H I T E L I N E  A C T I V A T E D");
-                                break;
+                        }
+                        EmoteModMain.Instance.SaveSettings();
+                        EmoteModMain.Instance.LoadSettings();
+                    }
+                    if (emote == "funnycommand" || emote == "fc")
+                    {
+                        if (EmoteModMain.Settings.Backpack != 3)
+                        {
+                            EmoteModMain.Settings.Backpack = 3;
+                            EmoteModMain.player.ResetSprite(PlayerSpriteMode.Playback);
+                            EmoteModMain.echo("W H I T E L I N E  A C T I V A T E D");
+                        }
+                        else
+                        {
+                            EmoteModMain.Settings.Backpack = 0;
+                            EmoteModMain.player.ResetSprite(BackpackModule.player.DefaultSpriteMode);
+                            EmoteModMain.echo("backpack default");
                         }
                         EmoteModMain.Instance.SaveSettings();
                         EmoteModMain.Instance.LoadSettings();
