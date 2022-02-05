@@ -89,6 +89,8 @@ namespace Celeste.Mod.EmoteMod
 
             On.Celeste.Player.Update += SpeedModule.Player_Update;
             On.Celeste.Level.Update += SpeedModule.Level_Update;
+
+            On.Celeste.Player.Update += EmoteStretcher.Player_Update;
         }
 
         // i didnt comment what is this for and now i dont know
@@ -127,7 +129,6 @@ namespace Celeste.Mod.EmoteMod
                 if (Input.MoveX == -1)
                     player.Facing = Facings.Left;
             }
-
         }
 
         public override void LoadSettings()

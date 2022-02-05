@@ -12,6 +12,8 @@ namespace Celeste.Mod.EmoteMod
             {
                 int customInt;
                 int.TryParse(custom, out customInt);
+                float emoteFloat; bool isFloat;
+                isFloat = float.TryParse(emote, out emoteFloat);
                 int emoteInt;
                 int.TryParse(emote, out emoteInt);
 
@@ -136,14 +138,29 @@ namespace Celeste.Mod.EmoteMod
                     EmoteModMain.Instance.SaveSettings();
                     EmoteModMain.Instance.LoadSettings();
                 }
+
+                // the stretches
+
                 else if (custom == "x" && int.TryParse(emote, out emoteInt))
                 {
-                    EmoteModMain.player.Sprite.Scale.X = emoteInt;
+                    EmoteStretcher.stretch_x(emoteFloat);
                 }
                 else if (custom == "y" && int.TryParse(emote, out emoteInt))
                 {
-                    EmoteModMain.player.Sprite.Scale.Y = emoteInt;
+                    EmoteStretcher.stretch_y(emoteFloat);
                 }
+                else if (custom == "xy")
+                {
+                    if (emote == "lock" || emote == "l")
+                        EmoteStretcher.lock_stretch();
+                    else
+                    {
+                        EmoteStretcher.stretch_x(emoteFloat);
+                        EmoteStretcher.stretch_y(emoteFloat);
+                    }
+
+                }
+
                 else
                 {
                     EmoteModMain.echo($"failed to execute e {custom} {emote}. check your spelling");
