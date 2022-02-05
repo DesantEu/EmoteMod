@@ -6,13 +6,27 @@ namespace Celeste.Mod.EmoteMod
     public class BackpackModule
     {
         public static Player player;
-        internal static void Player_ResetSprite(On.Celeste.Player.orig_Update orig, Player self)
+        public static bool shilouette;
+
+        internal static void Player_Update(On.Celeste.Player.orig_Update orig, Player self)
         //internal static void Player_ResetSprite(On.Celeste.Player.orig_ResetSprite orig, Player self, PlayerSpriteMode mode)
         {
             orig(self);
-            // so that it doent mess with emotes
-            if (Engine.Scene is Level && EmoteModMain.anim_by_game == 0)
 
+            // detect if silhouette is enabled
+            if (!shilouette && EmoteModMain.Settings.Backpack != 3 && self.Sprite.Mode == PlayerSpriteMode.Playback)
+            {
+                shilouette = true;
+                EmoteModMain.echo("shit on");
+            }
+            if (shilouette && self.Sprite.Mode != PlayerSpriteMode.Playback)
+            {
+                shilouette = false;
+                EmoteModMain.echo("shit off");
+            }
+
+            // so that it doent mess with emotes
+            if (!shilouette && Engine.Scene is Level && EmoteModMain.anim_by_game == 0)
                 // force backpack
                 if (EmoteModMain.Settings.Backpack == 1 && self.Sprite.Mode != PlayerSpriteMode.Madeline)
                     self.ResetSprite(PlayerSpriteMode.Madeline);
@@ -28,8 +42,7 @@ namespace Celeste.Mod.EmoteMod
                 // or badeline
                 else if (EmoteModMain.Settings.Backpack == 0 && SaveData.Instance.Assists.PlayAsBadeline && self.Sprite.Mode != PlayerSpriteMode.MadelineAsBadeline) // default
                     self.ResetSprite(PlayerSpriteMode.MadelineAsBadeline);
-                else
-
+                else // investigate why tf is this here
                     player = self;
 
         }

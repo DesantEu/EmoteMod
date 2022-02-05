@@ -152,6 +152,18 @@ namespace Celeste.Mod.EmoteMod
             orig(self);
             player = self;
 
+            // detect if silhouette is enabled
+            if (!BackpackModule.shilouette && EmoteModMain.Settings.Backpack != 3 && self.Sprite.Mode == PlayerSpriteMode.Playback)
+            {
+                BackpackModule.shilouette = true;
+                EmoteModMain.echo("shit on");
+            }
+            if (BackpackModule.shilouette && self.Sprite.Mode != PlayerSpriteMode.Playback)
+            {
+                BackpackModule.shilouette = false;
+                EmoteModMain.echo("shit off");
+            }
+
             if (EmoteModMain.Settings.button0.Keys.Count != 0 && MInput.Keyboard.Pressed(EmoteModMain.Settings.button0.Keys[0]) || EmoteModMain.Settings.button0.Buttons.Count != 0 && MInput.GamePads[0].Pressed(EmoteModMain.Settings.button0.Buttons[0]))
                 Emote(EmoteModMain.Settings.emote0, false);
             else if (EmoteModMain.Settings.button1.Keys.Count != 0 && MInput.Keyboard.Pressed(EmoteModMain.Settings.button1.Keys[0]) || EmoteModMain.Settings.button1.Buttons.Count != 0 && MInput.GamePads[0].Pressed(EmoteModMain.Settings.button1.Buttons[0]))
