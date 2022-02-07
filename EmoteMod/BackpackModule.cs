@@ -2,12 +2,14 @@
 using System;
 using System.Collections.Generic;
 using Celeste;
+using Microsoft.Xna.Framework;
 
 namespace Celeste.Mod.EmoteMod
 {
     public class BackpackModule
     {
         public static Player player;
+
         public enum MadelineBackpackModes { Default, NoBackpack, Backpack, Playback };
 
         internal static void PlayerSprite(On.Celeste.PlayerSprite.orig_ctor orig, PlayerSprite self, PlayerSpriteMode mode)
@@ -20,7 +22,7 @@ namespace Celeste.Mod.EmoteMod
                     {
                         mode = PlayerSpriteMode.Madeline;
                     }
-                    else if (EmoteModMain.Settings.Backpack == (int) MadelineBackpackModes.NoBackpack)
+                    else if (EmoteModMain.Settings.Backpack == (int)MadelineBackpackModes.NoBackpack)
                     {
                         mode = PlayerSpriteMode.MadelineNoBackpack;
                     }
@@ -31,6 +33,13 @@ namespace Celeste.Mod.EmoteMod
                 }
 
             orig(self, mode);
+        }
+        private static void onLevelLoader(On.Celeste.LevelLoader.orig_ctor orig, LevelLoader self, Session session, Vector2? startPosition)
+        {
+            orig(self, session, startPosition);
+
+            // Everest reinitializes GFX.SpriteBank in the LevelLoader constructor, so we need to initialize the sprites again.
+            initializeRollBackpackSprites();
         }
 
         private static void initializeRollBackpackSprites()
@@ -55,6 +64,10 @@ namespace Celeste.Mod.EmoteMod
 
         public static void Load()
         {
+            On.Celeste.PlayerSprite.ctor += PlayerSprite;
+            On.Celeste.LevelLoader.ctor += onLevelLoader;
+
+
             if (Engine.Scene is Level)
             {
                 initializeRollBackpackSprites();
@@ -62,36 +75,10 @@ namespace Celeste.Mod.EmoteMod
         }
 
 
-        // old
-
-        //internal static void Player_ResetSprite(On.Celeste.Player.orig_Update orig, Player self)
-        ////internal static void Player_ResetSprite(On.Celeste.Player.orig_ResetSprite orig, Player self, PlayerSpriteMode mode)
-        //{
-        //    orig(self);
-        //    // so that it doent mess with emotes
-        //    if (Engine.Scene is Level && EmoteModMain.anim_by_game == 0)
-
-        //        // force backpack
-        //        if (EmoteModMain.Settings.Backpack == 1 && self.Sprite.Mode != PlayerSpriteMode.Madeline)
-        //            self.ResetSprite(PlayerSpriteMode.Madeline);
-        //        // force no backpack
-        //        else if (EmoteModMain.Settings.Backpack == 2 && self.Sprite.Mode != PlayerSpriteMode.MadelineNoBackpack)
-        //            self.ResetSprite(PlayerSpriteMode.MadelineNoBackpack);
-        //        // playback sprite mode
-        //        else if (EmoteModMain.Settings.Backpack == 3 && self.Sprite.Mode != PlayerSpriteMode.Playback)
-        //            self.ResetSprite(PlayerSpriteMode.Playback);
-        //        // else apply either default skin
-        //        else if (EmoteModMain.Settings.Backpack == 0 && !SaveData.Instance.Assists.PlayAsBadeline && self.Sprite.Mode != self.DefaultSpriteMode) // default
-        //            self.ResetSprite(self.DefaultSpriteMode);
-        //        // or badeline
-        //        else if (EmoteModMain.Settings.Backpack == 0 && SaveData.Instance.Assists.PlayAsBadeline && self.Sprite.Mode != PlayerSpriteMode.MadelineAsBadeline) // default
-        //            self.ResetSprite(PlayerSpriteMode.MadelineAsBadeline);
-        //        else
-
-        //            player = self;
-
-        //}
-
-
+        public static void Unload()
+        {
+            On.Celeste.PlayerSprite.ctor -= PlayerSprite;
+            On.Celeste.LevelLoader.ctor -= onLevelLoader;
+        }
     }
 }
