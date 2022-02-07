@@ -85,12 +85,15 @@ namespace Celeste.Mod.EmoteMod
             On.Celeste.LevelExit.Begin += EmoteCancelModule.LevelExit_Begin;
             On.Celeste.Level.LoadLevel += EmoteCancelModule.LoadLevel;
 
-            On.Celeste.Player.Update += BackpackModule.Player_ResetSprite;
+            //On.Celeste.Player.Update += BackpackModule.Player_ResetSprite;
+            On.Celeste.PlayerSprite.ctor += BackpackModule.PlayerSprite;
 
             On.Celeste.Player.Update += SpeedModule.Player_Update;
             On.Celeste.Level.Update += SpeedModule.Level_Update;
 
             On.Celeste.Player.Update += EmoteStretcher.Player_Update;
+
+            BackpackModule.Load();
         }
 
         // i didnt comment what is this for and now i dont know
@@ -156,7 +159,8 @@ namespace Celeste.Mod.EmoteMod
             On.Celeste.LevelExit.Begin -= EmoteCancelModule.LevelExit_Begin;
             On.Celeste.Level.LoadLevel -= EmoteCancelModule.LoadLevel;
 
-            On.Celeste.Player.Update -= BackpackModule.Player_ResetSprite;
+            //On.Celeste.Player.Update -= BackpackModule.Player_ResetSprite;
+            On.Celeste.PlayerSprite.ctor -= BackpackModule.PlayerSprite;
 
             On.Celeste.Player.Update -= SpeedModule.Player_Update;
             On.Celeste.Level.Update -= SpeedModule.Level_Update;
