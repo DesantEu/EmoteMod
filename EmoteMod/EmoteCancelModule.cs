@@ -4,15 +4,21 @@ namespace Celeste.Mod.EmoteMod
 {
     public class EmoteCancelModule
 	{
-		public static Player player;
+		// public static Player player;
 
 		public static bool invincibilityDefault;
 		public static bool interactDefault;
 
 		public static void cancelEmote()
 		{
+			Player player = PlayerModule.GetPlayer();
+
+			if (player == null)
+				return;
+
 			player.DummyAutoAnimate = true; // auto animate
 			player.StateMachine.State = Player.StNormal; // idk maybe its supposed to make player moveable or something i dont remember
+
 			EmoteModMain.celestenetSettings.Interactions = interactDefault; // return interactions do their default value
 			SaveData.Instance.Assists.Invincible = invincibilityDefault;
 
@@ -33,6 +39,7 @@ namespace Celeste.Mod.EmoteMod
 
 			EmoteModMain.anim_by_game = 0; // tell yourself that no animation is playing
 		}
+
 		// cancel on level exit
 		public static void LevelExit_Begin(On.Celeste.LevelExit.orig_Begin orig, LevelExit self)
 		{
@@ -40,6 +47,7 @@ namespace Celeste.Mod.EmoteMod
 				cancelEmote();
 			orig(self);
 		}
+
 		// cancel if not on level
 		public static void Level_Update(On.Celeste.Level.orig_Update orig, Level self)
 		{
@@ -48,10 +56,8 @@ namespace Celeste.Mod.EmoteMod
 			if (!(Engine.Scene is Level) && EmoteModMain.anim_by_game == 1)
 				cancelEmote();
 		}
-		internal static void Player_Update(On.Celeste.Player.orig_Update orig, Player self)
+		internal static void Player_Update(On.Celeste.Player.orig_Update orig, Player player)
 		{
-			player = self;
-
 			if (EmoteModMain.anim_by_game == 1)
             {
 				if (player.Sprite.CurrentAnimationID == "idle")
@@ -90,7 +96,7 @@ namespace Celeste.Mod.EmoteMod
 					EmoteModMain.anim_by_game = 0;
 
 
-			orig(self);
+			orig(player);
 		}
 
 		internal static void Load()
@@ -101,7 +107,6 @@ namespace Celeste.Mod.EmoteMod
 			On.Celeste.LevelExit.Begin += LevelExit_Begin;
 			On.Celeste.Level.LoadLevel += LoadLevel;
 
-			player = null;
 			interactDefault = EmoteModMain.celestenetSettings.Interactions; // yea need to do that
 		}
 
@@ -124,7 +129,7 @@ namespace Celeste.Mod.EmoteMod
 		// cancel when changing rooms
 		internal static void LoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader)
 		{
-			if (player != null && EmoteModMain.anim_by_game == 1)
+			if (PlayerModule.GetPlayer() != null && EmoteModMain.anim_by_game == 1)
 				cancelEmote();
 			orig(self, playerIntro, isFromLoader);
 		}
