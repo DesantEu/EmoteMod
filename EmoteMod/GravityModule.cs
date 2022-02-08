@@ -14,6 +14,7 @@ namespace Celeste.Mod.EmoteMod
 
         private static void Player_Update(On.Celeste.Player.orig_Update orig, Player self)
         {
+            orig(self);
 			if (EmoteModMain.Settings.CancelGravity && EmoteModMain.anim_by_game == 1)
 				self.Y = playerY;
 		}
