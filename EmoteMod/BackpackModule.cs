@@ -8,48 +8,127 @@ namespace Celeste.Mod.EmoteMod
 {
 	public class BackpackModule
 	{
-		public static Player player;
+		// public static Player player;
+		public enum MadelineBackpackModes { Default, Backpack, NoBackpack, Playback };
 
-		public enum MadelineBackpackModes { Default, NoBackpack, Backpack, Playback };
+		// when constructing the player set the sprite to the one we need (needs resetting)
 
 		internal static void PlayerSprite(On.Celeste.PlayerSprite.orig_ctor orig, PlayerSprite self, PlayerSpriteMode mode)
 		{
 			// code stolen from max (extended variant mode)
-			if (EmoteModMain.Settings.Backpack != (int)MadelineBackpackModes.Default)
-            {
-				if (mode == PlayerSpriteMode.Madeline || mode == PlayerSpriteMode.MadelineNoBackpack)
-				{
-					if (EmoteModMain.Settings.Backpack == (int)PlayerSpriteMode.Madeline)
-					{
-						mode = PlayerSpriteMode.Madeline;
-					}
-					else if (EmoteModMain.Settings.Backpack == (int)MadelineBackpackModes.NoBackpack)
-					{
-						mode = PlayerSpriteMode.MadelineNoBackpack;
-					}
-					else if (EmoteModMain.Settings.Backpack == (int)PlayerSpriteMode.Playback)
-					{
-						mode = PlayerSpriteMode.Playback;
-					}
-				}
-            }
+			if (mode == PlayerSpriteMode.Madeline || mode == PlayerSpriteMode.MadelineNoBackpack)
+			{
+				mode = GetMode(EmoteModMain.Settings.Backpack, mode);
+			}
 
 			orig(self, mode);
 		}
+
+		// load missing animatons
 		private static void onLevelLoader(On.Celeste.LevelLoader.orig_ctor orig, LevelLoader self, Session session, Vector2? startPosition)
 		{
 			orig(self, session, startPosition);
 
-			// Everest reinitializes GFX.SpriteBank in the LevelLoader constructor, so we need to initialize the sprites again.
 			initializeRollBackpackSprites();
 		}
+
+		// scroll through backpack modes
+		public static void ScrollBackpack()
+		{
+			if (EmoteModMain.Settings.Backpack + 1 > 2)
+				SetBackpack(0);
+			else
+				SetBackpack(EmoteModMain.Settings.Backpack + 1);
+
+			switch (EmoteModMain.Settings.Backpack)
+			{
+				case 0:
+					//PlayerModule.GetPlayer().ResetSprite(BackpackModule.player.DefaultSpriteMode);
+					EmoteModMain.echo("backpack default");
+					break;
+				case 1:
+					//PlayerModule.GetPlayer().ResetSprite(PlayerSpriteMode.Madeline);
+					EmoteModMain.echo("backpack force on");
+					break;
+				case 2:
+					//PlayerModule.GetPlayer().ResetSprite(PlayerSpriteMode.MadelineNoBackpack);
+					EmoteModMain.echo("backpack force off");
+					break;
+			}
+			//EmoteModMain.Instance.SaveSettings();
+			//EmoteModMain.Instance.LoadSettings();
+
+			// PlayerModule.GetPlayer().ResetSprite(GetMode(EmoteModMain.Settings.Backpack));
+		}
+
+		// sets and reloads player sprite
+		public static void SetBackpack(int value)
+		{
+			EmoteModMain.Settings.Backpack = value;
+
+			EmoteModMain.Instance.SaveSettings();
+			EmoteModMain.Instance.LoadSettings();
+
+			// PlayerModule.GetPlayer().ResetSprite((PlayerSpriteMode)EmoteModMain.Settings.Backpack);
+			PlayerModule.GetPlayer().ResetSprite(GetMode(EmoteModMain.Settings.Backpack));
+
+		}
+
+		// playback mode
+		public static void EnterSickoMode()
+		{
+
+			if (EmoteModMain.Settings.Backpack != 3)
+			{
+				SetBackpack(3);
+				//PlayerModule.GetPlayer().ResetSprite(PlayerSpriteMode.Playback);
+				EmoteModMain.echo("W H I T E L I N E  A C T I V A T E D");
+			}
+			else
+			{
+				SetBackpack(0);
+				//PlayerModule.GetPlayer().ResetSprite(BackpackModule.player.DefaultSpriteMode);
+				EmoteModMain.echo("backpack default");
+			}
+			//EmoteModMain.Instance.SaveSettings();
+			//EmoteModMain.Instance.LoadSettings();
+
+			//PlayerModule.GetPlayer().ResetSprite((PlayerSpriteMode)EmoteModMain.Settings.Backpack);
+		}
+
+
+		private static PlayerSpriteMode GetMode(int settings, PlayerSpriteMode mode = PlayerSpriteMode.Madeline)
+		{
+			if (settings == (int)MadelineBackpackModes.Backpack)
+			{
+				return PlayerSpriteMode.Madeline;
+			}
+			else if (settings == (int)MadelineBackpackModes.NoBackpack)
+			{
+				//return PlayerSpriteMode.MadelineNoBackpack;
+				return PlayerSpriteMode.MadelineNoBackpack;
+			}
+			else if (settings == (int)MadelineBackpackModes.Playback)
+			{
+				return PlayerSpriteMode.Playback;
+			}
+			// else return PlayerModule.GetPlayer().DefaultSpriteMode;
+			else if (PlayerModule.GetPlayer() is Player)
+            {
+				return PlayerModule.GetPlayer().DefaultSpriteMode;
+            }
+			else
+            {
+				return mode;
+            }
+		}
+
 
 		private static void initializeRollBackpackSprites()
 		{
 			Dictionary<string, Sprite.Animation> player = GFX.SpriteBank.SpriteData["player"].Sprite.Animations;
 			Dictionary<string, Sprite.Animation> playerNoBackpack = GFX.SpriteBank.SpriteData["player_no_backpack"].Sprite.Animations;
 
-			// copy the roll animations from player_no_backpack to player, to prevent crashes in Farewell if the backpack is forced.
 			if (!player.ContainsKey("roll"))
 			{
 				player.Add("roll", playerNoBackpack["roll"]);
@@ -68,7 +147,6 @@ namespace Celeste.Mod.EmoteMod
 		{
 			On.Celeste.PlayerSprite.ctor += PlayerSprite;
 			On.Celeste.LevelLoader.ctor += onLevelLoader;
-
 
 			if (Engine.Scene is Level)
 			{

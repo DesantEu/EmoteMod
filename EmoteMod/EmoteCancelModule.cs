@@ -6,12 +6,15 @@ namespace Celeste.Mod.EmoteMod
 	{
 		public static Player player;
 
+		public static bool invincibilityDefault;
+		public static bool interactDefault;
+
 		public static void cancelEmote()
 		{
 			player.DummyAutoAnimate = true; // auto animate
 			player.StateMachine.State = Player.StNormal; // idk maybe its supposed to make player moveable or something i dont remember
-			EmoteModMain.celestenetSettings.Interactions = EmoteModMain.interactDefault; // return interactions do their default value
-			SaveData.Instance.Assists.Invincible = EmoteModMain.invincibilityDefault;
+			EmoteModMain.celestenetSettings.Interactions = interactDefault; // return interactions do their default value
+			SaveData.Instance.Assists.Invincible = invincibilityDefault;
 
 			if (EmoteModule.playback)
 			{ //ex variants fix thing
@@ -20,11 +23,11 @@ namespace Celeste.Mod.EmoteMod
 			}
 			else
 			// if changed sprite get it back
-			if (EmoteModMain.changedSprite)
+			if (EmoteModule.changedSprite)
 			{
 				player.ResetSprite(player.DefaultSpriteMode);
-				EmoteModMain.changedSprite = false; // idk why its here twice but im afraid to remove it
-				EmoteModMain.changedSprite = false;
+				EmoteModule.changedSprite = false; // idk why its here twice but im afraid to remove it
+				EmoteModule.changedSprite = false;
 			}
 			EmoteModule.bounced = false;
 
@@ -49,6 +52,18 @@ namespace Celeste.Mod.EmoteMod
 		{
 			player = self;
 
+			if (EmoteModMain.anim_by_game == 1)
+            {
+				if (player.Sprite.CurrentAnimationID == "idle")
+					cancelEmote();
+				// something
+				if (player.StateMachine.State == 0)
+					cancelEmote();
+				// cancel emote on press keys or if we die so that we dont respawn in a bad spot
+				if (Input.Dash.Pressed || Input.Jump.Pressed || Input.MoveY == 1 || Input.Grab.Pressed || player.Dead)
+
+						cancelEmote();
+			}
 			// if idle after emote cancel emote
 			if (EmoteModMain.anim_by_game == 1 && player.Sprite.CurrentAnimationID == "idle")
 				cancelEmote();
@@ -85,6 +100,9 @@ namespace Celeste.Mod.EmoteMod
 			On.Celeste.Level.Update += Level_Update;
 			On.Celeste.LevelExit.Begin += LevelExit_Begin;
 			On.Celeste.Level.LoadLevel += LoadLevel;
+
+			player = null;
+			interactDefault = EmoteModMain.celestenetSettings.Interactions; // yea need to do that
 		}
 
 		internal static void Unload()

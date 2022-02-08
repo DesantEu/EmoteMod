@@ -31,14 +31,14 @@ namespace Celeste.Mod.EmoteMod
 		/// </summary>
 		public static int anim_by_game;
 		// for emote cancelling
-		public static bool changedSprite;
+		// public static bool changedSprite;
 
 
 		// Only one alive module instance can exist at any given time.
 		public static EmoteModMain Instance;
 		// default values to return to
-		public static bool interactDefault;
-		public static bool invincibilityDefault;
+		//public static bool interactDefault;
+		//public static bool invincibilityDefault;
 		/// <summary>
 		/// current animation delay
 		/// </summary>
@@ -59,45 +59,39 @@ namespace Celeste.Mod.EmoteMod
 			}
 			catch { }
 		}
-
-		public override void Load()
-		{
-			anim_by_game = 0; // this tells that base state is no animations
-			// player = null; // anticrash
-			EmoteCancelModule.player = null;
-			changedSprite = false; // uh
-			interactDefault = celestenetSettings.Interactions; // yea need to do that
-
-			EmoteModule.Load();
-			EmoteCancelModule.Load();
-			BackpackModule.Load();
-			SpeedModule.Load();
-			EmoteStretcher.Load();
-			GravityModule.Load();
-		}
-
 		public override void LoadSettings()
 		{
 			base.LoadSettings();
 		}
 
-
-
 		public override void SaveSettings()
 		{
 			base.SaveSettings();
 		}
+
+		public override void Load()
+		{
+			anim_by_game = 0; // this tells that base state is no animations
+
+            EmoteModule.Load();
+            EmoteCancelModule.Load();
+            BackpackModule.Load();
+            SpeedModule.Load();
+            EmoteStretcher.Load();
+            GravityModule.Load();
+        }
+
 		public override void Unload()
 		{
-			EmoteCancelModule.cancelEmote();
+            EmoteCancelModule.cancelEmote();
 
-			EmoteModule.Unload();
-			EmoteCancelModule.Unload();
-			BackpackModule.Unload();
-			SpeedModule.Unload();
-			EmoteStretcher.Unload();
-			GravityModule.Unload();
-		}
+            EmoteModule.Unload();
+            EmoteCancelModule.Unload();
+            BackpackModule.Unload();
+            SpeedModule.Unload();
+            EmoteStretcher.Unload();
+            GravityModule.Unload();
+        }
 
 		#region garbage
 

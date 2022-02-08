@@ -206,13 +206,14 @@ namespace Celeste.Mod.EmoteMod
 			}
 		}
 
-		// you saw nothing
+		// backpack
 		[SettingIgnore]
 		public int Backpack { get; set; } = 0;
 		public void CreateBackpackEntry(TextMenu menu, bool inGame)
 		{
 			menu.Add(new TextMenu.Slider(Dialog.Clean("settings_backpack_name"), EmoteModMain.backpackFormatter, 0, 2, EmoteModMain.Settings.Backpack)
-				.Change(id => EmoteModMain.Settings.Backpack = id));
+				.Change(id => BackpackModule.SetBackpack(id)));
+				// .Change(id => EmoteModMain.Settings.Backpack = id));
 		}
 	}
 }

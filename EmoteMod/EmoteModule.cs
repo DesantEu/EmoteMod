@@ -20,6 +20,8 @@ namespace Celeste.Mod.EmoteMod
 		public static bool bounced = false;
 		public static bool playback = false;
 
+		public static bool changedSprite;
+
 		public static void Emote(string animation, bool by_command, Player player)
 		{
 			if (EmoteModMain.anim_by_game != 2) // if the game is not playing a cutscene
@@ -33,10 +35,10 @@ namespace Celeste.Mod.EmoteMod
 					GravityModule.playerY = player.Y; // record player y for the gravity switch
 
 					if (EmoteModMain.anim_by_game == 0) // if we were not doing an emote before, save default interactions state
-						EmoteModMain.interactDefault = EmoteModMain.celestenetSettings.Interactions; // (because if we record it during an emote its just going to be false)
+						EmoteCancelModule.interactDefault = EmoteModMain.celestenetSettings.Interactions; // (because if we record it during an emote its just going to be false)
 					EmoteModMain.celestenetSettings.Interactions = false; // disable interations for everyone's sake
 					if (EmoteModMain.anim_by_game == 0)
-						EmoteModMain.invincibilityDefault = SaveData.Instance.Assists.Invincible;
+						EmoteCancelModule.invincibilityDefault = SaveData.Instance.Assists.Invincible;
 					SaveData.Instance.Assists.Invincible = true;
 					if (EmoteModMain.anim_by_game == 0 && player.Sprite.Mode == PlayerSpriteMode.Playback)
 						playback = true;
@@ -71,7 +73,7 @@ namespace Celeste.Mod.EmoteMod
 									if (animation.ToLower() == "idlea" || animation.ToLower() == "idleb" || animation.ToLower() == "idlec")
 									{
 										player.ResetSprite(SaveData.Instance.Assists.PlayAsBadeline ? PlayerSpriteMode.MadelineAsBadeline : player.DefaultSpriteMode);
-										EmoteModMain.changedSprite = false;
+										changedSprite = false;
 									}
 								}
 								break_ = true;
@@ -88,7 +90,7 @@ namespace Celeste.Mod.EmoteMod
 								if (animation.ToLower() == s.ToLower())
 								{
 									player.ResetSprite(PlayerSpriteMode.MadelineNoBackpack);
-									EmoteModMain.changedSprite = true;
+									changedSprite = true;
 									break_ = true;
 									break;
 								}
@@ -102,7 +104,7 @@ namespace Celeste.Mod.EmoteMod
 							if (animation.ToLower() == s.ToLower())
 							{
 								player.ResetSprite(PlayerSpriteMode.Badeline);
-								EmoteModMain.changedSprite = true;
+								changedSprite = true;
 								break_ = true;
 								break;
 							}
@@ -111,7 +113,7 @@ namespace Celeste.Mod.EmoteMod
 							break;
 						// else switch to default
 						player.ResetSprite(SaveData.Instance.Assists.PlayAsBadeline ? PlayerSpriteMode.MadelineAsBadeline : player.DefaultSpriteMode);
-						EmoteModMain.changedSprite = false;
+						changedSprite = false;
 
 					} while (false);
 
@@ -149,6 +151,8 @@ namespace Celeste.Mod.EmoteMod
 		internal static void Load()
 		{
 			On.Celeste.Player.Update += Player_Update;
+
+			changedSprite = false; // uh
 		}
 		internal static void Unload()
 		{
@@ -165,7 +169,7 @@ namespace Celeste.Mod.EmoteMod
 			if (Input.MoveX == -1)
 				self.Facing = Facings.Left;
 
-			if (EmoteModMain.Settings.button0.Keys.Count != 0 && MInput.Keyboard.Pressed(EmoteModMain.Settings.button0.Keys[0]) || EmoteModMain.Settings.button0.Buttons.Count != 0 && MInput.GamePads[0].Pressed(EmoteModMain.Settings.button0.Buttons[0]))
+				 if (EmoteModMain.Settings.button0.Keys.Count != 0 && MInput.Keyboard.Pressed(EmoteModMain.Settings.button0.Keys[0]) || EmoteModMain.Settings.button0.Buttons.Count != 0 && MInput.GamePads[0].Pressed(EmoteModMain.Settings.button0.Buttons[0]))
 				Emote(EmoteModMain.Settings.emote0, false, self);
 			else if (EmoteModMain.Settings.button1.Keys.Count != 0 && MInput.Keyboard.Pressed(EmoteModMain.Settings.button1.Keys[0]) || EmoteModMain.Settings.button1.Buttons.Count != 0 && MInput.GamePads[0].Pressed(EmoteModMain.Settings.button1.Buttons[0]))
 				Emote(EmoteModMain.Settings.emote1, false, self);

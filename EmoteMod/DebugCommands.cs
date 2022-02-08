@@ -52,46 +52,14 @@ namespace Celeste.Mod.EmoteMod
 					}
 					// tobble backpack
 					else if (emote == "bp")
+                    {
+                        BackpackModule.ScrollBackpack();
+                    }
+					
+                    // haha funny
+                    else if (emote == "funnycommand" || emote == "fc")
 					{
-						if (EmoteModMain.Settings.Backpack + 1 > 2)
-							EmoteModMain.Settings.Backpack = 0;
-						else
-							EmoteModMain.Settings.Backpack++;
-						switch (EmoteModMain.Settings.Backpack)
-						{
-							case 0:
-								//PlayerModule.GetPlayer().ResetSprite(BackpackModule.player.DefaultSpriteMode);
-								EmoteModMain.echo("backpack default");
-								break;
-							case 1:
-								//PlayerModule.GetPlayer().ResetSprite(PlayerSpriteMode.Madeline);
-								EmoteModMain.echo("backpack force on");
-								break;
-							case 2:
-								//PlayerModule.GetPlayer().ResetSprite(PlayerSpriteMode.MadelineNoBackpack);
-								EmoteModMain.echo("backpack force off");
-								break;
-						}
-						EmoteModMain.Instance.SaveSettings();
-						EmoteModMain.Instance.LoadSettings();
-					}
-					// haha funny
-					else if (emote == "funnycommand" || emote == "fc")
-					{
-						if (EmoteModMain.Settings.Backpack != 3)
-						{
-							EmoteModMain.Settings.Backpack = 3;
-							//PlayerModule.GetPlayer().ResetSprite(PlayerSpriteMode.Playback);
-							EmoteModMain.echo("W H I T E L I N E  A C T I V A T E D");
-						}
-						else
-						{
-							EmoteModMain.Settings.Backpack = 0;
-							//PlayerModule.GetPlayer().ResetSprite(BackpackModule.player.DefaultSpriteMode);
-							EmoteModMain.echo("backpack default");
-						}
-						EmoteModMain.Instance.SaveSettings();
-						EmoteModMain.Instance.LoadSettings();
+						BackpackModule.EnterSickoMode();
 					}
 				}
 				// binding emotes with console
@@ -162,5 +130,7 @@ namespace Celeste.Mod.EmoteMod
 				}
 			}
 		}
-	}
+
+        
+    }
 }
