@@ -12,7 +12,6 @@ namespace Celeste.Mod.EmoteMod
 		public enum MadelineBackpackModes { Default, Backpack, NoBackpack, Playback };
 
 		// when constructing the player set the sprite to the one we need (needs resetting)
-
 		internal static void PlayerSprite(On.Celeste.PlayerSprite.orig_ctor orig, PlayerSprite self, PlayerSpriteMode mode)
 		{
 			// code stolen from max (extended variant mode)
@@ -43,22 +42,15 @@ namespace Celeste.Mod.EmoteMod
 			switch (EmoteModMain.Settings.Backpack)
 			{
 				case 0:
-					//PlayerModule.GetPlayer().ResetSprite(BackpackModule.player.DefaultSpriteMode);
 					EmoteModMain.echo("backpack default");
 					break;
 				case 1:
-					//PlayerModule.GetPlayer().ResetSprite(PlayerSpriteMode.Madeline);
 					EmoteModMain.echo("backpack force on");
 					break;
 				case 2:
-					//PlayerModule.GetPlayer().ResetSprite(PlayerSpriteMode.MadelineNoBackpack);
 					EmoteModMain.echo("backpack force off");
 					break;
 			}
-			//EmoteModMain.Instance.SaveSettings();
-			//EmoteModMain.Instance.LoadSettings();
-
-			// PlayerModule.GetPlayer().ResetSprite(GetMode(EmoteModMain.Settings.Backpack));
 		}
 
 		// sets and reloads player sprite
@@ -69,7 +61,6 @@ namespace Celeste.Mod.EmoteMod
 			EmoteModMain.Instance.SaveSettings();
 			EmoteModMain.Instance.LoadSettings();
 
-			// PlayerModule.GetPlayer().ResetSprite((PlayerSpriteMode)EmoteModMain.Settings.Backpack);
 			PlayerModule.GetPlayer().ResetSprite(GetMode(EmoteModMain.Settings.Backpack));
 
 		}
@@ -81,19 +72,13 @@ namespace Celeste.Mod.EmoteMod
 			if (EmoteModMain.Settings.Backpack != 3)
 			{
 				SetBackpack(3);
-				//PlayerModule.GetPlayer().ResetSprite(PlayerSpriteMode.Playback);
 				EmoteModMain.echo("W H I T E L I N E  A C T I V A T E D");
 			}
 			else
 			{
 				SetBackpack(0);
-				//PlayerModule.GetPlayer().ResetSprite(BackpackModule.player.DefaultSpriteMode);
 				EmoteModMain.echo("backpack default");
 			}
-			//EmoteModMain.Instance.SaveSettings();
-			//EmoteModMain.Instance.LoadSettings();
-
-			//PlayerModule.GetPlayer().ResetSprite((PlayerSpriteMode)EmoteModMain.Settings.Backpack);
 		}
 
 
@@ -105,14 +90,12 @@ namespace Celeste.Mod.EmoteMod
 			}
 			else if (settings == (int)MadelineBackpackModes.NoBackpack)
 			{
-				//return PlayerSpriteMode.MadelineNoBackpack;
 				return PlayerSpriteMode.MadelineNoBackpack;
 			}
 			else if (settings == (int)MadelineBackpackModes.Playback)
 			{
 				return PlayerSpriteMode.Playback;
 			}
-			// else return PlayerModule.GetPlayer().DefaultSpriteMode;
 			else if (PlayerModule.GetPlayer() is Player)
             {
 				return PlayerModule.GetPlayer().DefaultSpriteMode;

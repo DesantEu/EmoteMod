@@ -22,7 +22,6 @@ namespace Celeste.Mod.EmoteMod
 		{
 			return arg == 0 ? "default" : arg == 1 ? "force on" : arg == 2 ? "force off" : arg == 3 ? "white" : "error";
 		};
-		// public static Player player;
 
 		/// <summary>
 		/// If 0 we can make an animation;
@@ -30,15 +29,10 @@ namespace Celeste.Mod.EmoteMod
 		/// If 2 the game is playing an animation and we cant emote
 		/// </summary>
 		public static int anim_by_game;
-		// for emote cancelling
-		// public static bool changedSprite;
 
 
 		// Only one alive module instance can exist at any given time.
 		public static EmoteModMain Instance;
-		// default values to return to
-		//public static bool interactDefault;
-		//public static bool invincibilityDefault;
 		/// <summary>
 		/// current animation delay
 		/// </summary>

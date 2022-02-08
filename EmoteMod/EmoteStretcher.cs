@@ -17,8 +17,6 @@
 
 			if (stretch_lock)
 			{
-				//EmoteModMain.echo(self.Sprite.Scale.X.ToString() +" "+ self.Sprite.Scale.Y.ToString());
-
 				self.Sprite.Scale.X = x_stretch;
 				self.Sprite.Scale.Y = y_stretch;
 				self.Hair.Sprite.Scale.X = x_stretch;

@@ -213,7 +213,6 @@ namespace Celeste.Mod.EmoteMod
 		{
 			menu.Add(new TextMenu.Slider(Dialog.Clean("settings_backpack_name"), EmoteModMain.backpackFormatter, 0, 2, EmoteModMain.Settings.Backpack)
 				.Change(id => BackpackModule.SetBackpack(id)));
-				// .Change(id => EmoteModMain.Settings.Backpack = id));
 		}
 	}
 }
