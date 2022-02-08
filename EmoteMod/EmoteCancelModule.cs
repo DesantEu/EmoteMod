@@ -1,4 +1,5 @@
-﻿using Monocle;
+﻿using Microsoft.Xna.Framework;
+using Monocle;
 
 namespace Celeste.Mod.EmoteMod
 {
@@ -18,6 +19,7 @@ namespace Celeste.Mod.EmoteMod
 
 			player.DummyAutoAnimate = true; // auto animate
 			player.StateMachine.State = Player.StNormal; // idk maybe its supposed to make player moveable or something i dont remember
+			player.Speed = Vector2.Zero;
 
 			EmoteModMain.celestenetSettings.Interactions = interactDefault; // return interactions do their default value
 			SaveData.Instance.Assists.Invincible = invincibilityDefault;
