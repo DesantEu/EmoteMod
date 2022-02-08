@@ -162,7 +162,6 @@ namespace Celeste.Mod.EmoteMod
 		public static void Player_Update(On.Celeste.Player.orig_Update orig, Player self)
 		{
 			orig(self);
-			// player = self;
 
 			if (EmoteModMain.anim_by_game == 1)
             {
