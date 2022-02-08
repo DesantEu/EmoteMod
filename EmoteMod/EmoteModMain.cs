@@ -22,7 +22,7 @@ namespace Celeste.Mod.EmoteMod
 		{
 			return arg == 0 ? "default" : arg == 1 ? "force on" : arg == 2 ? "force off" : arg == 3 ? "white" : "error";
 		};
-		public static Player player;
+		// public static Player player;
 
 		/// <summary>
 		/// If 0 we can make an animation;
@@ -36,8 +36,6 @@ namespace Celeste.Mod.EmoteMod
 
 		// Only one alive module instance can exist at any given time.
 		public static EmoteModMain Instance;
-		// for floating
-		public static float playerY;
 		// default values to return to
 		public static bool interactDefault;
 		public static bool invincibilityDefault;
@@ -65,13 +63,10 @@ namespace Celeste.Mod.EmoteMod
 		public override void Load()
 		{
 			anim_by_game = 0; // this tells that base state is no animations
-			player = null; // anticrash
+			// player = null; // anticrash
 			EmoteCancelModule.player = null;
 			changedSprite = false; // uh
 			interactDefault = celestenetSettings.Interactions; // yea need to do that
-
-			// overrides
-			On.Celeste.Player.Update += Player_Update;
 
 			EmoteModule.Load();
 			EmoteCancelModule.Load();
@@ -79,28 +74,6 @@ namespace Celeste.Mod.EmoteMod
 			SpeedModule.Load();
 			EmoteStretcher.Load();
 			GravityModule.Load();
-		}
-
-		private void Player_Update(On.Celeste.Player.orig_Update orig, Player self)
-		{
-			player = self; // this is so that we can do things to player out of this method
-			orig(self); //bruh
-
-
-
-			// disable gravity if gravity switch
-			if (Settings.CancelGravity && anim_by_game == 1)
-				player.Y = playerY;
-
-
-			// turn left and right during emote
-			if (anim_by_game == 1)
-			{
-				if (Input.MoveX == 1)
-					player.Facing = Facings.Right;
-				if (Input.MoveX == -1)
-					player.Facing = Facings.Left;
-			}
 		}
 
 		public override void LoadSettings()
@@ -117,8 +90,6 @@ namespace Celeste.Mod.EmoteMod
 		public override void Unload()
 		{
 			EmoteCancelModule.cancelEmote();
-
-			On.Celeste.Player.Update -= Player_Update;
 
 			EmoteModule.Unload();
 			EmoteCancelModule.Unload();

@@ -20,7 +20,7 @@ namespace Celeste.Mod.EmoteMod
 				// this is where emotes should be
 				if (custom == "c" || custom == "custom") // custom emotes
 				{
-					EmoteModule.Emote(emote, true);
+					EmoteModule.Emote(emote, true, PlayerModule.player);
 				}
 				else if (custom == "toggle" || custom == "t") // toggles
 				{
@@ -35,17 +35,17 @@ namespace Celeste.Mod.EmoteMod
 					// print current animation
 					else if (emote == "i")
 					{
-						Engine.Commands.Log($"current animation: {EmoteModMain.player.Sprite.CurrentAnimationID}");
+						Engine.Commands.Log($"current animation: {PlayerModule.player.Sprite.CurrentAnimationID}");
 					}
 					// print current state
 					else if (emote == "s")
 					{
-						Engine.Commands.Log(EmoteModMain.player.StateMachine.State);
+						Engine.Commands.Log(PlayerModule.player.StateMachine.State);
 					}
 					// dump animations of current sprite mode to log file
 					else if (emote == "dump")
 					{
-						foreach (KeyValuePair<string, Sprite.Animation> animation in EmoteModMain.player.Sprite.Animations)
+						foreach (KeyValuePair<string, Sprite.Animation> animation in PlayerModule.player.Sprite.Animations)
 						{
 							Logger.Log("ANIMAAAAAAAATIOOOOOOOONSSSSSSSSS", animation.Key);
 						}
@@ -60,39 +60,41 @@ namespace Celeste.Mod.EmoteMod
 						switch (EmoteModMain.Settings.Backpack)
 						{
 							case 0:
-								EmoteModMain.player.ResetSprite(BackpackModule.player.DefaultSpriteMode);
+								//PlayerModule.player.ResetSprite(BackpackModule.player.DefaultSpriteMode);
 								EmoteModMain.echo("backpack default");
 								break;
 							case 1:
-								EmoteModMain.player.ResetSprite(PlayerSpriteMode.Madeline);
+								//PlayerModule.player.ResetSprite(PlayerSpriteMode.Madeline);
 								EmoteModMain.echo("backpack force on");
 								break;
 							case 2:
-								EmoteModMain.player.ResetSprite(PlayerSpriteMode.MadelineNoBackpack);
+								//PlayerModule.player.ResetSprite(PlayerSpriteMode.MadelineNoBackpack);
 								EmoteModMain.echo("backpack force off");
 								break;
 						}
 						EmoteModMain.Instance.SaveSettings();
 						EmoteModMain.Instance.LoadSettings();
 					}
+					// haha funny
 					else if (emote == "funnycommand" || emote == "fc")
 					{
 						if (EmoteModMain.Settings.Backpack != 3)
 						{
 							EmoteModMain.Settings.Backpack = 3;
-							EmoteModMain.player.ResetSprite(PlayerSpriteMode.Playback);
+							//PlayerModule.player.ResetSprite(PlayerSpriteMode.Playback);
 							EmoteModMain.echo("W H I T E L I N E  A C T I V A T E D");
 						}
 						else
 						{
 							EmoteModMain.Settings.Backpack = 0;
-							EmoteModMain.player.ResetSprite(BackpackModule.player.DefaultSpriteMode);
+							//PlayerModule.player.ResetSprite(BackpackModule.player.DefaultSpriteMode);
 							EmoteModMain.echo("backpack default");
 						}
 						EmoteModMain.Instance.SaveSettings();
 						EmoteModMain.Instance.LoadSettings();
 					}
 				}
+				// binding emotes with console
 				else if (int.TryParse(custom, out customInt) && customInt >= 0 && customInt <= 9)
 				{
 					switch (customInt)
@@ -152,7 +154,6 @@ namespace Celeste.Mod.EmoteMod
 						EmoteStretcher.stretch_x(emoteFloat);
 						EmoteStretcher.stretch_y(emoteFloat);
 					}
-
 				}
 
 				else

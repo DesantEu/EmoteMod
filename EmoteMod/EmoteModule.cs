@@ -6,7 +6,7 @@ namespace Celeste.Mod.EmoteMod
 {
 	public class EmoteModule
 	{
-		private static Player player;
+		// private static Player player;
 
 		// any sprite mode
 		private static string[] true_neutral_emotes = { "idle", "idleA", "idleB", "idleC", "lookUp", "runSlow", "runStumble", "dreamDashIn", "dreamDashOut", "fallSlow", "fallFast", "climbLookBackStart", "faint", "flip", "walk", "push", "runFast", "dash", "dreamDashLoop", "slide", "jumpSlow", "jumpFast", "tired", "wallslide", "climbLookBack", "climbup", "duck", "edge", "fainted", "skid", "dangling", "spin" };
@@ -20,7 +20,7 @@ namespace Celeste.Mod.EmoteMod
 		public static bool bounced = false;
 		public static bool playback = false;
 
-		public static void Emote(string animation, bool by_command)
+		public static void Emote(string animation, bool by_command, Player player)
 		{
 			if (EmoteModMain.anim_by_game != 2) // if the game is not playing a cutscene
 			{
@@ -29,7 +29,9 @@ namespace Celeste.Mod.EmoteMod
 					player.StateMachine.State = Player.StDummy; // make player not able to move
 					player.DummyAutoAnimate = false; // make player not to auto animations
 					player.Speed = Vector2.Zero; // stop the player
-					EmoteModMain.playerY = player.Y; // record player y for the gravity switch
+
+					GravityModule.playerY = player.Y; // record player y for the gravity switch
+
 					if (EmoteModMain.anim_by_game == 0) // if we were not doing an emote before, save default interactions state
 						EmoteModMain.interactDefault = EmoteModMain.celestenetSettings.Interactions; // (because if we record it during an emote its just going to be false)
 					EmoteModMain.celestenetSettings.Interactions = false; // disable interations for everyone's sake
@@ -119,7 +121,7 @@ namespace Celeste.Mod.EmoteMod
 					if (animation == "bounce" || animation == "b")
 					{
 						if(!bounced)
-						EmoteModMain.playerY -= 1;
+						GravityModule.playerY -= 1;
 						player.Sprite.Play("spin");
 						EmoteModMain.currentDelay = player.Sprite.Animations["spin"].Delay;
 						bounced = true;
@@ -156,28 +158,33 @@ namespace Celeste.Mod.EmoteMod
 		public static void Player_Update(On.Celeste.Player.orig_Update orig, Player self)
 		{
 			orig(self);
-			player = self;
+			// player = self;
+
+			if (Input.MoveX == 1)
+				self.Facing = Facings.Right;
+			if (Input.MoveX == -1)
+				self.Facing = Facings.Left;
 
 			if (EmoteModMain.Settings.button0.Keys.Count != 0 && MInput.Keyboard.Pressed(EmoteModMain.Settings.button0.Keys[0]) || EmoteModMain.Settings.button0.Buttons.Count != 0 && MInput.GamePads[0].Pressed(EmoteModMain.Settings.button0.Buttons[0]))
-				Emote(EmoteModMain.Settings.emote0, false);
+				Emote(EmoteModMain.Settings.emote0, false, self);
 			else if (EmoteModMain.Settings.button1.Keys.Count != 0 && MInput.Keyboard.Pressed(EmoteModMain.Settings.button1.Keys[0]) || EmoteModMain.Settings.button1.Buttons.Count != 0 && MInput.GamePads[0].Pressed(EmoteModMain.Settings.button1.Buttons[0]))
-				Emote(EmoteModMain.Settings.emote1, false);
+				Emote(EmoteModMain.Settings.emote1, false, self);
 			else if (EmoteModMain.Settings.button2.Keys.Count != 0 && MInput.Keyboard.Pressed(EmoteModMain.Settings.button2.Keys[0]) || EmoteModMain.Settings.button2.Buttons.Count != 0 && MInput.GamePads[0].Pressed(EmoteModMain.Settings.button2.Buttons[0]))
-				Emote(EmoteModMain.Settings.emote2, false);
+				Emote(EmoteModMain.Settings.emote2, false, self);
 			else if (EmoteModMain.Settings.button3.Keys.Count != 0 && MInput.Keyboard.Pressed(EmoteModMain.Settings.button3.Keys[0]) || EmoteModMain.Settings.button3.Buttons.Count != 0 && MInput.GamePads[0].Pressed(EmoteModMain.Settings.button3.Buttons[0]))
-				Emote(EmoteModMain.Settings.emote3, false);
+				Emote(EmoteModMain.Settings.emote3, false, self);
 			else if (EmoteModMain.Settings.button4.Keys.Count != 0 && MInput.Keyboard.Pressed(EmoteModMain.Settings.button4.Keys[0]) || EmoteModMain.Settings.button4.Buttons.Count != 0 && MInput.GamePads[0].Pressed(EmoteModMain.Settings.button4.Buttons[0]))
-				Emote(EmoteModMain.Settings.emote4, false);
+				Emote(EmoteModMain.Settings.emote4, false, self);
 			else if (EmoteModMain.Settings.button5.Keys.Count != 0 && MInput.Keyboard.Pressed(EmoteModMain.Settings.button5.Keys[0]) || EmoteModMain.Settings.button5.Buttons.Count != 0 && MInput.GamePads[0].Pressed(EmoteModMain.Settings.button5.Buttons[0]))
-				Emote(EmoteModMain.Settings.emote5, false);
+				Emote(EmoteModMain.Settings.emote5, false, self);
 			else if (EmoteModMain.Settings.button6.Keys.Count != 0 && MInput.Keyboard.Pressed(EmoteModMain.Settings.button6.Keys[0]) || EmoteModMain.Settings.button6.Buttons.Count != 0 && MInput.GamePads[0].Pressed(EmoteModMain.Settings.button6.Buttons[0]))
-				Emote(EmoteModMain.Settings.emote6, false);
+				Emote(EmoteModMain.Settings.emote6, false, self);
 			else if (EmoteModMain.Settings.button7.Keys.Count != 0 && MInput.Keyboard.Pressed(EmoteModMain.Settings.button7.Keys[0]) || EmoteModMain.Settings.button7.Buttons.Count != 0 && MInput.GamePads[0].Pressed(EmoteModMain.Settings.button7.Buttons[0]))
-				Emote(EmoteModMain.Settings.emote7, false);
+				Emote(EmoteModMain.Settings.emote7, false, self);
 			else if (EmoteModMain.Settings.button8.Keys.Count != 0 && MInput.Keyboard.Pressed(EmoteModMain.Settings.button8.Keys[0]) || EmoteModMain.Settings.button8.Buttons.Count != 0 && MInput.GamePads[0].Pressed(EmoteModMain.Settings.button8.Buttons[0]))
-				Emote(EmoteModMain.Settings.emote8, false);
+				Emote(EmoteModMain.Settings.emote8, false, self);
 			else if (EmoteModMain.Settings.button9.Keys.Count != 0 && MInput.Keyboard.Pressed(EmoteModMain.Settings.button9.Keys[0]) || EmoteModMain.Settings.button9.Buttons.Count != 0 && MInput.GamePads[0].Pressed(EmoteModMain.Settings.button9.Buttons[0]))
-				Emote(EmoteModMain.Settings.emote9, false);
+				Emote(EmoteModMain.Settings.emote9, false, self);
 
 
 		}
