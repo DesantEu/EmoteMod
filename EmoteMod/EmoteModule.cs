@@ -164,10 +164,13 @@ namespace Celeste.Mod.EmoteMod
 			orig(self);
 			// player = self;
 
-			if (Input.MoveX == 1)
-				self.Facing = Facings.Right;
-			if (Input.MoveX == -1)
-				self.Facing = Facings.Left;
+			if (EmoteModMain.anim_by_game == 1)
+            {
+				if (Input.MoveX == 1)
+					self.Facing = Facings.Right;
+				if (Input.MoveX == -1)
+					self.Facing = Facings.Left;
+            }
 
 				 if (EmoteModMain.Settings.button0.Keys.Count != 0 && MInput.Keyboard.Pressed(EmoteModMain.Settings.button0.Keys[0]) || EmoteModMain.Settings.button0.Buttons.Count != 0 && MInput.GamePads[0].Pressed(EmoteModMain.Settings.button0.Buttons[0]))
 				Emote(EmoteModMain.Settings.emote0, false, self);
