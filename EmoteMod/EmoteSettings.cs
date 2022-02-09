@@ -191,7 +191,7 @@ namespace Celeste.Mod.EmoteMod
 		public int AnimationSpeed { get; set; } = 9;
 		public void CreateAnimationSpeedEntry(TextMenu menu, bool inGame)
 		{
-			menu.Add(new TextMenu.Slider(Dialog.Clean("settings_speed_name"), EmoteModMain.speedFormatter, 0, EmoteModMain.speeds.Length - 1, EmoteModMain.Settings.AnimationSpeed)
+			menu.Add(new TextMenu.Slider(Dialog.Clean("settings_speed_name"), SpeedModule.speedFormatter, 0, SpeedModule.speeds.Length - 1, EmoteModMain.Settings.AnimationSpeed)
 				.Change(id => EmoteModMain.Settings.AnimationSpeed = id));
 		}
 
@@ -211,7 +211,7 @@ namespace Celeste.Mod.EmoteMod
 		public int Backpack { get; set; } = 0;
 		public void CreateBackpackEntry(TextMenu menu, bool inGame)
 		{
-			menu.Add(new TextMenu.Slider(Dialog.Clean("settings_backpack_name"), EmoteModMain.backpackFormatter, 0, 2, EmoteModMain.Settings.Backpack)
+			menu.Add(new TextMenu.Slider(Dialog.Clean("settings_backpack_name"), BackpackModule.backpackFormatter, 0, 2, EmoteModMain.Settings.Backpack)
 				.Change(id => BackpackModule.SetBackpack(id)));
 		}
 	}
