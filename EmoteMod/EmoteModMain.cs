@@ -5,38 +5,25 @@ namespace Celeste.Mod.EmoteMod
 {
 	public class EmoteModMain : EverestModule
 	{
-		// speed multipliers
-		public static float[] speeds = { 0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1, 2, 4, 5, 6, 10, 20, 30, 40, 50, 60, 70, 100 };
+		
 		// emotemod settigns
 		public override Type SettingsType => typeof(EmoteSettings);
 		public static EmoteSettings Settings => (EmoteSettings)Instance._Settings;
 		// celestenet settings
 		public static CelesteNet.Client.CelesteNetClientSettings celestenetSettings = CelesteNet.Client.CelesteNetClientModule.Settings;
-		//speed formatter
-		public static Func<int, string> speedFormatter = arg =>
-		{
-			return $"{speeds[arg]}x";
-		};
 		//backpack formatter
 		public static Func<int, string> backpackFormatter = arg =>
 		{
 			return arg == 0 ? "default" : arg == 1 ? "force on" : arg == 2 ? "force off" : arg == 3 ? "white" : "error";
 		};
-
 		/// <summary>
 		/// If 0 we can make an animation;
 		/// If 1 we are playing animation by hand;
 		/// If 2 the game is playing an animation and we cant emote
 		/// </summary>
 		public static int anim_by_game;
-
-
 		// Only one alive module instance can exist at any given time.
 		public static EmoteModMain Instance;
-		/// <summary>
-		/// current animation delay
-		/// </summary>
-		public static float currentDelay;
 
 
 		// i have no idea what is this for

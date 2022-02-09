@@ -95,13 +95,13 @@ namespace Celeste.Mod.EmoteMod
                         if (!bounced)
                             GravityModule.playerY -= 1;
                         player.Sprite.Play("spin");
-                        EmoteModMain.currentDelay = player.Sprite.Animations["spin"].Delay;
+                        SpeedModule.currentDelay = player.Sprite.Animations["spin"].Delay;
                         bounced = true;
                     }
                     else
                     {
                         player.Sprite.Play(animation); // do emote
-                        EmoteModMain.currentDelay = player.Sprite.Animations[animation].Delay;
+                        SpeedModule.currentDelay = player.Sprite.Animations[animation].Delay;
                     }
 
                     if (by_command) // command reply only if done by command
