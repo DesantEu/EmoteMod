@@ -37,28 +37,29 @@ namespace Celeste.Mod.EmoteMod
                     }
 
                     // new sprite changes
-                    if (!player.Sprite.Animations.ContainsKey(animation))
-                    {
-                        Dictionary<string, Sprite.Animation>.KeyCollection madeline_bp = GFX.SpriteBank.SpriteData["player"].Sprite.Animations.Keys;
-                        Dictionary<string, Sprite.Animation>.KeyCollection madeline_no_bp = GFX.SpriteBank.SpriteData["player_no_backpack"].Sprite.Animations.Keys;
-                        Dictionary<string, Sprite.Animation>.KeyCollection madeline_badeline = GFX.SpriteBank.SpriteData["player_badeline"].Sprite.Animations.Keys;
-                        Dictionary<string, Sprite.Animation>.KeyCollection badeline = GFX.SpriteBank.SpriteData["badeline"].Sprite.Animations.Keys;
-                        Dictionary<string, Sprite.Animation>.KeyCollection madeline_playback = GFX.SpriteBank.SpriteData["player_playback"].Sprite.Animations.Keys;
+                    if (animation != "b" && animation != "bounce")
+                        if (!player.Sprite.Animations.ContainsKey(animation))
+                        {
+                            Dictionary<string, Sprite.Animation>.KeyCollection madeline_bp = GFX.SpriteBank.SpriteData["player"].Sprite.Animations.Keys;
+                            Dictionary<string, Sprite.Animation>.KeyCollection madeline_no_bp = GFX.SpriteBank.SpriteData["player_no_backpack"].Sprite.Animations.Keys;
+                            Dictionary<string, Sprite.Animation>.KeyCollection madeline_badeline = GFX.SpriteBank.SpriteData["player_badeline"].Sprite.Animations.Keys;
+                            Dictionary<string, Sprite.Animation>.KeyCollection badeline = GFX.SpriteBank.SpriteData["badeline"].Sprite.Animations.Keys;
+                            Dictionary<string, Sprite.Animation>.KeyCollection madeline_playback = GFX.SpriteBank.SpriteData["player_playback"].Sprite.Animations.Keys;
 
-                        // change sprite if animation not found
-                        if (madeline_no_bp.Contains(animation, StringComparer.OrdinalIgnoreCase))
-                        {
-                            player.ResetSprite(PlayerSpriteMode.MadelineNoBackpack);
+                            // change sprite if animation not found
+                            if (madeline_no_bp.Contains(animation, StringComparer.OrdinalIgnoreCase))
+                            {
+                                player.ResetSprite(PlayerSpriteMode.MadelineNoBackpack);
+                            }
+                            else if (badeline.Contains(animation, StringComparer.OrdinalIgnoreCase))
+                            {
+                                player.ResetSprite(PlayerSpriteMode.Badeline);
+                            }
+                            else if (madeline_bp.Contains(animation, StringComparer.OrdinalIgnoreCase))
+                            {
+                                player.ResetSprite(PlayerSpriteMode.Madeline);
+                            }
                         }
-                        else if (badeline.Contains(animation, StringComparer.OrdinalIgnoreCase))
-                        {
-                            player.ResetSprite(PlayerSpriteMode.Badeline);
-                        }
-                        else if (madeline_bp.Contains(animation, StringComparer.OrdinalIgnoreCase))
-                        {
-                            player.ResetSprite(PlayerSpriteMode.Madeline);
-                        }
-                    }
                     // bounc e
                     if (animation == "bounce" || animation == "b")
                     {
