@@ -114,6 +114,8 @@ namespace Celeste.Mod.EmoteMod
 
 		internal static void Unload()
 		{
+			cancelEmote();
+
 			On.Celeste.LevelExit.ctor -= LevelExit;
 			On.Celeste.Player.Update -= Player_Update;
 			On.Celeste.Level.Update -= Level_Update;
