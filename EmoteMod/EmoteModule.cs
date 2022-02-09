@@ -22,7 +22,7 @@ namespace Celeste.Mod.EmoteMod
         public static bool bounced = false;
         public static bool playback = false;
 
-        public static bool changedSprite;
+        // public static bool changedSprite;
 
         public static void Emote(string animation, bool by_command, Player player)
         {
@@ -47,48 +47,29 @@ namespace Celeste.Mod.EmoteMod
                             playback = true;
                     }
 
-                    #region sprite changes
-
-                    // make playback animations work
-                    if (player.Sprite.Mode == PlayerSpriteMode.Playback && (animation.ToLower() == "sitdown" || animation.ToLower() == "launch"))
+                    // new sprite changes
+                    if (!player.Sprite.Animations.ContainsKey(animation))
                     {
-                        // we do nothin O_O
-                    }
-                    else if (true_neutral_emotes.Contains(animation, StringComparer.OrdinalIgnoreCase))
-                    {
-                        if (playback)
-                            player.ResetSprite(PlayerSpriteMode.Playback);
+                        Dictionary<string, Sprite.Animation>.KeyCollection madeline_bp = GFX.SpriteBank.SpriteData["player"].Sprite.Animations.Keys;
+                        Dictionary<string, Sprite.Animation>.KeyCollection madeline_no_bp = GFX.SpriteBank.SpriteData["player_no_backpack"].Sprite.Animations.Keys;
+                        Dictionary<string, Sprite.Animation>.KeyCollection madeline_badeline = GFX.SpriteBank.SpriteData["player_badeline"].Sprite.Animations.Keys;
+                        Dictionary<string, Sprite.Animation>.KeyCollection badeline = GFX.SpriteBank.SpriteData["badeline"].Sprite.Animations.Keys;
+                        Dictionary<string, Sprite.Animation>.KeyCollection madeline_playback = GFX.SpriteBank.SpriteData["player_playback"].Sprite.Animations.Keys;
 
-                        // TODO: change this
-                        //baddy seems to not have idleA-C so we do this
-                        if (player.Sprite.Mode == PlayerSpriteMode.Badeline)
+                        // change sprite if animation not found
+                        if (madeline_no_bp.Contains(animation, StringComparer.OrdinalIgnoreCase))
                         {
-                            if (animation.ToLower() == "idlea" || animation.ToLower() == "idleb" || animation.ToLower() == "idlec")
-                            {
-                                player.ResetSprite(SaveData.Instance.Assists.PlayAsBadeline ? PlayerSpriteMode.MadelineAsBadeline : player.DefaultSpriteMode);
-                                changedSprite = false;
-                            }
+                            player.ResetSprite(PlayerSpriteMode.MadelineNoBackpack);
+                        }
+                        else if (badeline.Contains(animation, StringComparer.OrdinalIgnoreCase))
+                        {
+                            player.ResetSprite(PlayerSpriteMode.Badeline);
+                        }
+                        else if (madeline_bp.Contains(animation, StringComparer.OrdinalIgnoreCase))
+                        {
+                            player.ResetSprite(PlayerSpriteMode.Madeline);
                         }
                     }
-                    // if need to turn off bp
-                    else if (!SaveData.Instance.Assists.PlayAsBadeline && maddy_emotes_no_bp.Contains(animation, StringComparer.OrdinalIgnoreCase))
-                    {
-                        player.ResetSprite(PlayerSpriteMode.MadelineNoBackpack);
-                        changedSprite = true;
-                    }
-                    //if baddy
-                    else if (baddy_emotes.Contains(animation, StringComparer.OrdinalIgnoreCase))
-                    {
-                        player.ResetSprite(PlayerSpriteMode.Badeline);
-                        changedSprite = true;
-                    }
-                    else
-                    {
-                        player.ResetSprite(SaveData.Instance.Assists.PlayAsBadeline ? PlayerSpriteMode.MadelineAsBadeline : player.DefaultSpriteMode);
-                        changedSprite = false;
-                    }
-                    #endregion
-
                     // bounc e
                     if (animation == "bounce" || animation == "b")
                     {
@@ -124,7 +105,7 @@ namespace Celeste.Mod.EmoteMod
         {
             On.Celeste.Player.Update += Player_Update;
 
-            changedSprite = false; // uh
+            //changedSprite = false; // uh
         }
         internal static void Unload()
         {

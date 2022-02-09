@@ -31,12 +31,19 @@ namespace Celeste.Mod.EmoteMod
 			}
 			else
 			// if changed sprite get it back
-			if (EmoteModule.changedSprite)
+			if (EmoteModule.playback)
+			{
+				player.ResetSprite(PlayerSpriteMode.Playback);
+            }
+            else if (SaveData.Instance.Assists.PlayAsBadeline)
+            {
+				player.ResetSprite(PlayerSpriteMode.MadelineAsBadeline);
+            }
+			else
 			{
 				player.ResetSprite(player.DefaultSpriteMode);
-				EmoteModule.changedSprite = false; // idk why its here twice but im afraid to remove it
-				EmoteModule.changedSprite = false;
-			}
+            }
+
 			EmoteModule.bounced = false;
 
 			EmoteModMain.anim_by_game = 0; // tell yourself that no animation is playing
