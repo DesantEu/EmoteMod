@@ -11,11 +11,7 @@ namespace Celeste.Mod.EmoteMod
 		public static EmoteSettings Settings => (EmoteSettings)Instance._Settings;
 		// celestenet settings
 		public static CelesteNet.Client.CelesteNetClientSettings celestenetSettings = CelesteNet.Client.CelesteNetClientModule.Settings;
-		//backpack formatter
-		public static Func<int, string> backpackFormatter = arg =>
-		{
-			return arg == 0 ? "default" : arg == 1 ? "force on" : arg == 2 ? "force off" : arg == 3 ? "white" : "error";
-		};
+		
 		/// <summary>
 		/// If 0 we can make an animation;
 		/// If 1 we are playing animation by hand;

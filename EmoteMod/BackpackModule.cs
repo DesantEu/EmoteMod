@@ -1,13 +1,18 @@
 ﻿using Monocle;
 using System;
 using System.Collections.Generic;
-using Celeste;
 using Microsoft.Xna.Framework;
 
 namespace Celeste.Mod.EmoteMod
 {
-	public class BackpackModule
+    public class BackpackModule
 	{
+		//backpack formatter
+		public static Func<int, string> backpackFormatter = arg =>
+		{
+			return arg == 0 ? "default" : arg == 1 ? "force on" : arg == 2 ? "force off" : arg == 3 ? "white" : "error";
+		};
+
 		// public static Player player;
 		public enum MadelineBackpackModes { Default, Backpack, NoBackpack, Playback };
 
