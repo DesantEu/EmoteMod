@@ -8,17 +8,6 @@ namespace Celeste.Mod.EmoteMod
 {
     public class EmoteModule
     {
-        // private static Player player;
-
-        // any sprite mode
-        private static List<string> true_neutral_emotes = new List<string>() { "b", "bounce", "idle", "idleA", "idleB", "idleC", "lookUp", "runSlow", "runStumble", "dreamDashIn", "dreamDashOut", "fallSlow", "fallFast", "climbLookBackStart", "faint", "flip", "walk", "push", "runFast", "dash", "dreamDashLoop", "slide", "jumpSlow", "jumpFast", "tired", "wallslide", "climbLookBack", "climbup", "duck", "edge", "fainted", "skid", "dangling", "spin" };
-        // can be used with both bp and no bp
-        private static List<string> neutral_emotes = new List<string>() { "runSlow_carry", "fallSlow_carry", "pickUp", "throw", "tiredStill", "climbPush", "climbPull", "fallPose", "deadside", "deadup", "deaddown", "startStarFly", "fall", "bigFallRecover", "bagdown", "asleep", "wakeUp", "halfWakeUp", "starMorph", "carryTheoCollapse", "tentacle_grab", "sitDown", "launchRecover", "idle_carry", "jumpSlow_carry", "runWind", "dash", "edgeBack", "swimIdle", "swimUp", "swimDown", "starFly", "bubble", "shaking", "hug", "starMorphIdle", "carryTheoWalk", "tentacle_grabbed", "tentacle_pull", "tentacle_dangling" };
-        // no bp only
-        private static List<string> maddy_emotes_no_bp = new List<string>() { "sleep", "bigFall", "launch", "roll", "rollGetUp", "downed" };
-        // only badeline
-        private static List<string> baddy_emotes = new List<string>() { "laugh", "spawn", "angry", "pretenddead", "boost" };
-
         public static bool bounced = false;
         public static bool playback = false;
 
