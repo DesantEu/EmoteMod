@@ -52,12 +52,12 @@ namespace Celeste.Mod.EmoteMod
 					}
 					// tobble backpack
 					else if (emote == "bp")
-                    {
-                        BackpackModule.ScrollBackpack();
-                    }
-					
-                    // haha funny
-                    else if (emote == "funnycommand" || emote == "fc")
+					{
+						BackpackModule.ScrollBackpack();
+					}
+
+					// haha funny
+					else if (emote == "funnycommand" || emote == "fc")
 					{
 						BackpackModule.EnterSickoMode();
 					}
@@ -102,6 +102,26 @@ namespace Celeste.Mod.EmoteMod
 					EmoteModMain.Instance.SaveSettings();
 					EmoteModMain.Instance.LoadSettings();
 				}
+				else if (custom == "d")
+				{
+					try
+					{
+						Dictionary<string, Sprite.Animation> spr = GFX.SpriteBank.SpriteData[emote].Sprite.Animations;
+						string anims = "";
+
+						foreach (KeyValuePair<string, Sprite.Animation> anim in spr)
+						{
+							anims += anim.Key + " ";
+						}
+
+						EmoteModMain.echo(anims);
+
+					}
+					catch
+					{
+						EmoteModMain.echo("something went wrong");
+					}
+				}
 
 				// the stretches
 
@@ -131,6 +151,6 @@ namespace Celeste.Mod.EmoteMod
 			}
 		}
 
-        
-    }
+
+	}
 }
