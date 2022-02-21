@@ -50,6 +50,8 @@ namespace Celeste.Mod.EmoteMod
 		{
 			anim_by_game = 0; // this tells that base state is no animations
 
+			On.Celeste.Player.Update += Player_Update;
+
             EmoteModule.Load();
             EmoteCancelModule.Load();
             BackpackModule.Load();
@@ -57,6 +59,14 @@ namespace Celeste.Mod.EmoteMod
             EmoteStretcher.Load();
             GravityModule.Load();
         }
+
+		// gravity works wacky in gravity module so this is here i guess
+		private void Player_Update(On.Celeste.Player.orig_Update orig, Player self)
+		{
+			orig(self);
+			if (EmoteModMain.Settings.CancelGravity && EmoteModMain.anim_by_game == 1)
+				self.Y = GravityModule.playerY;
+		}
 
 		public override void Unload()
 		{

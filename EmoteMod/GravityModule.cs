@@ -16,8 +16,8 @@ namespace Celeste.Mod.EmoteMod
         {
             orig(self);
 
-			if (EmoteModMain.Settings.CancelGravity && EmoteModMain.anim_by_game == 1)
-				self.Y = playerY;
+			//if (EmoteModMain.Settings.CancelGravity && EmoteModMain.anim_by_game == 1)
+			//	self.Y = playerY;
 		}
 
         internal static void Unload()
