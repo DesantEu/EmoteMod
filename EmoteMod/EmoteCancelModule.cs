@@ -34,15 +34,15 @@ namespace Celeste.Mod.EmoteMod
 			if (EmoteModule.playback)
 			{
 				player.ResetSprite(PlayerSpriteMode.Playback);
-            }
-            else if (SaveData.Instance.Assists.PlayAsBadeline)
-            {
+			}
+			else if (SaveData.Instance.Assists.PlayAsBadeline)
+			{
 				player.ResetSprite(PlayerSpriteMode.MadelineAsBadeline);
-            }
+			}
 			else
 			{
 				player.ResetSprite(player.DefaultSpriteMode);
-            }
+			}
 
 			EmoteModule.bounced = false;
 

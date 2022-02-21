@@ -22,6 +22,8 @@ namespace Celeste.Mod.EmoteMod
                     player.StateMachine.State = Player.StDummy; // make player not able to move
                     player.DummyAutoAnimate = false; // make player not to auto animations
                     player.Speed = Vector2.Zero; // stop the player
+                    EmoteModMain.anim_by_game = 1; // acknowledge that emote is playing
+
 
                     GravityModule.playerY = player.Y; // record player y for the gravity switch
 
@@ -78,7 +80,6 @@ namespace Celeste.Mod.EmoteMod
                     if (by_command) // command reply only if done by command
                         EmoteModMain.echo($"playing {animation}");
 
-                    EmoteModMain.anim_by_game = 1; // acknowledge that emote is playing
                 }
                 catch (Exception e)
                 {

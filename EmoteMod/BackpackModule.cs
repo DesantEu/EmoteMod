@@ -20,6 +20,7 @@ namespace Celeste.Mod.EmoteMod
 		internal static void PlayerSprite(On.Celeste.PlayerSprite.orig_ctor orig, PlayerSprite self, PlayerSpriteMode mode)
 		{
 			// code stolen from max (extended variant mode)
+			if(EmoteModMain.anim_by_game != 1)
 			if (mode == PlayerSpriteMode.Madeline || mode == PlayerSpriteMode.MadelineNoBackpack)
 			{
 				mode = GetMode(EmoteModMain.Settings.Backpack, mode);
@@ -135,6 +136,7 @@ namespace Celeste.Mod.EmoteMod
 		{
 			On.Celeste.PlayerSprite.ctor += PlayerSprite;
 			On.Celeste.LevelLoader.ctor += onLevelLoader;
+			
 
 			if (Engine.Scene is Level)
 			{
