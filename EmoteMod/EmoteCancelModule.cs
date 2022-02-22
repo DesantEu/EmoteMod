@@ -9,6 +9,7 @@ namespace Celeste.Mod.EmoteMod
 
 		public static bool invincibilityDefault;
 		public static bool interactDefault;
+		public static string customEmote;
 
 		public static void cancelEmote()
 		{
@@ -24,16 +25,11 @@ namespace Celeste.Mod.EmoteMod
 			EmoteModMain.celestenetSettings.Interactions = interactDefault; // return interactions do their default value
 			SaveData.Instance.Assists.Invincible = invincibilityDefault;
 
+			// return player sprite mode
 			if (EmoteModule.playback)
 			{ //ex variants fix thing
 				player.ResetSpriteNextFrame(PlayerSpriteMode.Playback);
 				EmoteModule.playback = false;
-			}
-			else
-			// if changed sprite get it back
-			if (EmoteModule.playback)
-			{
-				player.ResetSprite(PlayerSpriteMode.Playback);
 			}
 			else if (SaveData.Instance.Assists.PlayAsBadeline)
 			{
@@ -42,6 +38,13 @@ namespace Celeste.Mod.EmoteMod
 			else
 			{
 				player.ResetSprite(player.DefaultSpriteMode);
+			}
+
+			// remove custom animations because packet size
+			if (customEmote != "")
+			{
+				GFX.SpriteBank.SpriteData["player"].Sprite.Animations.Remove(customEmote);
+				customEmote = "";
 			}
 
 			EmoteModule.bounced = false;
@@ -110,6 +113,8 @@ namespace Celeste.Mod.EmoteMod
 
 		internal static void Load()
 		{
+			customEmote = "";
+
 			On.Celeste.LevelExit.ctor += LevelExit;
 			On.Celeste.Player.Update += Player_Update;
 			On.Celeste.Level.Update += Level_Update;

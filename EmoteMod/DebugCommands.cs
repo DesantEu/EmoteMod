@@ -106,13 +106,19 @@ namespace Celeste.Mod.EmoteMod
 				{
 					try
 					{
-						Dictionary<string, Sprite.Animation> spr = GFX.SpriteBank.SpriteData[emote].Sprite.Animations;
+						Dictionary<string, SpriteData> spr = GFX.SpriteBank.SpriteData;
 						string anims = "";
 
-						foreach (KeyValuePair<string, Sprite.Animation> anim in spr)
-						{
-							anims += anim.Key + " ";
-						}
+						if (emote == "modes")
+							foreach (KeyValuePair<string, SpriteData> anim in spr)
+							{
+								anims += anim.Key + " ";
+							}
+						else
+							foreach (KeyValuePair<string, Sprite.Animation> anim in spr[emote].Sprite.Animations)
+							{
+								anims += anim.Key + " ";
+							}
 
 						EmoteModMain.echo(anims);
 

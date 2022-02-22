@@ -61,6 +61,11 @@ namespace Celeste.Mod.EmoteMod
 							{
 								player.ResetSprite(PlayerSpriteMode.Madeline);
 							}
+							else if (addCustomEmote(animation))
+							{
+								player.ResetSprite(PlayerSpriteMode.Madeline);
+								EmoteCancelModule.customEmote = animation;
+							}
 						}
 					// bounc e
 					if (animation == "bounce" || animation == "b")
@@ -89,33 +94,49 @@ namespace Celeste.Mod.EmoteMod
 				}
 			}
 		}
-		private static void addCustomEmote(string name)
+		private static bool addCustomEmote(string name)
 		{
-			//foreach (KeyValuePair<string, SpriteData> sdata in GFX.SpriteBank.SpriteData)
-			//{
-			//	if (name.ToLower().Contains(sdata.Key.ToLower()))
-			//	{
-
-			//	}
-			//}
-
-			List<string> existingSprites = new List<string>() { "player", "player_no_backpack", "player_badeline", "badeline", "player_playback" };
-
 			foreach (KeyValuePair<string, SpriteData> sdata in GFX.SpriteBank.SpriteData)
 			{
-				if (existingSprites.Contains(sdata.Key))
-					continue;
-
-				Dictionary<string, Sprite.Animation> player = GFX.SpriteBank.SpriteData["player"].Sprite.Animations;
-				Dictionary<string, Sprite.Animation> anims = sdata.Value.Sprite.Animations;
-
-				foreach (KeyValuePair<string, Sprite.Animation> anim in anims)
+				if (name.ToLower().Contains(sdata.Key.ToLower()))
 				{
-					string name = $"{sdata.Key}_{anim.Key}";
-					player.Add(name, copyAnim(anim, name));
-				}
+					try
+					{
+						Dictionary<string, Sprite.Animation> player = GFX.SpriteBank.SpriteData["player"].Sprite.Animations;
+						Dictionary<string, Sprite.Animation> anims = sdata.Value.Sprite.Animations;
 
+						string animName = name.Remove(0, sdata.Key.Length + 1);
+
+						KeyValuePair<string, Sprite.Animation> newAnim = new KeyValuePair<string, Sprite.Animation>(animName, anims[animName]);
+						player.Add(name, copyAnim(newAnim, name));
+
+						return true;
+					}
+					catch
+					{
+						return false;
+					}
+				}
 			}
+			return false;
+
+			//List<string> existingSprites = new List<string>() { "player", "player_no_backpack", "player_badeline", "badeline", "player_playback" };
+
+			//foreach (KeyValuePair<string, SpriteData> sdata in GFX.SpriteBank.SpriteData)
+			//{
+			//	if (existingSprites.Contains(sdata.Key))
+			//		continue;
+
+			//	Dictionary<string, Sprite.Animation> player = GFX.SpriteBank.SpriteData["player"].Sprite.Animations;
+			//	Dictionary<string, Sprite.Animation> anims = sdata.Value.Sprite.Animations;
+
+			//	foreach (KeyValuePair<string, Sprite.Animation> anim in anims)
+			//	{
+			//		string name = $"{sdata.Key}_{anim.Key}";
+			//		player.Add(name, copyAnim(anim, name));
+			//	}
+
+			//}
 
 		}
 		//private static void addCustomEmotes()
@@ -177,8 +198,8 @@ namespace Celeste.Mod.EmoteMod
 			On.Celeste.Player.Update += Player_Update;
 			On.Celeste.LevelLoader.ctor += onLevelLoader;
 
-			if (Engine.Scene is Level)
-				addCustomEmotes();
+			//if (Engine.Scene is Level)
+			//	addCustomEmotes();
 
 			//changedSprite = false; // uh
 		}
@@ -193,7 +214,7 @@ namespace Celeste.Mod.EmoteMod
 		{
 			orig(self, session, startPosition);
 
-			addCustomEmotes();
+			//addCustomEmotes();
 		}
 
 		public static void Player_Update(On.Celeste.Player.orig_Update orig, Player self)
