@@ -22,7 +22,6 @@ namespace Celeste.Mod.EmoteMod
 					player.StateMachine.State = Player.StDummy; // make player not able to move
 					player.DummyAutoAnimate = false; // make player not to auto animations
 					player.Speed = Vector2.Zero; // stop the player
-					EmoteModMain.anim_by_game = 1; // acknowledge that emote is playing
 
 
 					GravityModule.playerY = player.Y; // record player y for the gravity switch
@@ -33,6 +32,8 @@ namespace Celeste.Mod.EmoteMod
 						EmoteCancelModule.interactDefault = EmoteModMain.celestenetSettings.Interactions; // (because if we record it during an emote its just going to be false)
 						EmoteCancelModule.invincibilityDefault = SaveData.Instance.Assists.Invincible;
 						SaveData.Instance.Assists.Invincible = true;
+						EmoteModMain.anim_by_game = 1; // acknowledge that emote is playing
+
 						// make playback emotes work
 						if (player.Sprite.Mode == PlayerSpriteMode.Playback)
 							playback = true;
