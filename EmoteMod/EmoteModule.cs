@@ -120,75 +120,14 @@ namespace Celeste.Mod.EmoteMod
 				}
 			}
 			return false;
-
-			//List<string> existingSprites = new List<string>() { "player", "player_no_backpack", "player_badeline", "badeline", "player_playback" };
-
-			//foreach (KeyValuePair<string, SpriteData> sdata in GFX.SpriteBank.SpriteData)
-			//{
-			//	if (existingSprites.Contains(sdata.Key))
-			//		continue;
-
-			//	Dictionary<string, Sprite.Animation> player = GFX.SpriteBank.SpriteData["player"].Sprite.Animations;
-			//	Dictionary<string, Sprite.Animation> anims = sdata.Value.Sprite.Animations;
-
-			//	foreach (KeyValuePair<string, Sprite.Animation> anim in anims)
-			//	{
-			//		string name = $"{sdata.Key}_{anim.Key}";
-			//		player.Add(name, copyAnim(anim, name));
-			//	}
-
-			//}
-
 		}
-		//private static void addCustomEmotes()
-		//{
-		//    Dictionary<string, Sprite.Animation> player = GFX.SpriteBank.SpriteData["player"].Sprite.Animations;
-		//    Dictionary<string, Sprite.Animation> granny = GFX.SpriteBank.SpriteData["granny"].Sprite.Animations;
-		//    Dictionary<string, Sprite.Animation> seeker = GFX.SpriteBank.SpriteData["seeker"].Sprite.Animations;
-		//    Dictionary<string, Sprite.Animation> theo = GFX.SpriteBank.SpriteData["theo"].Sprite.Animations;
-		//    Dictionary<string, Sprite.Animation> oshiro = GFX.SpriteBank.SpriteData["oshiro_boss"].Sprite.Animations;
-		//    Dictionary<string, Sprite.Animation> binb = GFX.SpriteBank.SpriteData["strawberry"].Sprite.Animations;
 
-
-		//    // add granny emotes
-		//    foreach (KeyValuePair<string, Sprite.Animation> anim in granny)
-		//    {
-		//        //string prefix = "g_";
-		//        string name = $"g_{anim.Key}";
-		//        player.Add(name, copyAnim(anim, name));
-		//    }
-		//    foreach (KeyValuePair<string, Sprite.Animation> anim in seeker)
-		//    {
-		//        string name = $"s_{anim.Key}";
-		//        //Sprite.Animation temp = new Sprite.Animation();
-		//        player.Add(name, copyAnim(anim, name));
-		//    }
-		//    foreach (KeyValuePair<string, Sprite.Animation> anim in theo)
-		//    {
-		//        string name = $"t_{anim.Key}";
-		//        player.Add(name, copyAnim(anim, name));
-		//    }
-		//    foreach (KeyValuePair<string, Sprite.Animation> anim in oshiro)
-		//    {
-		//        string name = $"o_{anim.Key}";
-		//        player.Add(name, copyAnim(anim, name));
-		//    }
-		//    foreach (KeyValuePair<string, Sprite.Animation> anim in binb)
-		//    {
-		//        string name = $"b_{anim.Key}";
-		//        player.Add(name, copyAnim(anim, name));
-		//    }
-		//}
 		private static Sprite.Animation copyAnim(KeyValuePair<string, Sprite.Animation> anim, string name)
 		{
 			Sprite.Animation ae = new Sprite.Animation();
 			ae.Frames = anim.Value.Frames;
 			ae.Delay = anim.Value.Delay;
 			ae.Goto = new Chooser<string>(name);
-			//foreach (Chooser<string>.Choice choice in anim.Value.Goto.Choices)
-			//{
-			//    ae.Goto.Add(name + choice.Value, choice.Weight);
-			//}
 
 			return ae;
 		}
@@ -197,25 +136,10 @@ namespace Celeste.Mod.EmoteMod
 		internal static void Load()
 		{
 			On.Celeste.Player.Update += Player_Update;
-			On.Celeste.LevelLoader.ctor += onLevelLoader;
-
-			//if (Engine.Scene is Level)
-			//	addCustomEmotes();
-
-			//changedSprite = false; // uh
 		}
 		internal static void Unload()
 		{
 			On.Celeste.Player.Update -= Player_Update;
-			On.Celeste.LevelLoader.ctor -= onLevelLoader;
-
-		}
-
-		private static void onLevelLoader(On.Celeste.LevelLoader.orig_ctor orig, LevelLoader self, Session session, Vector2? startPosition)
-		{
-			orig(self, session, startPosition);
-
-			//addCustomEmotes();
 		}
 
 		public static void Player_Update(On.Celeste.Player.orig_Update orig, Player self)
