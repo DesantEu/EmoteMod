@@ -132,19 +132,37 @@ namespace Celeste.Mod.EmoteMod
 			return ae;
 		}
 
-
 		internal static void Load()
 		{
 			On.Celeste.Player.Update += Player_Update;
 		}
+
 		internal static void Unload()
 		{
 			On.Celeste.Player.Update -= Player_Update;
 		}
 
+		private static void test_shit()
+		{
+			if ( Engine.Scene is Level )
+			{
+				Level level = (Level)Engine.Scene;
+
+				foreach (Entity e in level.Entities)
+				{
+					if ( e is CelesteNet.Client.Entities.Ghost )
+					{
+						EmoteModMain.echo((e as CelesteNet.Client.Entities.Ghost).Sprite.CurrentAnimationID.ToString());
+					}
+				}
+			}
+		}
+
 		public static void Player_Update(On.Celeste.Player.orig_Update orig, Player self)
 		{
 			orig(self);
+
+			test_shit();
 
 			if (EmoteModMain.anim_by_game == 1)
 			{
