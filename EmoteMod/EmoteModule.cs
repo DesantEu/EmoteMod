@@ -95,6 +95,9 @@ namespace Celeste.Mod.EmoteMod
 				}
 			}
 		}
+
+
+
 		private static bool addCustomEmote(string name)
 		{
 			foreach (KeyValuePair<string, SpriteData> sdata in GFX.SpriteBank.SpriteData)
@@ -106,7 +109,7 @@ namespace Celeste.Mod.EmoteMod
 						Dictionary<string, Sprite.Animation> player = GFX.SpriteBank.SpriteData["player"].Sprite.Animations;
 						Dictionary<string, Sprite.Animation> anims = sdata.Value.Sprite.Animations;
 
-						string animName = name.Remove(0, sdata.Key.Length + 1);
+						string animName = name.Remove(0, sdata.Key.Length + 1); // strip sprite name
 
 						KeyValuePair<string, Sprite.Animation> newAnim = new KeyValuePair<string, Sprite.Animation>(animName, anims[animName]);
 						player.Add(name, copyAnim(newAnim, name));
@@ -142,6 +145,7 @@ namespace Celeste.Mod.EmoteMod
 			On.Celeste.Player.Update -= Player_Update;
 		}
 
+		// the thing that prints animations
 		private static void test_shit()
 		{
 			if ( Engine.Scene is Level )
@@ -150,9 +154,31 @@ namespace Celeste.Mod.EmoteMod
 
 				foreach (Entity e in level.Entities)
 				{
-					if ( e is CelesteNet.Client.Entities.Ghost )
+					if ( e is CelesteNet.Client.Entities.Ghost ) // this gets all ghists in the level
 					{
 						EmoteModMain.echo((e as CelesteNet.Client.Entities.Ghost).Sprite.CurrentAnimationID.ToString());
+					}
+				}
+			}
+		}
+
+		internal static void dump_test()
+		{
+			if (Engine.Scene is Level)
+			{
+				Level level = (Level)Engine.Scene;
+
+				foreach (Entity e in level.Entities)
+				{
+					if (e is CelesteNet.Client.Entities.Ghost) // this gets all ghists in the level
+					{
+						CelesteNet.Client.Entities.Ghost ghost = (CelesteNet.Client.Entities.Ghost)e;
+						string temp = "";
+						foreach (string anim in ghost.Sprite.Animations.Keys)
+						{
+							temp += anim + ", ";
+						}
+						EmoteModMain.echo($"{ghost.NameTag.Name}: {temp}");
 					}
 				}
 			}
@@ -162,7 +188,7 @@ namespace Celeste.Mod.EmoteMod
 		{
 			orig(self);
 
-			test_shit();
+			//test_shit();
 
 			if (EmoteModMain.anim_by_game == 1)
 			{

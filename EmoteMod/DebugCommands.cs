@@ -45,10 +45,12 @@ namespace Celeste.Mod.EmoteMod
 					// dump animations of current sprite mode to log file
 					else if (emote == "dump")
 					{
+						string temp = "animations: ";
 						foreach (KeyValuePair<string, Sprite.Animation> animation in PlayerModule.GetPlayer().Sprite.Animations)
 						{
-							Logger.Log("ANIMAAAAAAAATIOOOOOOOONSSSSSSSSS", animation.Key);
+							temp += animation.Key + ", ";
 						}
+						EmoteModMain.echo(temp);
 					}
 					// tobble backpack
 					else if (emote == "bp")
@@ -60,6 +62,11 @@ namespace Celeste.Mod.EmoteMod
 					else if (emote == "funnycommand" || emote == "fc")
 					{
 						BackpackModule.EnterSickoMode();
+					}
+
+					else if (emote == "asd")
+					{
+						EmoteModule.dump_test();
 					}
 				}
 				// binding emotes with console

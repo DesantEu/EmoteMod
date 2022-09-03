@@ -78,6 +78,8 @@ namespace Celeste.Mod.EmoteMod
 
 		}
 
+
+
 		// Optional, do anything requiring either the Celeste or mod content here.
 		public override void LoadContent(bool firstLoad)
 		{
