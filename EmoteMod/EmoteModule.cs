@@ -149,11 +149,6 @@ namespace Celeste.Mod.EmoteMod
 			celestenetUpdateGraphicsHook = new Hook(typeof(Ghost).GetMethod("UpdateGraphics"), typeof(EmoteModule).GetMethod("celestenetUpdateGraphics"));
 		}
 
-		public static void celestenetUpdateAnimation(Action<Ghost, int, int> orig, Ghost self, int animationID, int animationFrame)
-		{
-			EmoteModMain.echo($"p:{GFX.SpriteBank.SpriteData["player"].Sprite.Animations.Count} g:{self.Sprite.Animations.Count} id:{animationID}");
-			orig(self, animationID, animationFrame);
-		}
 
 		public static void celestenetUpdateGraphics(Action<Ghost, DataPlayerGraphics> orig, Ghost self, DataPlayerGraphics graphics) // ty max <3
 		{
