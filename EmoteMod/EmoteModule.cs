@@ -1,8 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Celeste.Mod.CelesteNet.Client.Entities;
 using Microsoft.Xna.Framework;
 using Monocle;
+using Celeste.Mod.CelesteNet.DataTypes;
+
+
+using MonoMod.RuntimeDetour;
 
 namespace Celeste.Mod.EmoteMod
 {
@@ -10,6 +15,8 @@ namespace Celeste.Mod.EmoteMod
 	{
 		public static bool bounced = false;
 		public static bool playback = false;
+
+		private static Hook celestenetUpdateGraphicsHook;
 
 		// public static bool changedSprite;
 
@@ -62,7 +69,8 @@ namespace Celeste.Mod.EmoteMod
 							{
 								player.ResetSprite(PlayerSpriteMode.Madeline);
 							}
-							else if (addCustomEmote(animation))
+
+							else if (addCustomEmote(animation)) // the cool part
 							{
 								player.ResetSprite(PlayerSpriteMode.Madeline);
 								EmoteCancelModule.customEmote = animation;
@@ -138,11 +146,50 @@ namespace Celeste.Mod.EmoteMod
 		internal static void Load()
 		{
 			On.Celeste.Player.Update += Player_Update;
+			celestenetUpdateGraphicsHook = new Hook(typeof(Ghost).GetMethod("UpdateGraphics"), typeof(EmoteModule).GetMethod("celestenetUpdateGraphics"));
+		}
+
+		public static void celestenetUpdateAnimation(Action<Ghost, int, int> orig, Ghost self, int animationID, int animationFrame)
+		{
+			EmoteModMain.echo($"p:{GFX.SpriteBank.SpriteData["player"].Sprite.Animations.Count} g:{self.Sprite.Animations.Count} id:{animationID}");
+			orig(self, animationID, animationFrame);
+		}
+
+		public static void celestenetUpdateGraphics(Action<Ghost, DataPlayerGraphics> orig, Ghost self, DataPlayerGraphics graphics) // ty max <3
+		{
+			try {
+
+				Dictionary<string, Sprite.Animation> playerAnimations = GFX.SpriteBank.SpriteData["player"].Sprite.Animations;
+
+				if (graphics.SpriteAnimations != playerAnimations.Keys.ToArray()) // detect if there are any foreign animations
+				{
+					foreach (string i in graphics.SpriteAnimations) 
+					{
+						if (!playerAnimations.ContainsKey(i)) // find them
+						{
+							if (addCustomEmote(i)) // try and add them
+							{
+								if (!self.Sprite.Animations.ContainsKey(i)) // add them to the ghost cuz celestenet wont :\
+								{
+									self.Sprite.Animations.Add(i, playerAnimations[i]);
+								}
+
+							}
+						}
+
+					}
+				}
+			} 
+			catch { }
+
+			orig(self, graphics);
 		}
 
 		internal static void Unload()
 		{
 			On.Celeste.Player.Update -= Player_Update;
+			
+			celestenetUpdateGraphicsHook.Dispose();
 		}
 
 		// the thing that prints animations
@@ -154,9 +201,9 @@ namespace Celeste.Mod.EmoteMod
 
 				foreach (Entity e in level.Entities)
 				{
-					if ( e is CelesteNet.Client.Entities.Ghost ) // this gets all ghists in the level
+					if ( e is Ghost ) // this gets all ghists in the level
 					{
-						EmoteModMain.echo((e as CelesteNet.Client.Entities.Ghost).Sprite.CurrentAnimationID.ToString());
+						EmoteModMain.echo((e as Ghost).Sprite.CurrentAnimationID.ToString());
 					}
 				}
 			}
