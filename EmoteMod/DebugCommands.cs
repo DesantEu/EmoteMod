@@ -63,11 +63,6 @@ namespace Celeste.Mod.EmoteMod
 					{
 						BackpackModule.EnterSickoMode();
 					}
-
-					else if (emote == "asd")
-					{
-						EmoteModule.dump_test();
-					}
 				}
 				// binding emotes with console
 				else if (int.TryParse(custom, out customInt) && customInt >= 0 && customInt <= 9)
