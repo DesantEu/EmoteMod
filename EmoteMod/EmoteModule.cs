@@ -192,44 +192,6 @@ namespace Celeste.Mod.EmoteMod
 			celestenetUpdateGraphicsHook.Dispose();
 		}
 
-		// the thing that prints animations
-		private static void test_shit()
-		{
-			if ( Engine.Scene is Level )
-			{
-				Level level = (Level)Engine.Scene;
-
-				foreach (Entity e in level.Entities)
-				{
-					if ( e is Ghost ) // this gets all ghists in the level
-					{
-						EmoteModMain.echo((e as Ghost).Sprite.CurrentAnimationID.ToString());
-					}
-				}
-			}
-		}
-
-		internal static void dump_test()
-		{
-			if (Engine.Scene is Level)
-			{
-				Level level = (Level)Engine.Scene;
-
-				foreach (Entity e in level.Entities)
-				{
-					if (e is CelesteNet.Client.Entities.Ghost) // this gets all ghists in the level
-					{
-						CelesteNet.Client.Entities.Ghost ghost = (CelesteNet.Client.Entities.Ghost)e;
-						string temp = "";
-						foreach (string anim in ghost.Sprite.Animations.Keys)
-						{
-							temp += anim + ", ";
-						}
-						EmoteModMain.echo($"{ghost.NameTag.Name}: {temp}");
-					}
-				}
-			}
-		}
 
 		public static void Player_Update(On.Celeste.Player.orig_Update orig, Player self)
 		{
