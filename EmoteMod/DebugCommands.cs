@@ -116,6 +116,25 @@ namespace Celeste.Mod.EmoteMod
 							{
 								anims += anim.Key + " ";
 							}
+						else if (emote == "avatars")
+						{
+
+							if (Engine.Scene is Level)
+							{
+								Level level = (Level)Engine.Scene;
+
+								foreach (Entity e in level.Entities)
+								{
+									if (e is CelesteNet.Client.Entities.Ghost) // this gets all ghists in the level
+									{
+										CelesteNet.Client.Entities.Ghost ghost = (CelesteNet.Client.Entities.Ghost)e;
+
+										EmoteModMain.echo($"{ghost.NameTag.Name}, ");
+									}
+								}
+							}
+
+						}
 						else
 							foreach (KeyValuePair<string, Sprite.Animation> anim in spr[emote].Sprite.Animations)
 							{
