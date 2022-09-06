@@ -18,6 +18,8 @@ namespace Celeste.Mod.EmoteMod
 
 		private static Hook celestenetUpdateGraphicsHook;
 
+		private static int defaultAnimationsCount;
+
 		// public static bool changedSprite;
 
 		public static void Emote(string animation, bool by_command, Player player)
@@ -145,36 +147,63 @@ namespace Celeste.Mod.EmoteMod
 
 		internal static void Load()
 		{
+
 			On.Celeste.Player.Update += Player_Update;
+			On.Celeste.Level.LoadLevel += Level_LoadLevel;
 			celestenetUpdateGraphicsHook = new Hook(typeof(Ghost).GetMethod("UpdateGraphics"), typeof(EmoteModule).GetMethod("celestenetUpdateGraphics"));
+		}
+
+		private static void Level_LoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader)
+		{
+			defaultAnimationsCount = GFX.SpriteBank.SpriteData["player"].Sprite.Animations.Count();
+			orig(self, playerIntro, isFromLoader);
 		}
 
 
 		public static void celestenetUpdateGraphics(Action<Ghost, DataPlayerGraphics> orig, Ghost self, DataPlayerGraphics graphics) // ty max <3
 		{
-			try {
+			try
+			{
+
+				//string[] spriteModes = { "player", "player_no_backpack", "badeline", "player_badeline", "player_playback" };
 
 				Dictionary<string, Sprite.Animation> playerAnimations = GFX.SpriteBank.SpriteData["player"].Sprite.Animations;
 
-				if (graphics.SpriteAnimations != playerAnimations.Keys.ToArray()) // detect if there are any foreign animations
-				{
-					foreach (string i in graphics.SpriteAnimations) 
-					{
-						if (!playerAnimations.ContainsKey(i)) // find them
-						{
-							if (addCustomEmote(i)) // try and add them
-							{
-								if (!self.Sprite.Animations.ContainsKey(i)) // add them to the ghost cuz celestenet wont :\
-								{
-									self.Sprite.Animations.Add(i, playerAnimations[i]);
-								}
 
+				//if (graphics.SpriteAnimations.Length > playerAnimations.Count)
+				if (graphics.SpriteAnimations.Count() > defaultAnimationsCount) // detect if there are any foreign animations
+				{
+
+					List<string> lackin = graphics.SpriteAnimations.Where(x => !playerAnimations.ContainsKey(x)).ToList();
+
+					if (lackin.Count() > 0)
+					{
+						foreach (string i in lackin)
+						{
+							if (addCustomEmote(i) && !self.Sprite.Animations.ContainsKey(i)) // try and add them
+							{
+								self.Sprite.Animations.Add(i, playerAnimations[i]); // add them to the ghost cuz celestenet wont :\
 							}
 						}
-
 					}
+					//foreach (string i in graphics.SpriteAnimations)
+					//{
+					//	if (!playerAnimations.ContainsKey(i)) // find them
+					//	{
+					//		if (addCustomEmote(i)) // try and add them
+					//		{
+					//			if (!self.Sprite.Animations.ContainsKey(i)) // add them to the ghost cuz celestenet wont :\
+					//			{
+					//				self.Sprite.Animations.Add(i, playerAnimations[i]);
+					//			}
+					//		}
+					//	}
+					//}
 				}
-			} 
+
+
+
+			}
 			catch { }
 
 			orig(self, graphics);
@@ -183,7 +212,7 @@ namespace Celeste.Mod.EmoteMod
 		internal static void Unload()
 		{
 			On.Celeste.Player.Update -= Player_Update;
-			
+
 			celestenetUpdateGraphicsHook.Dispose();
 		}
 
