@@ -15,5 +15,4 @@ D:\repos\EmoteMod\EmoteMod\bin\Debug\EmoteMod.pdb
 D:\repos\EmoteMod\EmoteMod\obj\Debug\EmoteMod.csproj.CoreCompileInputs.cache
 D:\repos\EmoteMod\EmoteMod\obj\Debug\EmoteMod.dll
 D:\repos\EmoteMod\EmoteMod\obj\Debug\EmoteMod.pdb
-D:\repos\EmoteMod\EmoteMod\obj\Debug\EmoteMod.csproj.CopyComplete
 D:\repos\EmoteMod\EmoteMod\obj\Debug\EmoteMod.csproj.AssemblyReference.cache
