@@ -186,19 +186,6 @@ namespace Celeste.Mod.EmoteMod
 							}
 						}
 					}
-					//foreach (string i in graphics.SpriteAnimations)
-					//{
-					//	if (!playerAnimations.ContainsKey(i)) // find them
-					//	{
-					//		if (addCustomEmote(i)) // try and add them
-					//		{
-					//			if (!self.Sprite.Animations.ContainsKey(i)) // add them to the ghost cuz celestenet wont :\
-					//			{
-					//				self.Sprite.Animations.Add(i, playerAnimations[i]);
-					//			}
-					//		}
-					//	}
-					//}
 				}
 
 
