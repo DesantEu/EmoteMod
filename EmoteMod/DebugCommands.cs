@@ -152,11 +152,11 @@ namespace Celeste.Mod.EmoteMod
 
 				// the stretches
 
-				else if (custom == "x" && int.TryParse(emote, out emoteInt))
+				else if (custom == "x")
 				{
 					EmoteStretcher.stretch_x(emoteFloat);
 				}
-				else if (custom == "y" && int.TryParse(emote, out emoteInt))
+				else if (custom == "y")
 				{
 					EmoteStretcher.stretch_y(emoteFloat);
 				}
