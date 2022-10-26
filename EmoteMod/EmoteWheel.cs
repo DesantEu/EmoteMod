@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Monocle;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 // stolen from celestenet by Jade "0x0ade" BiggestNutsackInTheWorld
 
@@ -245,13 +246,16 @@ namespace Celeste.Mod.EmoteMod
                 //if (GhostEmote.IsIcon(emote))
                 {
                     //MTexture icon = GhostEmote.GetIcon(emote, Selected == i ? selectedTime : 0f);
-                    MTexture[] tanim = GFX.SpriteBank.SpriteData["player"].Sprite.Animations["idle"].Frames;
+                    //MTexture[] tanim = GFX.SpriteBank.SpriteData["player"].Sprite.Animations["idle"].Frames;
+                    MTexture[] tanim = getTextureByName(emote);
                     MTexture icon = tanim[tanim.Length/2];
                     if (icon == null)
                         continue;
 
                     Vector2 iconSize = new Vector2(icon.Width, icon.Height);
-                    float iconScale = (Math.Max(icon.Width, icon.Height) / Math.Max(iconSize.X, iconSize.Y)) * 0.24f * popupScale;
+                    float iconScale = (Math.Max(icon.Width, icon.Height) / Math.Max(iconSize.X, iconSize.Y)) * 2.24f * popupScale;
+
+                    emotePos.Y -= (iconScale * iconSize.Y) / 3f;
 
                     icon.DrawCentered(
                         emotePos,
@@ -263,5 +267,57 @@ namespace Celeste.Mod.EmoteMod
             }
         }
 
-    }
+        private MTexture[] getTextureByName(string animation)
+        {
+			Dictionary<string, Sprite.Animation> madeline_bp = GFX.SpriteBank.SpriteData["player"].Sprite.Animations;
+			Dictionary<string, Sprite.Animation> madeline_no_bp = GFX.SpriteBank.SpriteData["player_no_backpack"].Sprite.Animations;
+			Dictionary<string, Sprite.Animation> madeline_badeline = GFX.SpriteBank.SpriteData["player_badeline"].Sprite.Animations;
+			Dictionary<string, Sprite.Animation> badeline = GFX.SpriteBank.SpriteData["badeline"].Sprite.Animations;
+
+            // this sucks but idk
+            if (madeline_no_bp.Keys.Contains(animation, StringComparer.OrdinalIgnoreCase))
+            {
+                return madeline_no_bp[animation].Frames;
+            }
+            else if (madeline_bp.Keys.Contains(animation, StringComparer.OrdinalIgnoreCase))
+            {
+                return madeline_bp[animation].Frames;
+            }
+            else if (badeline.Keys.Contains(animation, StringComparer.OrdinalIgnoreCase))
+            {
+                return badeline[animation].Frames;
+            }
+
+            else if (findCustomEmote(animation) != null) 
+            {
+                return findCustomEmote(animation);
+			}
+
+            else return null;
+		}
+
+		private MTexture[] findCustomEmote(string animation)
+		{
+			foreach (KeyValuePair<string, SpriteData> sdata in GFX.SpriteBank.SpriteData)
+			{
+				if (animation.ToLower().Contains(sdata.Key.ToLower()))
+				{
+					try
+					{
+						Dictionary<string, Sprite.Animation> player = GFX.SpriteBank.SpriteData["player"].Sprite.Animations;
+						Dictionary<string, Sprite.Animation> anims = sdata.Value.Sprite.Animations;
+						string animName = animation.Remove(0, sdata.Key.Length + 1); // strip sprite name
+						KeyValuePair<string, Sprite.Animation> newAnim = new KeyValuePair<string, Sprite.Animation>(animName, anims[animName]);
+
+						return newAnim.Value.Frames;
+					}
+					catch
+					{
+						return null;
+					}
+				}
+			}
+			return null;
+		}
+	}
 }
