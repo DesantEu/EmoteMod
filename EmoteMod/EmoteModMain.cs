@@ -22,6 +22,8 @@ namespace Celeste.Mod.EmoteMod
 		public static EmoteModMain Instance;
 
 
+
+
 		// i have no idea what is this for
 		public EmoteModMain()
 		{
@@ -56,6 +58,7 @@ namespace Celeste.Mod.EmoteMod
             BackpackModule.Load();
             SpeedModule.Load();
             EmoteStretcher.Load();
+			EmoteWheelModule.Load();
         }
 
 		public override void Unload()
@@ -68,7 +71,8 @@ namespace Celeste.Mod.EmoteMod
             SpeedModule.Unload();
             EmoteStretcher.Unload();
             GravityModule.Unload();
-        }
+			EmoteWheelModule.Unload();
+		}
 
 		#region garbage
 
