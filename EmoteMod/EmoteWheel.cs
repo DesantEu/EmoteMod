@@ -274,6 +274,12 @@ namespace Celeste.Mod.EmoteMod
 			Dictionary<string, Sprite.Animation> madeline_badeline = GFX.SpriteBank.SpriteData["player_badeline"].Sprite.Animations;
 			Dictionary<string, Sprite.Animation> badeline = GFX.SpriteBank.SpriteData["badeline"].Sprite.Animations;
 
+            // b
+            if (animation == "b")
+            {
+                return getTextureByName("spin");
+            }
+
             // this sucks but idk
             if (madeline_no_bp.Keys.Contains(animation, StringComparer.OrdinalIgnoreCase))
             {
