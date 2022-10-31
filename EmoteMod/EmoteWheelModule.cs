@@ -1,9 +1,15 @@
-﻿using Microsoft.Xna.Framework.Input;
+﻿using Celeste.Mod.CelesteNet.Client.Components;
+using Microsoft.Xna.Framework.Input;
 using Monocle;
+using MonoMod.RuntimeDetour;
+using System;
+using System.Collections.Generic;
+using Celeste.Mod.CelesteNet.Client;
+using Microsoft.Xna.Framework;
 
 namespace Celeste.Mod.EmoteMod
 {
-    public static class EmoteWheelModule
+    public static class EmoteWheelModule 
 	{
 
 		public static VirtualJoystick JoystickEmoteWheel;
@@ -11,6 +17,11 @@ namespace Celeste.Mod.EmoteMod
 
         public static EmoteWheel Wheel;
 
+        public static bool activatedWithButton;
+        public static bool joystickMoved;
+
+		private static Hook celestenetUpdateEmoteWheelHook;
+		internal static int onCNetWheelUpdate;
 
 		private static void Player_Update(On.Celeste.Player.orig_Update orig, Player self)
 		{
@@ -24,8 +35,8 @@ namespace Celeste.Mod.EmoteMod
             if (!(Engine.Scene is Level level))
                 goto End;
 
-            //if (Player == null || Player.Scene != level)
-            //    Player = level.Tracker.GetEntity<Player>();
+            if (Player == null || Player.Scene != level)
+                Player = level.Tracker.GetEntity<Player>();
 
             if (Wheel != null && Wheel.Scene != level)
             {
@@ -42,21 +53,60 @@ namespace Celeste.Mod.EmoteMod
             if (JoystickEmoteWheel == null)
                 goto End;
 
+            
+
+
             // TimeRate check is for Prologue Dash prompt freeze
-            if (!level.Paused && EmoteModMain.Settings.EmoteWheel && !Player.Dead && Engine.TimeRate > 0.05f)
+            if (!level.Paused && !Player.Dead && Engine.TimeRate > 0.05f)
             {
-                Wheel.Shown = JoystickEmoteWheel.Value.LengthSquared() >= 0.36f;
-                int selected = Wheel.Selected;
+                // cool key feture
+                if (EmoteModMain.Settings.EmoteWheelBinding.Buttons.Count != 0 && MInput.GamePads[0].Pressed(EmoteModMain.Settings.EmoteWheelBinding.Buttons[0]))
+                {
+                    activatedWithButton = !activatedWithButton;
+                }
+
+                bool joystickActive = JoystickEmoteWheel.Value.LengthSquared() >= 0.36f;
+                if (joystickActive && !joystickMoved && activatedWithButton) joystickMoved = true;
+
+                // show
+                Wheel.Shown = EmoteModMain.Settings.EmoteWheel && joystickActive
+                   || activatedWithButton && !joystickMoved
+                   || joystickMoved && joystickActive;
+
+
+                if (!Wheel.Shown)
+                {
+                    activatedWithButton = false;
+                    joystickMoved = false;
+                }
+
+				int selected = Wheel.Selected;
                 if (Wheel.Shown && selected != -1 && ButtonEmoteSend.Pressed)
                 {
-                    Wheel.Shown = false;
-                    Wheel.Selected = -1;
+                    Send(selected, Player);
                 }
+
+                //(CelesteNetEmoteComponent)CelesteNetClientModule.Instance?.Context.Components[typeof(CelesteNetEmoteComponent)]
+
+
+                //if (EmoteModMain.Settings.EmoteWheel || activatedWithButton)
+                //{
+                //    Wheel.Shown = JoystickEmoteWheel.Value.LengthSquared() >= 0.36f;
+                //    int selected = Wheel.Selected;
+                //    if (Wheel.Shown && selected != -1 && ButtonEmoteSend.Pressed)
+                //    {
+                //        Send(selected, Player);
+                //    }
+                //}
+                //EmoteModMain.echo(activatedWithButton.ToString());
+
             }
             else
             {
                 Wheel.Shown = false;
                 Wheel.Selected = -1;
+                activatedWithButton = false;
+                joystickMoved = false;
             }
 
             End:
@@ -66,6 +116,36 @@ namespace Celeste.Mod.EmoteMod
             //else
             //    Context.Main.StateUpdated |= Context.Main.ForceIdle.Remove("EmoteWheel");
         }
+        // celestenetUpdateEmoteWheel
+        public static void celestenetUpdateEmoteWheel(Action<CelesteNetEmoteComponent, GameTime> orig, CelesteNetEmoteComponent self, GameTime gametime)
+        {
+            if (self.Wheel != null && Wheel.Shown && self.Wheel.Shown)
+            {
+                self.Wheel.Shown = false;
+            }
+            orig(self, gametime);
+        }
+
+
+
+        public static void Send(int index, Player player)
+		{
+			string[] emotes = 
+            {
+				EmoteModMain.Settings.emote0,
+				EmoteModMain.Settings.emote1,
+				EmoteModMain.Settings.emote2,
+				EmoteModMain.Settings.emote3,
+				EmoteModMain.Settings.emote4,
+				EmoteModMain.Settings.emote5,
+				EmoteModMain.Settings.emote6,
+				EmoteModMain.Settings.emote7,
+				EmoteModMain.Settings.emote8,
+				EmoteModMain.Settings.emote9
+			};
+            if (0 <= index && index < emotes.Length)
+                EmoteModule.Emote(emotes[index], false, player);
+		}
 
 		private static void Input_Initialize(On.Celeste.Input.orig_Initialize orig)
 		{
@@ -78,12 +158,19 @@ namespace Celeste.Mod.EmoteMod
 				new VirtualButton.KeyboardKey(Keys.Q),
 				new VirtualButton.PadButton(Input.Gamepad, Buttons.RightStick)
 			);
+
+            activatedWithButton = false;
 		}
 		internal static void Load()
 		{
             On.Celeste.Input.Initialize += Input_Initialize;
             // CHANGE!!!!!!!!
             On.Celeste.Player.Update += Player_Update;
+
+            celestenetUpdateEmoteWheelHook = new Hook(typeof(CelesteNetEmoteComponent).GetMethod("Update"), typeof(EmoteWheelModule).GetMethod("celestenetUpdateEmoteWheel"));
+
+
+
         }
 
 		internal static void Unload()
@@ -91,6 +178,7 @@ namespace Celeste.Mod.EmoteMod
 			On.Celeste.Input.Initialize -= Input_Initialize;
 			On.Celeste.Player.Update -= Player_Update;
 
+            //celestenetUpdateEmoteWheelHook.Dispose();
 		}
 	}
 }
