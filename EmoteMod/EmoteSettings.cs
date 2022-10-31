@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Input;
 using Celeste.Mod.UI;
+
 namespace Celeste.Mod.EmoteMod
 {
 	//so this is for emotes category
@@ -214,5 +215,24 @@ namespace Celeste.Mod.EmoteMod
 			menu.Add(new TextMenu.Slider(Dialog.Clean("settings_backpack_name"), BackpackModule.backpackFormatter, 0, 2, EmoteModMain.Settings.Backpack)
 				.Change(id => BackpackModule.SetBackpack(id)));
 		}
+
+		// emote wheel
+		[SettingInGame(true)]
+		[SettingName("settings_EmoteWheel_name")]
+		[SettingSubText("settings_EmoteWheel_desc")]
+		//[SettingIgnore]
+		public bool EmoteWheel { get; set; } = false;
+		//public void CreateEmoteWheelEntry(TextMenu menu, bool inGame)
+		//{
+		//	TextMenu.OnOff ew = new TextMenu.OnOff(Dialog.Clean("settings_EmoteWheel_name"), EmoteWheel);
+		//	ew.AddDescription(menu, Dialog.Clean("settings_EmoteWheel_desc"));
+		//	ew.Change(val => EmoteWheel = val); ;
+		//	menu.Add(ew);
+		//}
+
+		//[SettingIgnore]
+		[SettingName("settings_EmoteWheel_name")]
+		[DefaultButtonBinding(Buttons.Y, 0)]
+		public ButtonBinding EmoteWheelBinding { get; set; }
 	}
 }
