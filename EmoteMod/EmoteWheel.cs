@@ -54,8 +54,6 @@ namespace Celeste.Mod.EmoteMod
 
         public override void Update()
         {
-            // Update only runs while the level is "alive" (scene not paused or frozen).
-
             if (TimeRateSkip.Contains("EmptySpaceHeart") &&
                 timeSkipForcedDelay <= 0f &&
                 Engine.Scene is Level l && !l.InCutscene)
@@ -208,7 +206,6 @@ namespace Celeste.Mod.EmoteMod
                 1920f - radius, 1080f - radius
             );
 
-            // Draw.Circle(pos, radius, Color.Black * 0.8f * alpha * alpha, radius * 0.6f * (1f + 0.2f * (float) Math.Sin(time)), 8);
             BG.DrawCentered(
                 pos,
                 Color.White * alpha * alpha * alpha,
@@ -243,27 +240,22 @@ namespace Celeste.Mod.EmoteMod
                     (float)Math.Sin(a)
                 ) * radius;
 
-                //if (GhostEmote.IsIcon(emote))
-                {
-                    //MTexture icon = GhostEmote.GetIcon(emote, Selected == i ? selectedTime : 0f);
-                    //MTexture[] tanim = GFX.SpriteBank.SpriteData["player"].Sprite.Animations["idle"].Frames;
-                    MTexture[] tanim = getTextureByName(emote);
-                    MTexture icon = tanim[tanim.Length > 2 ? tanim.Length/2 : 0];
-                    if (icon == null)
-                        continue;
+                MTexture[] tanim = getTextureByName(emote);
+                MTexture icon = tanim[tanim.Length > 2 ? tanim.Length/2 : 0];
+                if (icon == null)
+                    continue;
 
-                    Vector2 iconSize = new Vector2(icon.Width, icon.Height);
-                    float iconScale = (Math.Max(icon.Width, icon.Height) / Math.Max(iconSize.X, iconSize.Y)) * 2.24f * popupScale;
+                Vector2 iconSize = new Vector2(icon.Width, icon.Height);
+                float iconScale = (Math.Max(icon.Width, icon.Height) / Math.Max(iconSize.X, iconSize.Y)) * 2.24f * popupScale;
 
-                    emotePos.Y -= (iconScale * iconSize.Y) / 3f;
+                emotePos.Y -= (iconScale * iconSize.Y) / 3f;
 
-                    icon.DrawCentered(
-                        emotePos,
-                        Color.White * (Selected == i ? (Calc.BetweenInterval(selectedTime, 0.1f) ? 0.9f : 1f) : 0.7f) * alpha,
-                        Vector2.One * (Selected == i ? selectedScale : 1f) * iconScale
-                    );
+                icon.DrawCentered(
+                    emotePos,
+                    Color.White * (Selected == i ? (Calc.BetweenInterval(selectedTime, 0.1f) ? 0.9f : 1f) : 0.7f) * alpha,
+                    Vector2.One * (Selected == i ? selectedScale : 1f) * iconScale
+                );
 
-                }
             }
         }
 

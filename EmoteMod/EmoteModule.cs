@@ -164,13 +164,7 @@ namespace Celeste.Mod.EmoteMod
 		{
 			try
 			{
-
-				//string[] spriteModes = { "player", "player_no_backpack", "badeline", "player_badeline", "player_playback" };
-
 				Dictionary<string, Sprite.Animation> playerAnimations = GFX.SpriteBank.SpriteData["player"].Sprite.Animations;
-
-
-				//if (graphics.SpriteAnimations.Length > playerAnimations.Count)
 				if (graphics.SpriteAnimations.Count() > defaultAnimationsCount) // detect if there are any foreign animations
 				{
 

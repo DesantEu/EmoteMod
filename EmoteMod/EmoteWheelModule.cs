@@ -3,9 +3,6 @@ using Microsoft.Xna.Framework.Input;
 using Monocle;
 using MonoMod.RuntimeDetour;
 using System;
-using System.Collections.Generic;
-using Celeste.Mod.CelesteNet.Client;
-using Microsoft.Xna.Framework;
 using MonoMod.Cil;
 using Mono.Cecil.Cil;
 
@@ -30,9 +27,6 @@ namespace Celeste.Mod.EmoteMod
             orig(self);
 
             Player Player = self;
-
-            //if (Client == null || !Client.IsReady)
-            //    goto End;
 
             if (!(Engine.Scene is Level level))
                 goto End;
@@ -62,7 +56,8 @@ namespace Celeste.Mod.EmoteMod
             if (!level.Paused && !Player.Dead && Engine.TimeRate > 0.05f)
             {
                 // cool key feture
-                if (EmoteModMain.Settings.EmoteWheelBinding.Buttons.Count != 0 && MInput.GamePads[0].Pressed(EmoteModMain.Settings.EmoteWheelBinding.Buttons[0]))
+                if (EmoteModMain.Settings.EmoteWheelBinding.Buttons.Count != 0 
+                && MInput.GamePads[0].Pressed(EmoteModMain.Settings.EmoteWheelBinding.Buttons[0]))
                 {
                     activatedWithButton = !activatedWithButton;
                 }
@@ -88,20 +83,6 @@ namespace Celeste.Mod.EmoteMod
                     Send(selected, Player);
                 }
 
-                //(CelesteNetEmoteComponent)CelesteNetClientModule.Instance?.Context.Components[typeof(CelesteNetEmoteComponent)]
-
-
-                //if (EmoteModMain.Settings.EmoteWheel || activatedWithButton)
-                //{
-                //    Wheel.Shown = JoystickEmoteWheel.Value.LengthSquared() >= 0.36f;
-                //    int selected = Wheel.Selected;
-                //    if (Wheel.Shown && selected != -1 && ButtonEmoteSend.Pressed)
-                //    {
-                //        Send(selected, Player);
-                //    }
-                //}
-                //EmoteModMain.echo(activatedWithButton.ToString());
-
             }
             else
             {
@@ -118,15 +99,6 @@ namespace Celeste.Mod.EmoteMod
             //else
             //    Context.Main.StateUpdated |= Context.Main.ForceIdle.Remove("EmoteWheel");
         }
-        // celestenetUpdateEmoteWheel
-        //public static void celestenetUpdateEmoteWheel(Action<CelesteNetEmoteComponent, GameTime> orig, CelesteNetEmoteComponent self, GameTime gametime)
-        //{
-        //    if (self.Wheel != null && Wheel.Shown && self.Wheel.Shown)
-        //    {
-        //        self.Wheel.Shown = false;
-        //    }
-        //    orig(self, gametime);
-        //}
 
 
 

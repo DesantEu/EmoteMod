@@ -220,17 +220,9 @@ namespace Celeste.Mod.EmoteMod
 		[SettingInGame(true)]
 		[SettingName("settings_EmoteWheel_name")]
 		[SettingSubText("settings_EmoteWheel_desc")]
-		//[SettingIgnore]
 		public bool EmoteWheel { get; set; } = false;
-		//public void CreateEmoteWheelEntry(TextMenu menu, bool inGame)
-		//{
-		//	TextMenu.OnOff ew = new TextMenu.OnOff(Dialog.Clean("settings_EmoteWheel_name"), EmoteWheel);
-		//	ew.AddDescription(menu, Dialog.Clean("settings_EmoteWheel_desc"));
-		//	ew.Change(val => EmoteWheel = val); ;
-		//	menu.Add(ew);
-		//}
 
-		//[SettingIgnore]
+
 		[SettingName("settings_EmoteWheel_name")]
 		[DefaultButtonBinding(Buttons.Y, 0)]
 		public ButtonBinding EmoteWheelBinding { get; set; }
