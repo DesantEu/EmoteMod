@@ -248,7 +248,7 @@ namespace Celeste.Mod.EmoteMod
                     //MTexture icon = GhostEmote.GetIcon(emote, Selected == i ? selectedTime : 0f);
                     //MTexture[] tanim = GFX.SpriteBank.SpriteData["player"].Sprite.Animations["idle"].Frames;
                     MTexture[] tanim = getTextureByName(emote);
-                    MTexture icon = tanim[tanim.Length/2];
+                    MTexture icon = tanim[tanim.Length > 2 ? tanim.Length/2 : 0];
                     if (icon == null)
                         continue;
 
@@ -288,12 +288,16 @@ namespace Celeste.Mod.EmoteMod
                 return badeline[animation].Frames;
             }
 
-            else if (findCustomEmote(animation) != null) 
+            else if (findCustomEmote(animation) != null)
             {
                 return findCustomEmote(animation);
-			}
+            }
 
-            else return null;
+            else {
+                EmoteModMain.echo($"EMOTEMOD ERROR: Could not find '{animation}'");
+
+                return getTextureByName("player_idle");
+            }
 		}
 
 		private MTexture[] findCustomEmote(string animation)
