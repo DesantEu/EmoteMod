@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using Celeste.Mod.CelesteNet.Client;
 using Microsoft.Xna.Framework;
+using MonoMod.Cil;
+using Mono.Cecil.Cil;
 
 namespace Celeste.Mod.EmoteMod
 {
@@ -20,7 +22,7 @@ namespace Celeste.Mod.EmoteMod
         public static bool activatedWithButton;
         public static bool joystickMoved;
 
-		private static Hook celestenetUpdateEmoteWheelHook;
+		private static ILHook celestenetUpdateEmoteWheelHook;
 		internal static int onCNetWheelUpdate;
 
 		private static void Player_Update(On.Celeste.Player.orig_Update orig, Player self)
@@ -117,14 +119,14 @@ namespace Celeste.Mod.EmoteMod
             //    Context.Main.StateUpdated |= Context.Main.ForceIdle.Remove("EmoteWheel");
         }
         // celestenetUpdateEmoteWheel
-        public static void celestenetUpdateEmoteWheel(Action<CelesteNetEmoteComponent, GameTime> orig, CelesteNetEmoteComponent self, GameTime gametime)
-        {
-            if (self.Wheel != null && Wheel.Shown && self.Wheel.Shown)
-            {
-                self.Wheel.Shown = false;
-            }
-            orig(self, gametime);
-        }
+        //public static void celestenetUpdateEmoteWheel(Action<CelesteNetEmoteComponent, GameTime> orig, CelesteNetEmoteComponent self, GameTime gametime)
+        //{
+        //    if (self.Wheel != null && Wheel.Shown && self.Wheel.Shown)
+        //    {
+        //        self.Wheel.Shown = false;
+        //    }
+        //    orig(self, gametime);
+        //}
 
 
 
@@ -167,10 +169,20 @@ namespace Celeste.Mod.EmoteMod
             // CHANGE!!!!!!!!
             On.Celeste.Player.Update += Player_Update;
 
-            celestenetUpdateEmoteWheelHook = new Hook(typeof(CelesteNetEmoteComponent).GetMethod("Update"), typeof(EmoteWheelModule).GetMethod("celestenetUpdateEmoteWheel"));
+            celestenetUpdateEmoteWheelHook = new ILHook(typeof(CelesteNetEmoteComponent).GetMethod("Update"), celestenetUpdateEmoteWheel);
 
+        }
 
+        private static void celestenetUpdateEmoteWheel(ILContext il)
+        {
+            ILCursor cursor = new ILCursor(il);
 
+            // yea
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(0.36f)))
+            {
+                cursor.EmitDelegate<Func<float>>(() => Wheel?.Shown ?? true ? 100f : 1f);
+                cursor.Emit(OpCodes.Mul);
+            }
         }
 
 		internal static void Unload()
@@ -178,7 +190,7 @@ namespace Celeste.Mod.EmoteMod
 			On.Celeste.Input.Initialize -= Input_Initialize;
 			On.Celeste.Player.Update -= Player_Update;
 
-            //celestenetUpdateEmoteWheelHook.Dispose();
-		}
+            celestenetUpdateEmoteWheelHook.Dispose();
+        }
 	}
 }
