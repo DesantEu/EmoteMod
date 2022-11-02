@@ -217,7 +217,7 @@ namespace Celeste.Mod.EmoteMod
 		}
 
 		// emote wheel
-		[SettingInGame(true)]
+		//[SettingInGame(true)]
 		[SettingName("settings_EmoteWheel_name")]
 		[SettingSubText("settings_EmoteWheel_desc")]
 		public bool EmoteWheel { get; set; } = false;

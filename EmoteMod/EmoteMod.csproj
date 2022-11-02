@@ -43,7 +43,10 @@
       <HintPath>..\..\..\Program Files (x86)\Steam\steamapps\common\Celeste\Mods\CelesteNet.Client\CelesteNet.Shared.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553" />
+    <Reference Include="FNA">
+      <HintPath>..\..\..\Program Files (x86)\Steam\steamapps\common\Celeste\FNA.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="MMHOOK_Celeste">
       <HintPath>..\..\..\Program Files (x86)\Steam\steamapps\common\Celeste\MMHOOK_Celeste.dll</HintPath>
       <Private>False</Private>
@@ -75,6 +78,8 @@
     <Compile Include="EmoteModule.cs" />
     <Compile Include="EmoteSettings.cs" />
     <Compile Include="EmoteStretcher.cs" />
+    <Compile Include="EmoteWheel.cs" />
+    <Compile Include="EmoteWheelModule.cs" />
     <Compile Include="GravityModule.cs" />
     <Compile Include="PlayerModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
