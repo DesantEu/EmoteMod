@@ -1,4 +1,10 @@
-.vs/
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.vsidx
+
 EmoteMod/obj/
 EmoteMod/Connected\ Services/
 EmoteMod/bin/
