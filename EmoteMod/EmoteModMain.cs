@@ -56,6 +56,7 @@ namespace Celeste.Mod.EmoteMod
             BackpackModule.Load();
             SpeedModule.Load();
             EmoteStretcher.Load();
+			MadhuntModule.Load();
         }
 
 		public override void Unload()
@@ -68,6 +69,7 @@ namespace Celeste.Mod.EmoteMod
             SpeedModule.Unload();
             EmoteStretcher.Unload();
             GravityModule.Unload();
+			MadhuntModule.Unload();
         }
 
 		#region garbage

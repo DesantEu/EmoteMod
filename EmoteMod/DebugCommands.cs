@@ -1,5 +1,6 @@
 ﻿using Monocle;
 using System.Collections.Generic;
+using System;
 
 namespace Celeste.Mod.EmoteMod
 {
@@ -169,6 +170,14 @@ namespace Celeste.Mod.EmoteMod
 						EmoteStretcher.stretch_x(emoteFloat);
 						EmoteStretcher.stretch_y(emoteFloat);
 					}
+				}
+				else if (custom == "test")
+				{
+					EmoteModMain.echo(MadhuntModule.inRound.ToString() + " " + MadhuntModule.test);
+					//foreach (EverestModule m in Everest.Modules)
+					//{
+					//	EmoteModMain.echo(m.Metadata.Name);
+					//}
 				}
 
 				else
