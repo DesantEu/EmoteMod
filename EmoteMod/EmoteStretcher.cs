@@ -17,11 +17,20 @@
 
 			if (stretch_lock)
 			{
-				self.Sprite.Scale.X = x_stretch;
-				self.Sprite.Scale.Y = y_stretch;
-				self.Hair.Sprite.Scale.X = x_stretch;
-				self.Hair.Sprite.Scale.Y = y_stretch;
-
+				if (MadhuntModule.inRound)
+				{
+					self.Sprite.Scale.X = x_stretch >= 0 ? 1 : -1;
+					self.Sprite.Scale.Y = 1;
+					self.Hair.Sprite.Scale.X = x_stretch >= 0 ? 1 : -1;
+					self.Hair.Sprite.Scale.Y = 1;
+				}
+				else
+				{
+					self.Sprite.Scale.X = x_stretch;
+					self.Sprite.Scale.Y = y_stretch;
+					self.Hair.Sprite.Scale.X = x_stretch;
+					self.Hair.Sprite.Scale.Y = y_stretch;
+				}
 			}
 		}
 

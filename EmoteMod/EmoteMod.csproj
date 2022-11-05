@@ -81,6 +81,7 @@
     <Compile Include="EmoteWheel.cs" />
     <Compile Include="EmoteWheelModule.cs" />
     <Compile Include="GravityModule.cs" />
+    <Compile Include="MadhuntModule.cs" />
     <Compile Include="PlayerModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpeedModule.cs" />
