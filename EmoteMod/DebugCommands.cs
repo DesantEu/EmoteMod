@@ -173,11 +173,7 @@ namespace Celeste.Mod.EmoteMod
 				}
 				else if (custom == "test")
 				{
-					EmoteModMain.echo(MadhuntModule.inRound.ToString() + " " + MadhuntModule.test);
-					//foreach (EverestModule m in Everest.Modules)
-					//{
-					//	EmoteModMain.echo(m.Metadata.Name);
-					//}
+					
 				}
 
 				else
