@@ -215,7 +215,6 @@ namespace Celeste.Mod.EmoteMod
 			// animation for selected petal
 			float selPetalEase = (selScaleScale - 0.5f) * (1f - Calc.Clamp(Ease.CubeOut(selectedTime / 0.1f), 0f, 1f));
 			//float selPetalEase = (1.2f - 0.2f * Calc.Clamp(Ease.CubeOut(selectedTime / 0.1f), 0f, 1f));
-			EmoteModMain.echo(selPetalEase.ToString());
 
 			// draw petals
 			for (int i = 0; i < emotes.Length; i++)
@@ -285,10 +284,17 @@ namespace Celeste.Mod.EmoteMod
 				) * radius * (Selected == i ? selMultiplier : 1f); // we want to draw the selected emote further
 
 				// get the middle frame of the selected emote
-				MTexture[] tanim = getTextureByName(emote);
-				MTexture icon = tanim[tanim.Length > 2 ? tanim.Length / 2 : 0];
-				if (icon == null)
-					continue;
+				//MTexture[] tanim = getTextureByName(emote);
+				//MTexture icon = tanim[tanim.Length > 2 ? tanim.Length / 2 : 0];
+				//EmoteModMain.echo(selectedTime.ToString());
+				//if (icon == null)
+				//	continue;
+
+				Sprite.Animation sanim = getAnimationByName(emote);
+				MTexture[] tanim = sanim.Frames;
+				MTexture icon = tanim[Selected == i ?
+					(int)Math.Floor(selectedTime / sanim.Delay) % sanim.Frames.Length
+					: tanim.Length > 2 ? tanim.Length / 2 : 0];
 
 				// get size and all
 				Vector2 iconSize = new Vector2(icon.Width, icon.Height);
@@ -306,68 +312,7 @@ namespace Celeste.Mod.EmoteMod
 			}
 		}
 
-
-
-			//Petal.DrawCentered(
-			//             pos + new Vector2(128, 0),
-			//             Color.White * alpha * alpha * alpha,
-			//             Vector2.One * popupScale
-			//             );
-
-			//BG.DrawCentered(
-			//    pos,
-			//    Color.White * alpha * alpha * alpha,
-			//    Vector2.One * popupScale
-			//);
-
-			//Indicator.DrawCentered(
-			//    pos,
-			//    Color.White * alpha * alpha * alpha,
-			//    Vector2.One * popupScale,
-			//    Angle
-			//);
-
-			//float selectedScale = 1.2f - 0.2f * Calc.Clamp(Ease.CubeOut(selectedTime / 0.1f), 0f, 1f) + (float)Math.Sin(time * 1.8f) * 0.05f;
-
-			//for (int i = 0; i < emotes.Length; i++)
-			//{
-			//    Line.DrawCentered(
-			//        pos,
-			//        Color.White * alpha * alpha * alpha,
-			//        Vector2.One * popupScale,
-			//        ((i + 0.5f) / emotes.Length) * 2f * (float)Math.PI
-			//    );
-
-			//    string emote = emotes[i];
-			//    if (string.IsNullOrEmpty(emote))
-			//        continue;
-
-			//    float a = (i / (float)emotes.Length) * 2f * (float)Math.PI;
-			//    Vector2 emotePos = pos + new Vector2(
-			//        (float)Math.Cos(a),
-			//        (float)Math.Sin(a)
-			//    ) * radius;
-
-			//    MTexture[] tanim = getTextureByName(emote);
-			//    MTexture icon = tanim[tanim.Length > 2 ? tanim.Length / 2 : 0];
-			//    if (icon == null)
-			//        continue;
-
-			//    Vector2 iconSize = new Vector2(icon.Width, icon.Height);
-			//    float iconScale = (Math.Max(icon.Width, icon.Height) / Math.Max(iconSize.X, iconSize.Y)) * 2.24f * popupScale;
-
-			//    emotePos.Y -= (iconScale * iconSize.Y) / 3f;
-
-			//    icon.DrawCentered(
-			//        emotePos,
-			//        Color.White * (Selected == i ? (Calc.BetweenInterval(selectedTime, 0.1f) ? 0.9f : 1f) : 0.7f) * alpha,
-			//        Vector2.One * (Selected == i ? selectedScale : 1f) * iconScale
-			//    );
-
-			//}
-		//}
-
-		private MTexture[] getTextureByName(string animation)
+		private Sprite.Animation getAnimationByName(string animation)
 		{
 			Dictionary<string, Sprite.Animation> madeline_bp = GFX.SpriteBank.SpriteData["player"].Sprite.Animations;
 			Dictionary<string, Sprite.Animation> madeline_no_bp = GFX.SpriteBank.SpriteData["player_no_backpack"].Sprite.Animations;
@@ -377,21 +322,21 @@ namespace Celeste.Mod.EmoteMod
 			// b
 			if (animation == "b")
 			{
-				return getTextureByName("spin");
+				return getAnimationByName("spin");
 			}
 
 			// this sucks but idk
 			if (madeline_no_bp.Keys.Contains(animation, StringComparer.OrdinalIgnoreCase))
 			{
-				return madeline_no_bp[animation].Frames;
+				return madeline_no_bp[animation];
 			}
 			else if (madeline_bp.Keys.Contains(animation, StringComparer.OrdinalIgnoreCase))
 			{
-				return madeline_bp[animation].Frames;
+				return madeline_bp[animation];
 			}
 			else if (badeline.Keys.Contains(animation, StringComparer.OrdinalIgnoreCase))
 			{
-				return badeline[animation].Frames;
+				return badeline[animation];
 			}
 
 			else if (findCustomEmote(animation) != null)
@@ -403,11 +348,113 @@ namespace Celeste.Mod.EmoteMod
 			{
 				EmoteModMain.echo($"EMOTEMOD ERROR: Could not find '{animation}'");
 
-				return getTextureByName("player_idle");
+				return getAnimationByName("player_idle");
 			}
 		}
 
-		private MTexture[] findCustomEmote(string animation)
+
+
+		//Petal.DrawCentered(
+		//             pos + new Vector2(128, 0),
+		//             Color.White * alpha * alpha * alpha,
+		//             Vector2.One * popupScale
+		//             );
+
+		//BG.DrawCentered(
+		//    pos,
+		//    Color.White * alpha * alpha * alpha,
+		//    Vector2.One * popupScale
+		//);
+
+		//Indicator.DrawCentered(
+		//    pos,
+		//    Color.White * alpha * alpha * alpha,
+		//    Vector2.One * popupScale,
+		//    Angle
+		//);
+
+		//float selectedScale = 1.2f - 0.2f * Calc.Clamp(Ease.CubeOut(selectedTime / 0.1f), 0f, 1f) + (float)Math.Sin(time * 1.8f) * 0.05f;
+
+		//for (int i = 0; i < emotes.Length; i++)
+		//{
+		//    Line.DrawCentered(
+		//        pos,
+		//        Color.White * alpha * alpha * alpha,
+		//        Vector2.One * popupScale,
+		//        ((i + 0.5f) / emotes.Length) * 2f * (float)Math.PI
+		//    );
+
+		//    string emote = emotes[i];
+		//    if (string.IsNullOrEmpty(emote))
+		//        continue;
+
+		//    float a = (i / (float)emotes.Length) * 2f * (float)Math.PI;
+		//    Vector2 emotePos = pos + new Vector2(
+		//        (float)Math.Cos(a),
+		//        (float)Math.Sin(a)
+		//    ) * radius;
+
+		//    MTexture[] tanim = getTextureByName(emote);
+		//    MTexture icon = tanim[tanim.Length > 2 ? tanim.Length / 2 : 0];
+		//    if (icon == null)
+		//        continue;
+
+		//    Vector2 iconSize = new Vector2(icon.Width, icon.Height);
+		//    float iconScale = (Math.Max(icon.Width, icon.Height) / Math.Max(iconSize.X, iconSize.Y)) * 2.24f * popupScale;
+
+		//    emotePos.Y -= (iconScale * iconSize.Y) / 3f;
+
+		//    icon.DrawCentered(
+		//        emotePos,
+		//        Color.White * (Selected == i ? (Calc.BetweenInterval(selectedTime, 0.1f) ? 0.9f : 1f) : 0.7f) * alpha,
+		//        Vector2.One * (Selected == i ? selectedScale : 1f) * iconScale
+		//    );
+
+		//}
+		//}
+
+		//private MTexture[] getTextureByName(string animation)
+		//{
+		//	Dictionary<string, Sprite.Animation> madeline_bp = GFX.SpriteBank.SpriteData["player"].Sprite.Animations;
+		//	Dictionary<string, Sprite.Animation> madeline_no_bp = GFX.SpriteBank.SpriteData["player_no_backpack"].Sprite.Animations;
+		//	Dictionary<string, Sprite.Animation> madeline_badeline = GFX.SpriteBank.SpriteData["player_badeline"].Sprite.Animations;
+		//	Dictionary<string, Sprite.Animation> badeline = GFX.SpriteBank.SpriteData["badeline"].Sprite.Animations;
+
+		//	// b
+		//	if (animation == "b")
+		//	{
+		//		return getTextureByName("spin");
+		//	}
+
+		//	// this sucks but idk
+		//	if (madeline_no_bp.Keys.Contains(animation, StringComparer.OrdinalIgnoreCase))
+		//	{
+		//		return madeline_no_bp[animation].Frames;
+		//	}
+		//	else if (madeline_bp.Keys.Contains(animation, StringComparer.OrdinalIgnoreCase))
+		//	{
+		//		return madeline_bp[animation].Frames;
+		//	}
+		//	else if (badeline.Keys.Contains(animation, StringComparer.OrdinalIgnoreCase))
+		//	{
+		//		return badeline[animation].Frames;
+		//	}
+
+		//	else if (findCustomEmote(animation) != null)
+		//	{
+		//		return findCustomEmote(animation);
+		//	}
+
+		//	else
+		//	{
+		//		EmoteModMain.echo($"EMOTEMOD ERROR: Could not find '{animation}'");
+
+		//		return getTextureByName("player_idle");
+		//	}
+		//}
+
+		private Sprite.Animation findCustomEmote(string animation)
+		//private MTexture[] findCustomEmote(string animation)
 		{
 			foreach (KeyValuePair<string, SpriteData> sdata in GFX.SpriteBank.SpriteData)
 			{
@@ -420,7 +467,8 @@ namespace Celeste.Mod.EmoteMod
 						string animName = animation.Remove(0, sdata.Key.Length + 1); // strip sprite name
 						KeyValuePair<string, Sprite.Animation> newAnim = new KeyValuePair<string, Sprite.Animation>(animName, anims[animName]);
 
-						return newAnim.Value.Frames;
+						return newAnim.Value;
+						//return newAnim.Value.Frames;
 					}
 					catch
 					{
