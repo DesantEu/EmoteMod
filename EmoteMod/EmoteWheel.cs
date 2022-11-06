@@ -107,16 +107,15 @@ namespace Celeste.Mod.EmoteMod
 				EmoteModMain.Settings.emote9
 			};
 
-			// Update can halt in the pause menu.
 
 			if (Shown)
 			{
+				// get selected
 				Angle = EmoteWheelModule.JoystickEmoteWheel.Value.Angle();
 				float angle = (float)((Angle + Math.PI * 2f) % (Math.PI * 2f));
 				float start = (-0.5f / emotes.Length) * 2f * (float)Math.PI;
 				if (2f * (float)Math.PI + start < angle)
 				{
-					// Angle should be start < angle < 0, but is (TAU + start) < angle < TAU
 					angle -= 2f * (float)Math.PI;
 				}
 				for (int i = 0; i < emotes.Length; i++)
@@ -138,12 +137,14 @@ namespace Celeste.Mod.EmoteMod
 				Selected = -1;
 			}
 			selectedTime += Engine.RawDeltaTime;
+			// detect when new emote is selected
 			if (PrevSelected != Selected)
 			{
 				selectedTime = 0f;
 				PrevSelected = Selected;
 			}
 
+			// cool fade in and out animation
 			float popupAlpha;
 			float popupScale;
 
@@ -196,6 +197,7 @@ namespace Celeste.Mod.EmoteMod
 
 			popupScale *= level.GetScreenScale();
 
+			// get pos
 			Vector2 pos = Tracking.Position;
 			pos.Y -= 8f;
 
@@ -208,15 +210,17 @@ namespace Celeste.Mod.EmoteMod
 				1920f - radius, 1080f - radius
 			);
 
+			// scale of selected stuff is 2f * this
 			float selScaleScale = 0.67f;
 
 			// draw petals
 			for (int i = 0; i < emotes.Length; i++)
 			{
+				// no idea
 				float selScale = Selected == i ? 128f * selScaleScale : 64f;
+				float rot = i / 10f * 2f * (float)Math.PI;
 
-				float rot = ((i /*+ 0.5f*/) / 10f) * 2f * (float)Math.PI;
-
+				// draw them around the player
 				Petal.DrawCentered(
 				pos + new Vector2((float)Math.Cos(rot), (float)Math.Sin(rot)) * selScale,
 				Color.White * alpha * alpha * alpha,
@@ -224,10 +228,11 @@ namespace Celeste.Mod.EmoteMod
 				rot
 				);
 
+				// since the selected petal is gonna be bigger and further out we will draw the bottom part over it to make it seem normal
 				if (Selected == i)
 				{
 					PetalBottom.DrawCentered(
-					pos + new Vector2((float)Math.Cos(rot), (float)Math.Sin(rot)) * 64f,
+					pos + new Vector2((float)Math.Cos(rot), (float)Math.Sin(rot)) * (64f + 1.2f - 0.2f * Calc.Clamp(Ease.CubeOut(selectedTime / 0.1f), 0f, 1f)),
 					Color.White * alpha * alpha * alpha,
 					Vector2.One * popupScale * 0.5f,
 					rot
@@ -235,9 +240,10 @@ namespace Celeste.Mod.EmoteMod
 				}
 			}
 
-			// draw emotes
+			// uhhhhh
 			float selectedScale = 1.2f - 0.2f * Calc.Clamp(Ease.CubeOut(selectedTime / 0.1f), 0f, 1f) + (float)Math.Sin(time * 1.8f) * 0.05f * 2f * selScaleScale;
 
+			// draw emotes
 			for (int i = 0; i < emotes.Length; i++)
 			{
 
@@ -245,29 +251,36 @@ namespace Celeste.Mod.EmoteMod
 				if (string.IsNullOrEmpty(emote))
 					continue;
 
+				// get pos
 				float a = (i / (float)emotes.Length) * 2f * (float)Math.PI;
 				Vector2 emotePos = pos + new Vector2(
 					(float)Math.Cos(a),
 					(float)Math.Sin(a)
-				) * radius * (Selected == i ? 2f * selScaleScale : 1f);
+				) * radius * (Selected == i ? 2f * selScaleScale : 1f); // we want to draw the selected emote further
 
+				// get the middle frame of the selected emote
 				MTexture[] tanim = getTextureByName(emote);
 				MTexture icon = tanim[tanim.Length > 2 ? tanim.Length / 2 : 0];
 				if (icon == null)
 					continue;
 
+				// get size and all
 				Vector2 iconSize = new Vector2(icon.Width, icon.Height);
 				float iconScale = (Math.Max(icon.Width, icon.Height) / Math.Max(iconSize.X, iconSize.Y)) * /*2.24f*/ 2.5f * popupScale;
-
-				//emotePos *= (Selected == i ? 1.2f : 1f);
+				// no idea
 				emotePos.Y -= (iconScale * iconSize.Y) / 3f;
 
 				icon.DrawCentered(
 					emotePos,
+					//                              // blinking when selected                              // default opacity
 					Color.White * (Selected == i ? (Calc.BetweenInterval(selectedTime, 0.1f) ? 0.9f : 1f) : 1f) * alpha,
+					// scale the selected one up a bit
 					Vector2.One * (Selected == i ? selectedScale * 2f * selScaleScale : 1f) * iconScale
 				);
 			}
+
+
+
 			//Petal.DrawCentered(
 			//             pos + new Vector2(128, 0),
 			//             Color.White * alpha * alpha * alpha,
