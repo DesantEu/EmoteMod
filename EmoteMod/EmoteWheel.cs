@@ -213,14 +213,15 @@ namespace Celeste.Mod.EmoteMod
 			// scale of selected stuff is 2f * this
 			float selScaleScale = 0.67f;
 			// animation for selected petal
-			float selPetalEase = (1.05f - 0.05f * Calc.Clamp(Ease.CubeOut(selectedTime / 0.1f), 0f, 1f));
+			float selPetalEase = (selScaleScale - 0.5f) * (1f - Calc.Clamp(Ease.CubeOut(selectedTime / 0.1f), 0f, 1f));
 			//float selPetalEase = (1.2f - 0.2f * Calc.Clamp(Ease.CubeOut(selectedTime / 0.1f), 0f, 1f));
+			EmoteModMain.echo(selPetalEase.ToString());
 
 			// draw petals
 			for (int i = 0; i < emotes.Length; i++)
 			{
 				// no idea
-				float selScale = Selected == i ? 128f * selScaleScale * selPetalEase : 64f;
+				float selScale = Selected == i ? 128f * selScaleScale - selPetalEase : 64f;
 				float rot = i / 10f * 2f * (float)Math.PI;
 
 				// draw them around the player
@@ -232,13 +233,14 @@ namespace Celeste.Mod.EmoteMod
 					* popupScale // scale in and out when shown/hidden
 					,
 					Color.White * alpha * alpha * alpha, // no idea
-					// scale
+														 // scale
 					Vector2.One // yep
 					* popupScale // scale in and out when shown/hidden
-					* (Selected == i ? 1f * selScaleScale // if selected then big
-					* selPetalEase // + animation on select
+					* (Selected == i ? (selScaleScale // if selected then big
+													  //* selPetalEase) // + animation on select
+					- selPetalEase)
 					: 0.5f), // not selected = smol
-					// rorate
+							 // rorate
 					rot
 				);
 
@@ -252,53 +254,57 @@ namespace Celeste.Mod.EmoteMod
 						* 64f, // always smol
 						Color.White * alpha * alpha * alpha,
 						// scale
-						Vector2.One 
+						Vector2.One
 						* popupScale // animation on hide/show
 						* 0.5f, // always smol
-						// rotate
+								// rotate
 						rot
 					);
 				}
 			}
 
 			// uhhhhh
-			float selectedScale = 1.2f - 0.2f * Calc.Clamp(Ease.CubeOut(selectedTime / 0.1f), 0f, 1f) + (float)Math.Sin(time * 1.8f) * 0.05f * 2f * selScaleScale;
+			float selectedScale = 1f + /*(float)Math.Sin(time * 1.8f) * 0.05f*/ 0.05f * 2f * selScaleScale;
+			float selEmoteEase = (2f * selScaleScale - 1f) * (1f - Calc.Clamp(Ease.CubeOut(selectedTime / 0.1f), 0f, 1f));
+			float selMultiplier = ((2f * selScaleScale) - selEmoteEase);
+			//float selectedScale = 1.2f - 0.2f * Calc.Clamp(Ease.CubeOut(selectedTime / 0.1f), 0f, 1f) + (float)Math.Sin(time * 1.8f) * 0.05f * 2f * selScaleScale;
 
 			// draw emotes
-			//for (int i = 0; i < emotes.Length; i++)
-			//{
+			for (int i = 0; i < emotes.Length; i++)
+			{
 
-			//	string emote = emotes[i];
-			//	if (string.IsNullOrEmpty(emote))
-			//		continue;
+				string emote = emotes[i];
+				if (string.IsNullOrEmpty(emote))
+					continue;
 
-			//	// get pos
-			//	float a = (i / (float)emotes.Length) * 2f * (float)Math.PI;
-			//	Vector2 emotePos = pos + new Vector2(
-			//		(float)Math.Cos(a),
-			//		(float)Math.Sin(a)
-			//	) * radius * (Selected == i ? 2f * selScaleScale : 1f); // we want to draw the selected emote further
+				// get pos
+				float a = (i / (float)emotes.Length) * 2f * (float)Math.PI;
+				Vector2 emotePos = pos + new Vector2(
+					(float)Math.Cos(a),
+					(float)Math.Sin(a)
+				) * radius * (Selected == i ? selMultiplier : 1f); // we want to draw the selected emote further
 
-			//	// get the middle frame of the selected emote
-			//	MTexture[] tanim = getTextureByName(emote);
-			//	MTexture icon = tanim[tanim.Length > 2 ? tanim.Length / 2 : 0];
-			//	if (icon == null)
-			//		continue;
+				// get the middle frame of the selected emote
+				MTexture[] tanim = getTextureByName(emote);
+				MTexture icon = tanim[tanim.Length > 2 ? tanim.Length / 2 : 0];
+				if (icon == null)
+					continue;
 
-			//	// get size and all
-			//	Vector2 iconSize = new Vector2(icon.Width, icon.Height);
-			//	float iconScale = (Math.Max(icon.Width, icon.Height) / Math.Max(iconSize.X, iconSize.Y)) * /*2.24f*/ 2.5f * popupScale;
-			//	// no idea
-			//	emotePos.Y -= (iconScale * iconSize.Y) / 3f;
+				// get size and all
+				Vector2 iconSize = new Vector2(icon.Width, icon.Height);
+				float iconScale = (Math.Max(icon.Width, icon.Height) / Math.Max(iconSize.X, iconSize.Y)) * /*2.24f*/ 2.5f * popupScale;
+				// no idea
+				emotePos.Y -= (iconScale * iconSize.Y) / 3f;
 
-			//	icon.DrawCentered(
-			//		emotePos,
-			//		//                              // blinking when selected                              // default opacity
-			//		Color.White * (Selected == i ? (Calc.BetweenInterval(selectedTime, 0.1f) ? 0.9f : 1f) : 1f) * alpha,
-			//		// scale the selected one up a bit
-			//		Vector2.One * (Selected == i ? selectedScale * 2f * selScaleScale : 1f) * iconScale
-			//	);
+				icon.DrawCentered(
+					emotePos,
+					//                              // blinking when selected                              // default opacity
+					Color.White * (Selected == i ? (Calc.BetweenInterval(selectedTime, 0.1f) ? 0.9f : 1f) : 1f) * alpha,
+					// scale the selected one up a bit
+					Vector2.One * (Selected == i ? selectedScale * selMultiplier : 1f) * iconScale
+				);
 			}
+		}
 
 
 
