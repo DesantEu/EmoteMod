@@ -214,7 +214,6 @@ namespace Celeste.Mod.EmoteMod
 			float selScaleScale = 0.67f;
 			// animation for selected petal
 			float selPetalEase = (selScaleScale - 0.5f) * (1f - Calc.Clamp(Ease.CubeOut(selectedTime / 0.1f), 0f, 1f));
-			//float selPetalEase = (1.2f - 0.2f * Calc.Clamp(Ease.CubeOut(selectedTime / 0.1f), 0f, 1f));
 
 			// draw petals
 			for (int i = 0; i < emotes.Length; i++)
@@ -232,14 +231,13 @@ namespace Celeste.Mod.EmoteMod
 					* popupScale // scale in and out when shown/hidden
 					,
 					Color.White * alpha * alpha * alpha, // no idea
-														 // scale
+					// scale
 					Vector2.One // yep
 					* popupScale // scale in and out when shown/hidden
 					* (Selected == i ? (selScaleScale // if selected then big
-													  //* selPetalEase) // + animation on select
-					- selPetalEase)
+					- selPetalEase) // animation on select
 					: 0.5f), // not selected = smol
-							 // rorate
+					// rorate
 					rot
 				);
 
@@ -263,10 +261,9 @@ namespace Celeste.Mod.EmoteMod
 			}
 
 			// uhhhhh
-			float selectedScale = 1f + /*(float)Math.Sin(time * 1.8f) * 0.05f*/ 0.05f * 2f * selScaleScale;
+			float selectedScale = 1f + 0.05f * 2f * selScaleScale;
 			float selEmoteEase = (2f * selScaleScale - 1f) * (1f - Calc.Clamp(Ease.CubeOut(selectedTime / 0.1f), 0f, 1f));
-			float selMultiplier = ((2f * selScaleScale) - selEmoteEase);
-			//float selectedScale = 1.2f - 0.2f * Calc.Clamp(Ease.CubeOut(selectedTime / 0.1f), 0f, 1f) + (float)Math.Sin(time * 1.8f) * 0.05f * 2f * selScaleScale;
+			float selMultiplier = ((2f * selScaleScale) - selEmoteEase) * 0.95f;
 
 			// draw emotes
 			for (int i = 0; i < emotes.Length; i++)
@@ -283,18 +280,13 @@ namespace Celeste.Mod.EmoteMod
 					(float)Math.Sin(a)
 				) * radius * (Selected == i ? selMultiplier : 1f); // we want to draw the selected emote further
 
-				// get the middle frame of the selected emote
-				//MTexture[] tanim = getTextureByName(emote);
-				//MTexture icon = tanim[tanim.Length > 2 ? tanim.Length / 2 : 0];
-				//EmoteModMain.echo(selectedTime.ToString());
-				//if (icon == null)
-				//	continue;
-
 				Sprite.Animation sanim = getAnimationByName(emote);
+				if (sanim == null) continue;
+
 				MTexture[] tanim = sanim.Frames;
 				MTexture icon = tanim[Selected == i ?
-					(int)Math.Floor(selectedTime / sanim.Delay) % sanim.Frames.Length
-					: tanim.Length > 2 ? tanim.Length / 2 : 0];
+					(int)Math.Floor(selectedTime / sanim.Delay) % sanim.Frames.Length // animate selected emote
+					: tanim.Length > 2 ? tanim.Length / 2 : 0]; // display the middle frame of the rest
 
 				// get size and all
 				Vector2 iconSize = new Vector2(icon.Width, icon.Height);
@@ -352,109 +344,7 @@ namespace Celeste.Mod.EmoteMod
 			}
 		}
 
-
-
-		//Petal.DrawCentered(
-		//             pos + new Vector2(128, 0),
-		//             Color.White * alpha * alpha * alpha,
-		//             Vector2.One * popupScale
-		//             );
-
-		//BG.DrawCentered(
-		//    pos,
-		//    Color.White * alpha * alpha * alpha,
-		//    Vector2.One * popupScale
-		//);
-
-		//Indicator.DrawCentered(
-		//    pos,
-		//    Color.White * alpha * alpha * alpha,
-		//    Vector2.One * popupScale,
-		//    Angle
-		//);
-
-		//float selectedScale = 1.2f - 0.2f * Calc.Clamp(Ease.CubeOut(selectedTime / 0.1f), 0f, 1f) + (float)Math.Sin(time * 1.8f) * 0.05f;
-
-		//for (int i = 0; i < emotes.Length; i++)
-		//{
-		//    Line.DrawCentered(
-		//        pos,
-		//        Color.White * alpha * alpha * alpha,
-		//        Vector2.One * popupScale,
-		//        ((i + 0.5f) / emotes.Length) * 2f * (float)Math.PI
-		//    );
-
-		//    string emote = emotes[i];
-		//    if (string.IsNullOrEmpty(emote))
-		//        continue;
-
-		//    float a = (i / (float)emotes.Length) * 2f * (float)Math.PI;
-		//    Vector2 emotePos = pos + new Vector2(
-		//        (float)Math.Cos(a),
-		//        (float)Math.Sin(a)
-		//    ) * radius;
-
-		//    MTexture[] tanim = getTextureByName(emote);
-		//    MTexture icon = tanim[tanim.Length > 2 ? tanim.Length / 2 : 0];
-		//    if (icon == null)
-		//        continue;
-
-		//    Vector2 iconSize = new Vector2(icon.Width, icon.Height);
-		//    float iconScale = (Math.Max(icon.Width, icon.Height) / Math.Max(iconSize.X, iconSize.Y)) * 2.24f * popupScale;
-
-		//    emotePos.Y -= (iconScale * iconSize.Y) / 3f;
-
-		//    icon.DrawCentered(
-		//        emotePos,
-		//        Color.White * (Selected == i ? (Calc.BetweenInterval(selectedTime, 0.1f) ? 0.9f : 1f) : 0.7f) * alpha,
-		//        Vector2.One * (Selected == i ? selectedScale : 1f) * iconScale
-		//    );
-
-		//}
-		//}
-
-		//private MTexture[] getTextureByName(string animation)
-		//{
-		//	Dictionary<string, Sprite.Animation> madeline_bp = GFX.SpriteBank.SpriteData["player"].Sprite.Animations;
-		//	Dictionary<string, Sprite.Animation> madeline_no_bp = GFX.SpriteBank.SpriteData["player_no_backpack"].Sprite.Animations;
-		//	Dictionary<string, Sprite.Animation> madeline_badeline = GFX.SpriteBank.SpriteData["player_badeline"].Sprite.Animations;
-		//	Dictionary<string, Sprite.Animation> badeline = GFX.SpriteBank.SpriteData["badeline"].Sprite.Animations;
-
-		//	// b
-		//	if (animation == "b")
-		//	{
-		//		return getTextureByName("spin");
-		//	}
-
-		//	// this sucks but idk
-		//	if (madeline_no_bp.Keys.Contains(animation, StringComparer.OrdinalIgnoreCase))
-		//	{
-		//		return madeline_no_bp[animation].Frames;
-		//	}
-		//	else if (madeline_bp.Keys.Contains(animation, StringComparer.OrdinalIgnoreCase))
-		//	{
-		//		return madeline_bp[animation].Frames;
-		//	}
-		//	else if (badeline.Keys.Contains(animation, StringComparer.OrdinalIgnoreCase))
-		//	{
-		//		return badeline[animation].Frames;
-		//	}
-
-		//	else if (findCustomEmote(animation) != null)
-		//	{
-		//		return findCustomEmote(animation);
-		//	}
-
-		//	else
-		//	{
-		//		EmoteModMain.echo($"EMOTEMOD ERROR: Could not find '{animation}'");
-
-		//		return getTextureByName("player_idle");
-		//	}
-		//}
-
 		private Sprite.Animation findCustomEmote(string animation)
-		//private MTexture[] findCustomEmote(string animation)
 		{
 			foreach (KeyValuePair<string, SpriteData> sdata in GFX.SpriteBank.SpriteData)
 			{
@@ -468,7 +358,6 @@ namespace Celeste.Mod.EmoteMod
 						KeyValuePair<string, Sprite.Animation> newAnim = new KeyValuePair<string, Sprite.Animation>(animName, anims[animName]);
 
 						return newAnim.Value;
-						//return newAnim.Value.Frames;
 					}
 					catch
 					{
