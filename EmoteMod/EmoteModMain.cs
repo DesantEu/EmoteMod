@@ -73,7 +73,6 @@ namespace Celeste.Mod.EmoteMod
             EmoteStretcher.Unload();
             GravityModule.Unload();
 			EmoteWheelModule.Unload();
-		}
 			MadhuntModule.Unload();
         }
 
