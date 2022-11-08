@@ -5,6 +5,7 @@ using MonoMod.RuntimeDetour;
 using System;
 using MonoMod.Cil;
 using Mono.Cecil.Cil;
+using Microsoft.Xna.Framework;
 
 namespace Celeste.Mod.EmoteMod
 {
@@ -135,15 +136,6 @@ namespace Celeste.Mod.EmoteMod
 
             activatedWithButton = false;
 		}
-		internal static void Load()
-		{
-            On.Celeste.Input.Initialize += Input_Initialize;
-            // CHANGE!!!!!!!!
-            On.Celeste.Player.Update += Player_Update;
-
-            celestenetUpdateEmoteWheelHook = new ILHook(typeof(CelesteNetEmoteComponent).GetMethod("Update"), celestenetUpdateEmoteWheel);
-
-        }
 
         private static void celestenetUpdateEmoteWheel(ILContext il)
         {
@@ -157,12 +149,58 @@ namespace Celeste.Mod.EmoteMod
             }
         }
 
+		private static void OnHeartGemCollect(On.Celeste.HeartGem.orig_Collect orig, HeartGem self, Player player)
+		{
+			orig(self, player);
+			Wheel?.TimeRateSkip.Add(self.IsFake ? "EmptySpaceHeart" : "HeartGem");
+			if (self.IsFake && Wheel != null)
+				Wheel.timeSkipForcedDelay = 10f;
+		}
+
+		private static void OnHeartGemEndCutscene(On.Celeste.HeartGem.orig_EndCutscene orig, HeartGem self)
+		{
+			orig(self);
+			Wheel?.TimeRateSkip.Remove("HeartGem");
+		}
+
+		private static PlayerDeadBody OnPlayerDie(On.Celeste.Player.orig_Die orig, Player self, Vector2 direction, bool evenIfInvincible, bool registerDeathInStats)
+		{
+			PlayerDeadBody pdb = orig(self, direction, evenIfInvincible, registerDeathInStats);
+			if (pdb != null && Wheel != null)
+			{
+				Wheel.TimeRateSkip.Add("PlayerDead");
+				Wheel.Shown = false;
+				Wheel.ForceSetTimeRate = true;
+                activatedWithButton = false;
+			}
+			return pdb;
+		}
+
+		internal static void Load()
+		{
+            On.Celeste.Input.Initialize += Input_Initialize;
+            // CHANGE!!!!!!!!
+            On.Celeste.Player.Update += Player_Update;
+
+			On.Celeste.HeartGem.Collect += OnHeartGemCollect;
+			On.Celeste.HeartGem.EndCutscene += OnHeartGemEndCutscene;
+			On.Celeste.Player.Die += OnPlayerDie;
+
+			celestenetUpdateEmoteWheelHook = new ILHook(typeof(CelesteNetEmoteComponent).GetMethod("Update"), celestenetUpdateEmoteWheel);
+
+        }
+
+
 		internal static void Unload()
 		{
 			On.Celeste.Input.Initialize -= Input_Initialize;
 			On.Celeste.Player.Update -= Player_Update;
 
-            celestenetUpdateEmoteWheelHook.Dispose();
+			On.Celeste.HeartGem.Collect -= OnHeartGemCollect;
+			On.Celeste.HeartGem.EndCutscene -= OnHeartGemEndCutscene;
+			On.Celeste.Player.Die -= OnPlayerDie;
+
+			celestenetUpdateEmoteWheelHook.Dispose();
         }
 	}
 }
