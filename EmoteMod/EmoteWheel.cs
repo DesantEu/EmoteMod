@@ -204,6 +204,8 @@ namespace Celeste.Mod.EmoteMod
 
 			// scale of selected stuff is 2f * this
 			float selScaleScale = 0.67f;
+
+			#region draw petals
 			// animation for selected petal
 			float selPetalEase = (selScaleScale - 0.5f) * (1f - Calc.Clamp(Ease.CubeOut(selectedTime / 0.1f), 0f, 1f));
 
@@ -251,7 +253,9 @@ namespace Celeste.Mod.EmoteMod
 					);
 				}
 			}
+			#endregion
 
+			#region draw emotes
 			// uhhhhh
 			float selectedScale = 1f + 0.05f * 2f * selScaleScale;
 			float selEmoteEase = (2f * selScaleScale - 1f) * (1f - Calc.Clamp(Ease.CubeOut(selectedTime / 0.1f), 0f, 1f));
@@ -294,6 +298,7 @@ namespace Celeste.Mod.EmoteMod
 					Vector2.One * (Selected == i ? selectedScale * selMultiplier : 1f) * iconScale
 				);
 			}
+			#endregion
 		}
 
 		private Sprite.Animation getAnimationByName(string animation)
