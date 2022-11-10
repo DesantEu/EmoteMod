@@ -34,16 +34,8 @@ namespace Celeste.Mod.EmoteMod
 		protected int PrevSelected;
 		protected float selectedTime = 0f;
 
-		//public MTexture BG = GFX.Gui["emotemod/iconwheel/bg"];
-		//public MTexture Line = GFX.Gui["emotemod/iconwheel/line"];
-		//public MTexture Indicator = GFX.Gui["emotemod/iconwheel/indicator"];
 		public MTexture Petal = GFX.Gui["emotemod/emotewheel/petalv2_short"];
 		public MTexture PetalBottom = GFX.Gui["emotemod/emotewheel/petalv2_short_bottom"];
-
-		public Color TextSelectColorA = Calc.HexToColor("84FF54");
-		public Color TextSelectColorB = Calc.HexToColor("FCFF59");
-
-
 
 		public EmoteWheel(Entity tracking)
 			: base(Vector2.Zero)
