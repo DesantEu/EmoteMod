@@ -282,7 +282,7 @@ namespace Celeste.Mod.EmoteMod
 
 				// get size and all
 				Vector2 iconSize = new Vector2(icon.Width, icon.Height);
-				float iconScale = (Math.Max(icon.Width, icon.Height) / Math.Max(iconSize.X, iconSize.Y)) * /*2.24f*/ 2.5f * popupScale;
+				float iconScale = (Math.Max(icon.Width, icon.Height) / Math.Max(iconSize.X, iconSize.Y)) * 2.5f * popupScale;
 				// no idea
 				emotePos.Y -= (iconScale * iconSize.Y) / 3f;
 
