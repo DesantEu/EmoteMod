@@ -1,5 +1,7 @@
 ﻿using Celeste.Mod.CelesteNet.Client;
+using Celeste.Mod.UI;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Monocle;
 using System;
 using System.Collections.Generic;
@@ -256,6 +258,14 @@ namespace Celeste.Mod.EmoteMod
 			#endregion
 
 			#region draw emotes
+
+			// high quality emotes
+			if (EmoteModMain.Settings.EmoteWheelHighRes)
+			{
+				SubHudRenderer.EndRender();
+				SubHudRenderer.BeginRender(null, SamplerState.PointClamp);
+			}
+
 			// uhhhhh
 			float selectedScale = 1f + 0.05f * 2f * selScaleScale;
 			float selEmoteEase = (2f * selScaleScale - 1f) * (1f - Calc.Clamp(Ease.CubeOut(selectedTime / 0.1f), 0f, 1f));
@@ -297,6 +307,13 @@ namespace Celeste.Mod.EmoteMod
 					// scale the selected one up a bit
 					Vector2.One * (Selected == i ? selectedScale * selMultiplier : 1f) * iconScale
 				);
+			}
+
+			// turn off high quality emotes
+			if (EmoteModMain.Settings.EmoteWheelHighRes)
+			{
+				SubHudRenderer.EndRender();
+				SubHudRenderer.BeginRender();
 			}
 			#endregion
 		}

@@ -222,6 +222,9 @@ namespace Celeste.Mod.EmoteMod
 		[SettingSubText("settings_EmoteWheel_desc")]
 		public bool EmoteWheel { get; set; } = false;
 
+		[SettingName("settings_EmoteWheel_high_quality_name")]
+		[SettingSubText("settings_EmoteWheel_high_quality_desc")]
+		public bool EmoteWheelHighRes { get; set; } = true;
 
 		[SettingName("settings_EmoteWheel_name")]
 		[DefaultButtonBinding(Buttons.Y, 0)]
