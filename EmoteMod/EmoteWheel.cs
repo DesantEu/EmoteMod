@@ -11,7 +11,6 @@ using System.Linq;
 
 namespace Celeste.Mod.EmoteMod
 {
-	// TODO: This is taken mostly as is from GhostNet and can be improved.
 	public class EmoteWheel : Entity
 	{
 
