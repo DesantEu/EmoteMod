@@ -82,6 +82,8 @@ namespace Celeste.Mod.EmoteMod
                 if (Wheel.Shown && selected != -1 && ButtonEmoteSend.Pressed)
                 {
                     Send(selected, Player);
+                    // if you open it with button and press r3 it wont close so we do this
+                    joystickMoved = true;
                 }
 
             }
