@@ -302,7 +302,6 @@ namespace Celeste.Mod.EmoteMod
 
 				icon.DrawCentered(
 					emotePos,
-					//                              // blinking when selected                              // default opacity
 					Color.White * alpha,
 					// scale the selected one up a bit
 					Vector2.One * (Selected == i ? selectedScale * selMultiplier : 1f) * iconScale
