@@ -303,7 +303,7 @@ namespace Celeste.Mod.EmoteMod
 				icon.DrawCentered(
 					emotePos,
 					//                              // blinking when selected                              // default opacity
-					Color.White * (Selected == i ? (Calc.BetweenInterval(selectedTime, 0.1f) ? 0.9f : 1f) : 1f) * alpha,
+					Color.White * alpha,
 					// scale the selected one up a bit
 					Vector2.One * (Selected == i ? selectedScale * selMultiplier : 1f) * iconScale
 				);
