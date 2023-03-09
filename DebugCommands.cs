@@ -21,7 +21,7 @@ namespace Celeste.Mod.EmoteMod
 				// this is where emotes should be
 				if (custom == "c" || custom == "custom") // custom emotes
 				{
-					EmoteModule.Emote(emote, true, PlayerHelper.GetPlayer());
+					Emote.DoEmote(emote, true, PlayerHelper.GetPlayer());
 				}
 				else if (custom == "toggle" || custom == "t") // toggles
 				{
@@ -56,13 +56,13 @@ namespace Celeste.Mod.EmoteMod
 					// tobble backpack
 					else if (emote == "bp")
 					{
-						BackpackModule.ScrollBackpack();
+						BackpackChanger.ScrollBackpack();
 					}
 
 					// haha funny
 					else if (emote == "funnycommand" || emote == "fc")
 					{
-						BackpackModule.EnterSickoMode();
+						BackpackChanger.EnterSickoMode();
 					}
 				}
 				// binding emotes with console

@@ -3,7 +3,7 @@ using Monocle;
 
 namespace Celeste.Mod.EmoteMod
 {
-    public class EmoteCancelModule
+    public class EmoteCancel
 	{
 		// public static Player player;
 
@@ -26,10 +26,10 @@ namespace Celeste.Mod.EmoteMod
 			SaveData.Instance.Assists.Invincible = invincibilityDefault;
 
 			// return player sprite mode
-			if (EmoteModule.playback)
+			if (Emote.playback)
 			{ //ex variants fix thing
 				player.ResetSpriteNextFrame(PlayerSpriteMode.Playback);
-				EmoteModule.playback = false;
+				Emote.playback = false;
 			}
 			else if (SaveData.Instance.Assists.PlayAsBadeline)
 			{
@@ -47,7 +47,7 @@ namespace Celeste.Mod.EmoteMod
 				customEmote = "";
 			}
 
-			EmoteModule.bounced = false;
+			Emote.bounced = false;
 
 			EmoteModModule.anim_by_game = 0; // tell yourself that no animation is playing
 		}

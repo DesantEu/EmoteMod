@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 
 namespace Celeste.Mod.EmoteMod
 {
-    public class Backpack
+    public class BackpackChanger
 	{
 		//backpack formatter
 		public static Func<int, string> backpackFormatter = arg =>
@@ -27,7 +27,7 @@ namespace Celeste.Mod.EmoteMod
 			}
 
 			orig(self, mode);
-		}
+		} 
 
 		// load missing animatons
 		private static void onLevelLoader(On.Celeste.LevelLoader.orig_ctor orig, LevelLoader self, Session session, Vector2? startPosition)

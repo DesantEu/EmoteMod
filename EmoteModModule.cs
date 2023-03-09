@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using Monocle;
 
 namespace Celeste.Mod.EmoteMod {
     public class EmoteModModule : EverestModule {
@@ -50,7 +51,7 @@ namespace Celeste.Mod.EmoteMod {
             Gravity.Load();
             Emote.Load();
             EmoteCancel.Load();
-            Backpack.Load();
+            BackpackChanger.Load();
             Speed.Load();
             Stretcher.Load();
 			EmoteWheel.Load();
@@ -63,7 +64,7 @@ namespace Celeste.Mod.EmoteMod {
 
             Emote.Unload();
             EmoteCancel.Unload();
-            Backpack.Unload();
+            BackpackChanger.Unload();
             Speed.Unload();
             Stretcher.Unload();
             Gravity.Unload();

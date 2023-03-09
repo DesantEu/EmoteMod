@@ -17,7 +17,7 @@
 
 			if (stretch_lock)
 			{
-				if (MadHuntNerf.inRound)
+				if (MadhuntNerf.inRound)
 				{
 					self.Sprite.Scale.X = x_stretch >= 0 ? 1 : -1;
 					self.Sprite.Scale.Y = 1;

@@ -22,7 +22,7 @@ namespace Celeste.Mod.EmoteMod
 
 		// public static bool changedSprite;
 
-		public static void Emote(string animation, bool by_command, Player player)
+		public static void DoEmote(string animation, bool by_command, Player player)
 		{
 			if (EmoteModModule.anim_by_game != 2) // if the game is not playing a cutscene
 			{
@@ -214,25 +214,25 @@ namespace Celeste.Mod.EmoteMod
 
             // TODO: this looks dumb
 			if (EmoteModModule.Settings.button0.Keys.Count != 0 && MInput.Keyboard.Pressed(EmoteModModule.Settings.button0.Keys[0]) || EmoteModModule.Settings.button0.Buttons.Count != 0 && MInput.GamePads[0].Pressed(EmoteModModule.Settings.button0.Buttons[0]))
-				Emote(EmoteModModule.Settings.emote0, false, self);
+				DoEmote(EmoteModModule.Settings.emote0, false, self);
 			else if (EmoteModModule.Settings.button1.Keys.Count != 0 && MInput.Keyboard.Pressed(EmoteModModule.Settings.button1.Keys[0]) || EmoteModModule.Settings.button1.Buttons.Count != 0 && MInput.GamePads[0].Pressed(EmoteModModule.Settings.button1.Buttons[0]))
-				Emote(EmoteModModule.Settings.emote1, false, self);
+				DoEmote(EmoteModModule.Settings.emote1, false, self);
 			else if (EmoteModModule.Settings.button2.Keys.Count != 0 && MInput.Keyboard.Pressed(EmoteModModule.Settings.button2.Keys[0]) || EmoteModModule.Settings.button2.Buttons.Count != 0 && MInput.GamePads[0].Pressed(EmoteModModule.Settings.button2.Buttons[0]))
-				Emote(EmoteModModule.Settings.emote2, false, self);
+				DoEmote(EmoteModModule.Settings.emote2, false, self);
 			else if (EmoteModModule.Settings.button3.Keys.Count != 0 && MInput.Keyboard.Pressed(EmoteModModule.Settings.button3.Keys[0]) || EmoteModModule.Settings.button3.Buttons.Count != 0 && MInput.GamePads[0].Pressed(EmoteModModule.Settings.button3.Buttons[0]))
-				Emote(EmoteModModule.Settings.emote3, false, self);
+				DoEmote(EmoteModModule.Settings.emote3, false, self);
 			else if (EmoteModModule.Settings.button4.Keys.Count != 0 && MInput.Keyboard.Pressed(EmoteModModule.Settings.button4.Keys[0]) || EmoteModModule.Settings.button4.Buttons.Count != 0 && MInput.GamePads[0].Pressed(EmoteModModule.Settings.button4.Buttons[0]))
-				Emote(EmoteModModule.Settings.emote4, false, self);
+				DoEmote(EmoteModModule.Settings.emote4, false, self);
 			else if (EmoteModModule.Settings.button5.Keys.Count != 0 && MInput.Keyboard.Pressed(EmoteModModule.Settings.button5.Keys[0]) || EmoteModModule.Settings.button5.Buttons.Count != 0 && MInput.GamePads[0].Pressed(EmoteModModule.Settings.button5.Buttons[0]))
-				Emote(EmoteModModule.Settings.emote5, false, self);
+				DoEmote(EmoteModModule.Settings.emote5, false, self);
 			else if (EmoteModModule.Settings.button6.Keys.Count != 0 && MInput.Keyboard.Pressed(EmoteModModule.Settings.button6.Keys[0]) || EmoteModModule.Settings.button6.Buttons.Count != 0 && MInput.GamePads[0].Pressed(EmoteModModule.Settings.button6.Buttons[0]))
-				Emote(EmoteModModule.Settings.emote6, false, self);
+				DoEmote(EmoteModModule.Settings.emote6, false, self);
 			else if (EmoteModModule.Settings.button7.Keys.Count != 0 && MInput.Keyboard.Pressed(EmoteModModule.Settings.button7.Keys[0]) || EmoteModModule.Settings.button7.Buttons.Count != 0 && MInput.GamePads[0].Pressed(EmoteModModule.Settings.button7.Buttons[0]))
-				Emote(EmoteModModule.Settings.emote7, false, self);
+				DoEmote(EmoteModModule.Settings.emote7, false, self);
 			else if (EmoteModModule.Settings.button8.Keys.Count != 0 && MInput.Keyboard.Pressed(EmoteModModule.Settings.button8.Keys[0]) || EmoteModModule.Settings.button8.Buttons.Count != 0 && MInput.GamePads[0].Pressed(EmoteModModule.Settings.button8.Buttons[0]))
-				Emote(EmoteModModule.Settings.emote8, false, self);
+				DoEmote(EmoteModModule.Settings.emote8, false, self);
 			else if (EmoteModModule.Settings.button9.Keys.Count != 0 && MInput.Keyboard.Pressed(EmoteModModule.Settings.button9.Keys[0]) || EmoteModModule.Settings.button9.Buttons.Count != 0 && MInput.GamePads[0].Pressed(EmoteModModule.Settings.button9.Buttons[0]))
-				Emote(EmoteModModule.Settings.emote9, false, self);
+				DoEmote(EmoteModModule.Settings.emote9, false, self);
 
 
 		}

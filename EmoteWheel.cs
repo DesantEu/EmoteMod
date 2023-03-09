@@ -15,7 +15,7 @@ namespace Celeste.Mod.EmoteMod
 		public static VirtualJoystick JoystickEmoteWheel;
 		public static VirtualButton ButtonEmoteSend;
 
-        public static EmoteWheel Wheel;
+        public static EmoteWheelObject Wheel;
 
         public static bool activatedWithButton;
         public static bool joystickMoved;
@@ -45,7 +45,7 @@ namespace Celeste.Mod.EmoteMod
                 goto End;
 
             if (Wheel == null)
-                level.Add(Wheel = new EmoteWheel(Player));
+                level.Add(Wheel = new EmoteWheelObject(Player));
 
             if (JoystickEmoteWheel == null)
                 goto End;
@@ -121,7 +121,7 @@ namespace Celeste.Mod.EmoteMod
 				EmoteModModule.Settings.emote9
 			};
             if (0 <= index && index < emotes.Length)
-                EmoteModule.Emote(emotes[index], false, player);
+                Emote.DoEmote(emotes[index], false, player);
 		}
 
 		private static void Input_Initialize(On.Celeste.Input.orig_Initialize orig)
