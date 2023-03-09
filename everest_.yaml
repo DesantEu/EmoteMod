@@ -1,5 +1,5 @@
 - Name: EmoteMod
-  Version: 1.8.0.0
+  Version: 1.9.0.0
   DLL: "EmoteMod.dll"
   Dependencies:
     - Name: Everest
