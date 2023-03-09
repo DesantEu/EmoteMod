@@ -1,0 +1,8 @@
+- Name: EmoteMod
+  Version: 1.8.0.0
+  DLL: "EmoteMod.dll"
+  Dependencies:
+    - Name: Everest
+      Version: 1.1161.0
+    - Name: CelesteNet.Client
+      Version: 2.0.0
