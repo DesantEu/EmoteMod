@@ -1,0 +1,21 @@
+settings_modname= EmoteMod
+
+settings_gravityCancel_name= Disable gravity
+settings_gravityCancel_desc= Makes player float when doing an emote.
+
+settings_speed_name= Animation speed
+settings_backpack_name= Backpack
+
+settings_EmoteWheel_name= Emote Wheel
+settings_EmoteWheel_desc= Move your right stick to open emote picker. 
+
+settings_emote0= Emote 0
+settings_emote1= Emote 1
+settings_emote2= Emote 2
+settings_emote3= Emote 3
+settings_emote4= Emote 4
+settings_emote5= Emote 5
+settings_emote6= Emote 6
+settings_emote7= Emote 7
+settings_emote8= Emote 8
+settings_emote9= Emote 9
