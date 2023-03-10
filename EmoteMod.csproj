@@ -30,6 +30,13 @@
         <Reference Include="$(CelestePrefix)\MMHOOK_Celeste.dll">
             <Private>false</Private>
         </Reference>
+        <Reference Include="$(CelestePrefix)\Mods\CelesteNet.Client\CelesteNet.Client.dll">
+            <Private>false</Private>
+        </Reference>
+        <Reference Include="$(CelestePrefix)\Mods\CelesteNet.Client\CelesteNet.Shared.dll">
+            <Private>false</Private>
+        </Reference>
+
     </ItemGroup>
 
     <Choose>
