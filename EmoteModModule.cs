@@ -11,6 +11,8 @@ namespace Celeste.Mod.EmoteMod {
         public override Type SessionType => typeof(EmoteModModuleSession);
         public static EmoteModModuleSession Session => (EmoteModModuleSession) Instance._Session;
 
+        public static CelesteNet.Client.CelesteNetClientSettings celestenetSettings = CelesteNet.Client.CelesteNetClientModule.Settings;
+
         /// <summary>
 		/// If 0 we can make an animation;
 		/// If 1 we are playing animation by hand;
@@ -56,6 +58,7 @@ namespace Celeste.Mod.EmoteMod {
             Stretcher.Load();
 			EmoteWheel.Load();
 			MadhuntNerf.Load();
+            CNetHelper.Load();
         }
 
         public override void Unload() 
@@ -70,6 +73,7 @@ namespace Celeste.Mod.EmoteMod {
             Gravity.Unload();
 			EmoteWheel.Unload();
 			MadhuntNerf.Unload();
+            CNetHelper.Unload();
         }
     }
 }

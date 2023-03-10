@@ -172,8 +172,11 @@ namespace Celeste.Mod.EmoteMod
 					}
 				}
 				else if (custom == "test")
-				{
-					
+                {
+					foreach (EverestModule i in Everest.Modules )
+                        EmoteModModule.echo(i.ToString());
+
+                    EmoteModModule.echo(CNetHelper.isLoaded.ToString());
 				}
 
 				else

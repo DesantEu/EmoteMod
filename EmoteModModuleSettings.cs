@@ -115,7 +115,7 @@ namespace Celeste.Mod.EmoteMod
 	//this is what shows up in settings
 
 	[SettingName("settings_modname")]
-	public class EmoteSettings : EverestModuleSettings
+	public class EmoteModModuleSettings : EverestModuleSettings
 	{
 		#region default control and emote settings
 		// emotes

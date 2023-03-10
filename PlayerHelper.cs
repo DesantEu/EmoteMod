@@ -5,8 +5,11 @@ namespace Celeste.Mod.EmoteMod
     internal class PlayerHelper
 	{
 
+        internal bool ForceInvincibility = false;
+
 		public void Load()
 		{
+            // TODO: hook death or something
 		}
 
 		public static Player GetPlayer()
