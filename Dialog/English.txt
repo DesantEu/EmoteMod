@@ -9,6 +9,9 @@ settings_backpack_name= Backpack
 settings_EmoteWheel_name= Emote Wheel
 settings_EmoteWheel_desc= Move your right stick to open emote picker. 
 
+settings_EmoteWheel_high_quality_name= High quality EmoteWheel
+settings_EmoteWheel_high_quality_desc= Disable this if you experience lag when Emotewheel is open
+
 settings_emote0= Emote 0
 settings_emote1= Emote 1
 settings_emote2= Emote 2
