@@ -8,7 +8,7 @@ namespace Celeste.Mod.EmoteMod
         // public static Player player;
 
         public static bool invincibilityDefault;
-        public static bool interactDefault;
+        // public static bool interactDefault;
         public static string customEmote;
 
         public static void cancelEmote()
@@ -80,19 +80,19 @@ namespace Celeste.Mod.EmoteMod
                     cancelEmote();
                 // cancel emote on press keys or if we die so that we dont respawn in a bad spot
                 if (Input.Dash.Pressed || Input.Jump.Pressed || Input.MoveY == 1 || Input.Grab.Pressed || player.Dead)
-
                     cancelEmote();
             }
-            // if idle after emote cancel emote
-            if (EmoteModModule.anim_by_game == 1 && player.Sprite.CurrentAnimationID == "idle")
-                cancelEmote();
-            // something
-            if (EmoteModModule.anim_by_game == 1 && player.StateMachine.State == 0)
-                cancelEmote();
-            // cancel emote on press keys or if we die so that we dont respawn in a bad spot
-            if (Input.Dash.Pressed || Input.Jump.Pressed || Input.MoveY == 1 || Input.Grab.Pressed || player.Dead)
-                if (EmoteModModule.anim_by_game == 1)
-                    cancelEmote();
+            // TODO: why do it twice tho
+            // // if idle after emote cancel emote
+            // if (EmoteModModule.anim_by_game == 1 && player.Sprite.CurrentAnimationID == "idle")
+            //     cancelEmote();
+            // // something
+            // if (EmoteModModule.anim_by_game == 1 && player.StateMachine.State == 0)
+            //     cancelEmote();
+            // // cancel emote on press keys or if we die so that we dont respawn in a bad spot
+            // if (Input.Dash.Pressed || Input.Jump.Pressed || Input.MoveY == 1 || Input.Grab.Pressed || player.Dead)
+            //     if (EmoteModModule.anim_by_game == 1)
+            //         cancelEmote();
             // cancel emote if below level
             if (Engine.Scene is Level level && player.Y > level.Bounds.Bottom && EmoteModModule.anim_by_game == 1)
                 cancelEmote();
@@ -122,7 +122,7 @@ namespace Celeste.Mod.EmoteMod
             On.Celeste.LevelExit.Begin += LevelExit_Begin;
             On.Celeste.Level.LoadLevel += LoadLevel;
 
-            interactDefault = EmoteModModule.celestenetSettings.Interactions; // yea need to do that
+            // interactDefault = EmoteModModule.celestenetSettings.Interactions; // yea need to do that
         }
 
         internal static void Unload()
