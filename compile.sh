@@ -2,10 +2,12 @@
 
 
 if [[ $1 == '-r' ]]; then
-    modpath='bin/Release/net452/*'
+    # modpath='bin/Release/net452/*'
+    modpath='bin/Release/net7.0/*'
     dotnet build -c Release
 else
-    modpath='bin/Debug/net452/*'
+    # modpath='bin/Debug/net452/*'
+    modpath='bin/Debug/net7.0/*'
     dotnet build
 fi
 
