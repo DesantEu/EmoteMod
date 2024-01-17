@@ -22,9 +22,7 @@ namespace Celeste.Mod.EmoteMod
                     {
                         CNMainComponent?.GetType().GetField("StateUpdated")?.SetValue(CNMainComponent, true);
                         EmoteModModule.echo($"WHAT?!?!! ITS WORKIN!!!!!!!!!G!!!!!!!!!!!!!");
-                        if (CNIsGrabbed)
-                            CNMainComponent?.GetType().GetMethod("SendReleaseMe")?.Invoke(CNMainComponent, null);
-                        EmoteModModule.echo($"didnt crash");
+                        CNRelease();
                     }
                     catch (Exception e)
                     {
@@ -93,6 +91,18 @@ namespace Celeste.Mod.EmoteMod
 
 
             }
+        }
+
+        internal static void CNRelease()
+        {
+            if (CNIsGrabbed)
+            {
+                CNMainComponent?.GetType().GetMethod("SendReleaseMe")?.Invoke(CNMainComponent, null);
+                CNMainComponent?.GetType().GetField("GrabbedBy")?.SetValue(CNMainComponent, null);
+                CNMainComponent?.GetType().GetField("IsGrabbed")?.SetValue(CNMainComponent, false);
+            }
+            EmoteModModule.echo($"didnt crash");
+
         }
 
         private static void OnSendData(ILContext il)
