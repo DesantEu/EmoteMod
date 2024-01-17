@@ -6,6 +6,8 @@ using Microsoft.Xna.Framework;
 using Monocle;
 using Celeste.Mod.CelesteNet.DataTypes;
 
+using System.Text;
+
 
 using MonoMod.RuntimeDetour;
 
@@ -53,6 +55,8 @@ namespace Celeste.Mod.EmoteMod
                     if (animation != "b" && animation != "bounce")
                         if (!player.Sprite.Animations.ContainsKey(animation))
                         {
+                            EmoteModModule.echo("ANIMATION LOOKUP");
+                            // TODO: make a => thing instead of whatever this is
                             Dictionary<string, Sprite.Animation>.KeyCollection madeline_bp = GFX.SpriteBank.SpriteData["player"].Sprite.Animations.Keys;
                             Dictionary<string, Sprite.Animation>.KeyCollection madeline_no_bp = GFX.SpriteBank.SpriteData["player_no_backpack"].Sprite.Animations.Keys;
                             Dictionary<string, Sprite.Animation>.KeyCollection madeline_badeline = GFX.SpriteBank.SpriteData["player_badeline"].Sprite.Animations.Keys;
@@ -85,13 +89,15 @@ namespace Celeste.Mod.EmoteMod
                         if (!bounced)
                             Gravity.playerY -= 1;
                         player.Sprite.Play("spin");
-                        Speed.currentDelay = player.Sprite.Animations["spin"].Delay;
+                        // Speed.currentDelay = player.Sprite.Animations["spin"].Delay;
+                        Speed.SetSpeed();
                         bounced = true;
                     }
                     else
                     {
                         player.Sprite.Play(animation); // do emote
-                        Speed.currentDelay = player.Sprite.Animations[animation].Delay;
+                        // Speed.currentDelay = player.Sprite.Animations[animation].Delay;
+                        Speed.SetSpeed();
                     }
 
                     if (by_command) // command reply only if done by command
@@ -111,29 +117,85 @@ namespace Celeste.Mod.EmoteMod
 
         private static bool addCustomEmote(string name)
         {
-            foreach (KeyValuePair<string, SpriteData> sdata in GFX.SpriteBank.SpriteData)
+            char split = ':';
+            // EmoteModModule.echo($"a, '{name}'");
+            string test = "";
+            foreach (int i in Encoding.ASCII.GetBytes(name))
             {
-                if (name.ToLower().Contains(sdata.Key.ToLower()))
-                {
-                    try
-                    {
-                        Dictionary<string, Sprite.Animation> player = GFX.SpriteBank.SpriteData["player"].Sprite.Animations;
-                        Dictionary<string, Sprite.Animation> anims = sdata.Value.Sprite.Animations;
-
-                        string animName = name.Remove(0, sdata.Key.Length + 1); // strip sprite name
-
-                        KeyValuePair<string, Sprite.Animation> newAnim = new KeyValuePair<string, Sprite.Animation>(animName, anims[animName]);
-                        player.Add(name, copyAnim(newAnim, name));
-
-                        return true;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-                }
+                test += i;
             }
-            return false;
+            // EmoteModModule.echo(test);
+
+            if (!name.Contains(split))
+                return false;
+
+            string sdata_name = name.Split(split)[0];
+            string anim_name = name.Split(split, 2)[1];
+
+            // EmoteModModule.echo("a.5" + name.Split(split)[0]);
+            // try
+            // {
+            //     sdata_name = name.Split(split)[0];
+            //     anim_name = name.Split(split, 2)[1];
+            // }
+            // catch (Exception e)
+            // {
+            //     EmoteModModule.echo($"EXCEPROIS: {e}");
+            // }
+
+            // EmoteModModule.echo($"sdata: '{sdata_name}', anim: '{anim_name}'");
+
+            if (!GFX.SpriteBank.SpriteData.ContainsKey(sdata_name))
+                return false;
+
+            // EmoteModModule.echo("b");
+            // try
+            // {
+            //     sdata_name = GFX.SpriteBank.SpriteData.Where((e) => e.Key.ToLower() == name.ToLower()).First().Key;
+            // }
+            // catch
+            // {
+            //     return false;
+            // }
+
+            Dictionary<string, Sprite.Animation> player = GFX.SpriteBank.SpriteData["player"].Sprite.Animations;
+            Dictionary<string, Sprite.Animation> anims = GFX.SpriteBank.SpriteData[sdata_name].Sprite.Animations;
+
+            if (!anims.ContainsKey(anim_name))
+                return false;
+
+            // EmoteModModule.echo("c");
+            KeyValuePair<string, Sprite.Animation> newAnim = new KeyValuePair<string, Sprite.Animation>(anim_name, anims[anim_name]);
+            player.Add(name, copyAnim(newAnim, name));
+
+            // EmoteModModule.echo("d");
+            return true;
+
+
+
+            // foreach (KeyValuePair<string, SpriteData> sdata in GFX.SpriteBank.SpriteData)
+            // {
+            //     if (name.ToLower().Contains(sdata.Key.ToLower()))
+            //     {
+            //         try
+            //         {
+            //             Dictionary<string, Sprite.Animation> player = GFX.SpriteBank.SpriteData["player"].Sprite.Animations;
+            //             Dictionary<string, Sprite.Animation> anims = sdata.Value.Sprite.Animations;
+            //
+            //             string animName = name.Remove(0, sdata.Key.Length + 1); // strip sprite name
+            //
+            //             KeyValuePair<string, Sprite.Animation> newAnim = new KeyValuePair<string, Sprite.Animation>(animName, anims[animName]);
+            //             player.Add(name, copyAnim(newAnim, name));
+            //
+            //             return true;
+            //         }
+            //         catch
+            //         {
+            //             return false;
+            //         }
+            //     }
+            // }
+            // return false;
         }
 
         private static Sprite.Animation copyAnim(KeyValuePair<string, Sprite.Animation> anim, string name)
@@ -156,6 +218,12 @@ namespace Celeste.Mod.EmoteMod
 
         private static void Level_LoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader)
         {
+            // TODO: this was changed, see if works
+            // the idea is you want to see the default mode animations count, no? idk the whole thing needs a second look
+            // maybe see how often updateGraphics happens and compare the whole thing, no need to break it
+            //
+            // idea: compare for missing sprites in the players spritemode???
+            // defaultAnimationsCount = PlayerHelper.GetPlayer().Sprite.Animations.Count();
             defaultAnimationsCount = GFX.SpriteBank.SpriteData["player"].Sprite.Animations.Count();
             orig(self, playerIntro, isFromLoader);
         }
@@ -165,6 +233,7 @@ namespace Celeste.Mod.EmoteMod
         {
             try
             {
+                // Dictionary<string, Sprite.Animation> playerAnimations = graphics.SpriteMode
                 Dictionary<string, Sprite.Animation> playerAnimations = GFX.SpriteBank.SpriteData["player"].Sprite.Animations;
                 if (graphics.SpriteAnimations.Count() > defaultAnimationsCount) // detect if there are any foreign animations
                 {

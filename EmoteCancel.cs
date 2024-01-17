@@ -18,6 +18,8 @@ namespace Celeste.Mod.EmoteMod
             if (player == null)
                 return;
 
+            Speed.ResetSpeed();
+
             player.DummyAutoAnimate = true; // auto animate
             player.StateMachine.State = Player.StNormal; // idk maybe its supposed to make player moveable or something i dont remember
             player.Speed = Vector2.Zero;
