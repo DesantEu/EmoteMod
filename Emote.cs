@@ -22,6 +22,12 @@ namespace Celeste.Mod.EmoteMod
 
         private static int defaultAnimationsCount;
 
+        internal static Dictionary<string, Sprite.Animation> madeline_bp => GFX.SpriteBank.SpriteData["player"].Sprite.Animations;
+        internal static Dictionary<string, Sprite.Animation> madeline_no_bp => GFX.SpriteBank.SpriteData["player_no_backpack"].Sprite.Animations;
+        internal static Dictionary<string, Sprite.Animation> madeline_badeline => GFX.SpriteBank.SpriteData["player_badeline"].Sprite.Animations;
+        internal static Dictionary<string, Sprite.Animation> badeline => GFX.SpriteBank.SpriteData["badeline"].Sprite.Animations;
+        internal static Dictionary<string, Sprite.Animation> madeline_playback => GFX.SpriteBank.SpriteData["player_playback"].Sprite.Animations;
+
         // public static bool changedSprite;
 
         public static void DoEmote(string animation, bool by_command, Player player)
@@ -56,23 +62,17 @@ namespace Celeste.Mod.EmoteMod
                         if (!player.Sprite.Animations.ContainsKey(animation))
                         {
                             EmoteModModule.echo("ANIMATION LOOKUP");
-                            // TODO: make a => thing instead of whatever this is
-                            Dictionary<string, Sprite.Animation>.KeyCollection madeline_bp = GFX.SpriteBank.SpriteData["player"].Sprite.Animations.Keys;
-                            Dictionary<string, Sprite.Animation>.KeyCollection madeline_no_bp = GFX.SpriteBank.SpriteData["player_no_backpack"].Sprite.Animations.Keys;
-                            Dictionary<string, Sprite.Animation>.KeyCollection madeline_badeline = GFX.SpriteBank.SpriteData["player_badeline"].Sprite.Animations.Keys;
-                            Dictionary<string, Sprite.Animation>.KeyCollection badeline = GFX.SpriteBank.SpriteData["badeline"].Sprite.Animations.Keys;
-                            Dictionary<string, Sprite.Animation>.KeyCollection madeline_playback = GFX.SpriteBank.SpriteData["player_playback"].Sprite.Animations.Keys;
 
                             // change sprite if animation not found
-                            if (madeline_no_bp.Contains(animation, StringComparer.OrdinalIgnoreCase))
+                            if (madeline_no_bp.Keys.Contains(animation, StringComparer.OrdinalIgnoreCase))
                             {
                                 player.ResetSprite(PlayerSpriteMode.MadelineNoBackpack);
                             }
-                            else if (badeline.Contains(animation, StringComparer.OrdinalIgnoreCase))
+                            else if (badeline.Keys.Contains(animation, StringComparer.OrdinalIgnoreCase))
                             {
                                 player.ResetSprite(PlayerSpriteMode.Badeline);
                             }
-                            else if (madeline_bp.Contains(animation, StringComparer.OrdinalIgnoreCase))
+                            else if (madeline_bp.Keys.Contains(animation, StringComparer.OrdinalIgnoreCase))
                             {
                                 player.ResetSprite(PlayerSpriteMode.Madeline);
                             }
@@ -158,7 +158,7 @@ namespace Celeste.Mod.EmoteMod
             //     return false;
             // }
 
-            Dictionary<string, Sprite.Animation> player = GFX.SpriteBank.SpriteData["player"].Sprite.Animations;
+            // Dictionary<string, Sprite.Animation> player = GFX.SpriteBank.SpriteData["player"].Sprite.Animations;
             Dictionary<string, Sprite.Animation> anims = GFX.SpriteBank.SpriteData[sdata_name].Sprite.Animations;
 
             if (!anims.ContainsKey(anim_name))
@@ -166,7 +166,7 @@ namespace Celeste.Mod.EmoteMod
 
             // EmoteModModule.echo("c");
             KeyValuePair<string, Sprite.Animation> newAnim = new KeyValuePair<string, Sprite.Animation>(anim_name, anims[anim_name]);
-            player.Add(name, copyAnim(newAnim, name));
+            madeline_bp.Add(name, copyAnim(newAnim, name));
 
             // EmoteModModule.echo("d");
             return true;
