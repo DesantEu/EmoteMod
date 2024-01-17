@@ -224,7 +224,7 @@ namespace Celeste.Mod.EmoteMod
             //
             // idea: compare for missing sprites in the players spritemode???
             // defaultAnimationsCount = PlayerHelper.GetPlayer().Sprite.Animations.Count();
-            defaultAnimationsCount = GFX.SpriteBank.SpriteData["player"].Sprite.Animations.Count();
+            defaultAnimationsCount = madeline_bp.Count();
             orig(self, playerIntro, isFromLoader);
         }
 
@@ -234,11 +234,11 @@ namespace Celeste.Mod.EmoteMod
             try
             {
                 // Dictionary<string, Sprite.Animation> playerAnimations = graphics.SpriteMode
-                Dictionary<string, Sprite.Animation> playerAnimations = GFX.SpriteBank.SpriteData["player"].Sprite.Animations;
+                // Dictionary<string, Sprite.Animation> playerAnimations = GFX.SpriteBank.SpriteData["player"].Sprite.Animations;
                 if (graphics.SpriteAnimations.Count() > defaultAnimationsCount) // detect if there are any foreign animations
                 {
 
-                    List<string> lackin = graphics.SpriteAnimations.Where(x => !playerAnimations.ContainsKey(x)).ToList();
+                    List<string> lackin = graphics.SpriteAnimations.Where(x => !madeline_bp.ContainsKey(x)).ToList();
 
                     if (lackin.Count() > 0)
                     {
@@ -246,7 +246,7 @@ namespace Celeste.Mod.EmoteMod
                         {
                             if (addCustomEmote(i) && !self.Sprite.Animations.ContainsKey(i)) // try and add them
                             {
-                                self.Sprite.Animations.Add(i, playerAnimations[i]); // add them to the ghost cuz celestenet wont :\
+                                self.Sprite.Animations.Add(i, madeline_bp[i]); // add them to the ghost cuz celestenet wont :\
                             }
                         }
                     }

@@ -66,11 +66,11 @@ namespace Celeste.Mod.EmoteMod
 
             (data["currentAnimation"] as Sprite.Animation).Delay = delay;
             EmoteModModule.echo($"changed sprite speed on {sp.CurrentAnimationID}: {delayBeforeChange} -> {delay}");
-            Dictionary<string, Sprite.Animation> madeline_bp = GFX.SpriteBank.SpriteData["player"].Sprite.Animations;
+            // Dictionary<string, Sprite.Animation> madeline_bp = GFX.SpriteBank.SpriteData["player"].Sprite.Animations;
 
-            if (madeline_bp.ContainsKey(changedAnimaitonID))
+            if (Emote.madeline_bp.ContainsKey(changedAnimaitonID))
             {
-                EmoteModModule.echo($"delay in sprite data: {madeline_bp[changedAnimaitonID].Delay}");
+                EmoteModModule.echo($"delay in sprite data: {Emote.madeline_bp[changedAnimaitonID].Delay}");
             }
         }
 

@@ -46,7 +46,7 @@ namespace Celeste.Mod.EmoteMod
             // remove custom animations because packet size
             if (customEmote != "")
             {
-                GFX.SpriteBank.SpriteData["player"].Sprite.Animations.Remove(customEmote);
+                Emote.madeline_bp.Remove(customEmote);
                 customEmote = "";
             }
 
