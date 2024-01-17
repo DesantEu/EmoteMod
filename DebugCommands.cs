@@ -1,16 +1,7 @@
 ﻿using Monocle;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-
-
 using System;
-using System.Linq;
-using MonoMod.RuntimeDetour;
-using MonoMod.Cil;
-using Celeste.Mod.CelesteNet;
-using Mono.Cecil.Cil;
-using System.Reflection;
+
 
 namespace Celeste.Mod.EmoteMod
 {

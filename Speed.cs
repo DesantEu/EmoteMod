@@ -1,21 +1,8 @@
 ﻿using Monocle;
 using MonoMod.Utils;
 using System;
-using System.Linq;
-using MonoMod.RuntimeDetour;
-using MonoMod.Cil;
-using Mono.Cecil.Cil;
-using System.Collections;
-using System.Reflection;
-using System.Collections;
-using System;
-
 using System.Collections.Generic;
-using System.Linq;
-using Celeste.Mod.CelesteNet.Client.Entities;
-using Microsoft.Xna.Framework;
-using Monocle;
-using Celeste.Mod.CelesteNet.DataTypes;
+
 namespace Celeste.Mod.EmoteMod
 {
     public class Speed
