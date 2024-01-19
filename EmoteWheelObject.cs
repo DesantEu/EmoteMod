@@ -353,7 +353,7 @@ namespace Celeste.Mod.EmoteMod
             {
                 EmoteModModule.echo($"EMOTEMOD ERROR: Could not find '{animation}'");
 
-                return getAnimationByName("player_idle");
+                return getAnimationByName("player:idle");
             }
         }
 
