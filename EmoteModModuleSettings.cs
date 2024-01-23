@@ -1,8 +1,40 @@
 using Microsoft.Xna.Framework.Input;
 using Celeste.Mod.UI;
+using Celeste.Mod.Core;
+using Celeste.Mod.Helpers;
+using Mono.Cecil;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Runtime.Loader;
+using System.Threading;
+using Microsoft.Xna.Framework;
+using Monocle;
+// using YamlDotNet.Serialization;
 
 namespace Celeste.Mod.EmoteMod
 {
+
+    public class EmoteEntry
+    {
+        public string animation;
+        public ButtonBinding bind;
+
+        public EmoteEntry() { }
+
+        public EmoteEntry(string emote, ButtonBinding button)
+        {
+            this.animation = emote;
+
+            this.bind = new();
+            button.Keys.ForEach((k) => this.bind.Keys.Add(k));
+            button.Buttons.ForEach((k) => this.bind.Buttons.Add(k));
+        }
+    }
     //so this is for emotes category
     class EmoteBindings : OuiGenericMenu, OuiModOptions.ISubmenu // emote binds submenu class
     {
@@ -130,66 +162,83 @@ namespace Celeste.Mod.EmoteMod
         #region default control and emote settings
         // emotes
         [SettingIgnore]
-        [SettingName("settings_emote0")]
+        // [SettingName("settings_emote0")]
         public string emote0 { get; set; } = "spin";
-        [SettingName("settings_emote0")]
+        // [SettingName("settings_emote0")]
+        // [SettingIgnore]
         [DefaultButtonBinding(0, Keys.NumPad0)]
         public ButtonBinding button0 { get; set; }
         [SettingIgnore]
-        [SettingName("settings_emote1")]
+        // [SettingName("settings_emote1")]
         public string emote1 { get; set; } = "sleep";
-        [SettingName("settings_emote1")]
+        // [SettingName("settings_emote1")]
+        [SettingIgnore]
         [DefaultButtonBinding(0, Keys.NumPad1)]
         public ButtonBinding button1 { get; set; }
         [SettingIgnore]
-        [SettingName("settings_emote2")]
+        // [SettingName("settings_emote2")]
         public string emote2 { get; set; } = "wakeup";
-        [SettingName("settings_emote2")]
+        // [SettingName("settings_emote2")]
+        [SettingIgnore]
         [DefaultButtonBinding(0, Keys.NumPad2)]
         public ButtonBinding button2 { get; set; }
         [SettingIgnore]
-        [SettingName("settings_emote3")]
+        // [SettingName("settings_emote3")]
         public string emote3 { get; set; } = "laugh";
-        [SettingName("settings_emote3")]
+        // [SettingName("settings_emote3")]
+        [SettingIgnore]
         [DefaultButtonBinding(0, Keys.NumPad3)]
         public ButtonBinding button3 { get; set; }
         [SettingIgnore]
-        [SettingName("settings_emote4")]
+        // [SettingName("settings_emote4")]
         public string emote4 { get; set; } = "idlea";
-        [SettingName("settings_emote4")]
+        // [SettingName("settings_emote4")]
+        [SettingIgnore]
         [DefaultButtonBinding(0, Keys.NumPad4)]
         public ButtonBinding button4 { get; set; }
         [SettingIgnore]
-        [SettingName("settings_emote5")]
+        // [SettingName("settings_emote5")]
         public string emote5 { get; set; } = "idleb";
-        [SettingName("settings_emote5")]
+        // [SettingName("settings_emote5")]
+        [SettingIgnore]
         [DefaultButtonBinding(0, Keys.NumPad5)]
         public ButtonBinding button5 { get; set; }
         [SettingIgnore]
-        [SettingName("settings_emote6")]
+        // [SettingName("settings_emote6")]
         public string emote6 { get; set; } = "idlec";
-        [SettingName("settings_emote6")]
+        // [SettingName("settings_emote6")]
+        [SettingIgnore]
         [DefaultButtonBinding(0, Keys.NumPad6)]
         public ButtonBinding button6 { get; set; }
         [SettingIgnore]
-        [SettingName("settings_emote7")]
+        // [SettingName("settings_emote7")]
         public string emote7 { get; set; } = "tired";
-        [SettingName("settings_emote7")]
+        // [SettingName("settings_emote7")]
+        [SettingIgnore]
         [DefaultButtonBinding(0, Keys.NumPad7)]
         public ButtonBinding button7 { get; set; }
         [SettingIgnore]
-        [SettingName("settings_emote8")]
+        // [SettingName("settings_emote8")]
         public string emote8 { get; set; } = "hug";
-        [SettingName("settings_emote8")]
+        // [SettingName("settings_emote8")]
+        [SettingIgnore]
         [DefaultButtonBinding(0, Keys.NumPad8)]
         public ButtonBinding button8 { get; set; }
         [SettingIgnore]
-        [SettingName("settings_emote9")]
+        // [SettingName("settings_emote9")]
         public string emote9 { get; set; } = "fallfast";
-        [SettingName("settings_emote9")]
+        // [SettingName("settings_emote9")]
+        [SettingIgnore]
         [DefaultButtonBinding(0, Keys.NumPad9)]
         public ButtonBinding button9 { get; set; }
         #endregion
+
+        public List<EmoteEntry> Emotes = new List<EmoteEntry>();
+
+        [SettingIgnore]
+        public string EmotesCompressed { get; set; } = "";
+
+        public bool ConvertedToV2 { get; set; } = false;
 
         // gravity settings
         [SettingName("settings_gravityCancel_name")]
@@ -218,7 +267,9 @@ namespace Celeste.Mod.EmoteMod
             if (!inGame)
             {
                 menu.Add(new TextMenu.Button("Emotes Config")
-                    .Pressed(() => OuiGenericMenu.Goto<EmoteBindings>(overworld => overworld.Goto<OuiModOptions>(), new object[0])));
+                // .Pressed(() => OuiGenericMenu.Goto<EmoteBindings>(overworld => overworld.Goto<OuiModOptions>(), new object[0])));
+
+                .Pressed(() => OuiModOptions.Instance.Overworld.Goto<OuiEmoteConfigMenu>()));
             }
         }
 
