@@ -21,11 +21,16 @@ namespace Celeste.Mod.EmoteMod
         {
             base.Render();
 
+            HudRenderer.EndRender();
+            HudRenderer.BeginRender(null, Microsoft.Xna.Framework.Graphics.SamplerState.PointClamp);
+
             ticket.DrawCentered(Position);
             card.DrawCentered(Position);
             sprite.Render();
 
             EmoteModModule.echo($"lol rendering at {X}:{Y}");
+            HudRenderer.EndRender();
+            HudRenderer.BeginRender();
         }
 
         public override void Update()
