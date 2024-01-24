@@ -13,6 +13,7 @@ namespace Celeste.Mod.EmoteMod
         public EmoteEntry emote;
 
         PlayerSprite sprite;
+        public bool Focused;
 
         // int width, height;
 
@@ -59,18 +60,47 @@ namespace Celeste.Mod.EmoteMod
             coro = OnSelect();
         }
 
+        public void Deselect()
+        {
+            coro = OnDeselect();
+        }
+
         #region animations
 
         public IEnumerator OnSelect()
         {
+            Vector2 cs = card_shift;
+            if (sprite.Animations.ContainsKey(emote.animation))
+                sprite.Play(emote.animation);
             for (float d = 0; d < 1f; d += Engine.DeltaTime * 4)
             {
-                EmoteModModule.echo("moving");
+                EmoteModModule.echo($"moving {cs.X}");
                 ticket_shift.X = Ease.CubeInOut(d) * card.Width / 4;
                 card_shift.X = -Ease.CubeInOut(d) * card.Width / 4;
                 yield return null;
             }
+            Focused = true;
             yield return null;
+
+        }
+
+        public IEnumerator OnDeselect()
+        {
+            Vector2 ts = ticket_shift;
+            Vector2 cs = card_shift;
+
+            for (float d = 0; d < 1f; d += Engine.DeltaTime * 4)
+            {
+                // card_shift.X = Position
+                card_shift = cs * Ease.CubeInOut(1f - d);
+                ticket_shift = ts * Ease.CubeInOut(1f - d);
+
+                yield return null;
+
+            }
+            Focused = false;
+            yield return null;
+
         }
 
         #endregion
@@ -83,6 +113,7 @@ namespace Celeste.Mod.EmoteMod
 
             this.ticket_shift = Vector2.Zero;
             this.card_shift = Vector2.Zero;
+            this.Focused = false;
 
             sprite = new(PlayerSpriteMode.Madeline);
             sprite.Scale = Vector2.One * animation_scale;

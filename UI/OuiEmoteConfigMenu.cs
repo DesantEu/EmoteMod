@@ -20,15 +20,20 @@ namespace Celeste.Mod.EmoteMod
         TextMenu menu;
         List<EmoteCard> cards;
 
+        int atCard;
+        IEnumerator coro;
+        float cards_shift = 0f;
+
 
         public override IEnumerator Enter(Oui from)
         {
-            // TODO: figure out when to make it focused
             Visible = true;
             Focused = true;
             cards = new();
+            cards_shift = Celeste.TargetHeight / 2 - 310;
 
             // make cards
+            // TODO maybe change to for and remove index
             foreach (EmoteEntry emote in EmoteModModule.Settings.Emotes)
             {
                 int index = cards.Count;
@@ -36,8 +41,9 @@ namespace Celeste.Mod.EmoteMod
                 cards.Add(new EmoteCard(emote)
                 {
                     X = Celeste.TargetWidth / 2,
-                    Y = 0 + (index + 1) * 300,
-                    Visible = Y < Celeste.TargetHeight + 300 && Y > -300
+                    Y = cards_shift + index * 310,
+                    // TODO: figure out if you even need this
+                    // Visible = Y < Celeste.TargetHeight + 300 && Y > -300
                 });
                 Scene.Add(cards[index]);
             }
@@ -50,6 +56,7 @@ namespace Celeste.Mod.EmoteMod
             {
                 for (int i = 0; i < cards.Count; i++)
                 {
+                    // TODO: this feels like a lot of numbers
                     float shift = (offscreenw * 2) * (1f - Ease.CubeOut(d)) - 300 * Math.Min(4, 4 - i);
                     cards[i].X = centerw + Math.Max(0, shift);
                 }
@@ -77,14 +84,60 @@ namespace Celeste.Mod.EmoteMod
 
         public override void Update()
         {
-            if (Focused && Input.MenuCancel.Pressed)
+            if (coro != null)
+                coro.MoveNext();
+
+            if (Focused)
             {
-                Overworld.Goto<OuiModOptions>();
+                if (Input.MenuCancel.Pressed)
+                    Overworld.Goto<OuiModOptions>();
+                if (Input.MenuDown.Pressed)
+                {
+
+                    cards[atCard].Deselect();
+                    atCard++;
+                    if (atCard >= cards.Count)
+                        atCard = 0;
+                    cards[atCard].Select();
+                    coro = Refocus();
+                }
+                if (Input.MenuUp.Pressed)
+                {
+
+                    cards[atCard].Deselect();
+                    atCard--;
+                    if (atCard < 0)
+                        atCard = cards.Count - 1;
+                    cards[atCard].Select();
+                    coro = Refocus();
+                }
             }
-            if (Focused && Input.MenuConfirm.Pressed)
-                // cards.First().coro = cards.First().Select();
-                cards.First()?.Select();
+            // if (Focused && Input.MenuConfirm.Pressed)
+            //     // cards.First().coro = cards.First().Select();
+            //     if (!cards.First().Focused)
+            //         cards.First()?.Select();
+            //     else
+            //         cards.First()?.Deselect();
             base.Update();
+        }
+
+        IEnumerator Refocus()
+        {
+            float old_shift = cards_shift;
+            int target = Math.Max(Math.Min(atCard, cards.Count - 2), 1);
+            float new_shift = Celeste.TargetHeight / 2 - 310 * target;
+
+            for (float d = 1f; d > 0f; d -= Engine.DeltaTime * 4)
+            {
+                cards_shift = new_shift - (new_shift - old_shift) * Ease.CubeInOut(d);
+                for (int i = 0; i < cards.Count; i++)
+                {
+                    cards[i].Position = new Vector2(Celeste.TargetWidth / 2,
+                            cards_shift + i * 310f);
+                }
+
+                yield return null;
+            }
         }
 
         public override IEnumerator Leave(Oui next)
