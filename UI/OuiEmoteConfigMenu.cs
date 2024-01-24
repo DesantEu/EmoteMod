@@ -129,7 +129,7 @@ namespace Celeste.Mod.EmoteMod
 
             for (float d = 1f; d > 0f; d -= Engine.DeltaTime * 4)
             {
-                cards_shift = new_shift - (new_shift - old_shift) * Ease.CubeInOut(d);
+                cards_shift = new_shift - (new_shift - old_shift) * Ease.CubeIn(d);
                 for (int i = 0; i < cards.Count; i++)
                 {
                     cards[i].Position = new Vector2(Celeste.TargetWidth / 2,
