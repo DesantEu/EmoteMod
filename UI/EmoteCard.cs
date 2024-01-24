@@ -1,48 +1,5 @@
 using Monocle;
-using Celeste.Mod.Core;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Monocle;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.ExceptionServices;
-using System.Runtime.InteropServices;
-using FMOD.Studio;
-using Microsoft.Xna.Framework;
-using Monocle;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-
-using Microsoft.Xna.Framework;
-using Monocle;
-using System;
-using System.Collections;
-
-using Celeste.Mod.UI;
-using Microsoft.Xna.Framework.Input;
-using Celeste.Mod.UI;
-using Celeste.Mod.Core;
-using Celeste.Mod.Helpers;
-using Mono.Cecil;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Runtime.Loader;
-using System.Threading;
-using System;
-using Microsoft.Xna.Framework;
-using Monocle;
 
 namespace Celeste.Mod.EmoteMod
 {
@@ -51,18 +8,21 @@ namespace Celeste.Mod.EmoteMod
         MTexture card = GFX.Gui["emotemod/card"];
         MTexture ticket = GFX.Gui["emotemod/ticket"];
 
-        int index;
         float animation_scale = 10f;
         public EmoteEntry emote;
 
         PlayerSprite sprite;
 
+        int width, height;
+
+        Vector2 ticket_shift, card_shift;
+
         public override void Render()
         {
             base.Render();
 
+            ticket.DrawCentered(Position);
             card.DrawCentered(Position);
-            sprite.Position = Position + new Vector2(-50f, 0f);
             sprite.Render();
 
             EmoteModModule.echo($"lol rendering at {X}:{Y}");
@@ -71,9 +31,15 @@ namespace Celeste.Mod.EmoteMod
         public override void Update()
         {
             base.Update();
+            sprite.Position = Position + new Vector2(-width / 4, height / 4);
             sprite.Update();
 
             EmoteModModule.echo($"lol updating at {X}:{Y}");
+        }
+
+        public void Select()
+        {
+
         }
 
         public EmoteCard(EmoteEntry emote)
@@ -81,6 +47,11 @@ namespace Celeste.Mod.EmoteMod
             Tag = Tags.HUD;
 
             this.emote = emote;
+            this.width = card.Width;
+            this.height = card.Height;
+
+            this.ticket_shift = Vector2.Zero;
+            this.card_shift = Vector2.Zero;
 
             sprite = new(PlayerSpriteMode.Madeline);
             sprite.Scale = Vector2.One * animation_scale;

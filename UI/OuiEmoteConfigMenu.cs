@@ -1,50 +1,17 @@
 using Microsoft.Xna.Framework;
 using Monocle;
-using Celeste.Mod.Core;
+using System.Collections;
+using System.Collections.Generic;
+using Celeste.Mod.UI;
+using Celeste.Mod.CelesteNet.Client;
+using Celeste.Mod.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Monocle;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.ExceptionServices;
-using System.Runtime.InteropServices;
-using FMOD.Studio;
-using Microsoft.Xna.Framework;
-using Monocle;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-
-using Microsoft.Xna.Framework;
-using Monocle;
 using System;
-using System.Collections;
-
-using Celeste.Mod.UI;
-using Microsoft.Xna.Framework.Input;
-using Celeste.Mod.UI;
-using Celeste.Mod.Core;
-using Celeste.Mod.Helpers;
-using Mono.Cecil;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Runtime.Loader;
-using System.Threading;
-using System;
-using Microsoft.Xna.Framework;
-using Monocle;
-
 namespace Celeste.Mod.EmoteMod
 {
     public class OuiEmoteConfigMenu : Oui
@@ -59,14 +26,12 @@ namespace Celeste.Mod.EmoteMod
             // TODO: figure out when to make it focused
             Visible = true;
             Focused = true;
-
-            EmoteModModule.echo("on enter");
-
             cards = new();
 
+            // make cards
             foreach (EmoteEntry emote in EmoteModModule.Settings.Emotes)
             {
-                int index = cards.Count();
+                int index = cards.Count;
 
                 cards.Add(new EmoteCard(emote)
                 {
@@ -77,27 +42,22 @@ namespace Celeste.Mod.EmoteMod
                 Scene.Add(cards[index]);
             }
 
-            // for (int i = 0; i < 5; i++)
-            // {
-            //     cards.Add(new EmoteCard()
-            //     {
-            //         Y = 0 + cards.Count * 300,
-            //         X = Celeste.TargetWidth / 2,
-            //         Active = true
-            //     });
-            //     Scene.Add(cards[cards.Count - 1]);
-            //     yield return null;
-            //
-            // }
-            // EmoteCard test = new();
+            int centerw = Celeste.TargetWidth / 2;
+            int offscreenw = Celeste.TargetWidth + 300;
 
-            // Scene.Add(test);
+            // make cool animation for cards
+            for (float d = 0f; d < 1f; d += Engine.DeltaTime * 2f)
+            {
+                for (int i = 0; i < cards.Count; i++)
+                {
+                    float shift = (offscreenw * 2) * (1f - Ease.CubeOut(d)) - 300 * Math.Min(4, 4 - i);
+                    cards[i].X = centerw + Math.Max(0, shift);
+                }
+                yield return null;
+            }
+
 
             yield return null;
-
-            // test.X = 960f;
-            // test.Active = true;
-            // test.Visible = true;
         }
 
         public override void Render()
