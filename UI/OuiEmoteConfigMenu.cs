@@ -56,8 +56,10 @@ namespace Celeste.Mod.EmoteMod
                 yield return null;
             }
 
+            cards.First()?.Select();
 
-            yield return null;
+            // cards.First().coro = cards.First().Select();
+            // yield return null;
         }
 
         public override void Render()
@@ -79,6 +81,9 @@ namespace Celeste.Mod.EmoteMod
             {
                 Overworld.Goto<OuiModOptions>();
             }
+            if (Focused && Input.MenuConfirm.Pressed)
+                // cards.First().coro = cards.First().Select();
+                cards.First()?.Select();
             base.Update();
         }
 

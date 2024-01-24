@@ -1,5 +1,6 @@
 using Monocle;
 using Microsoft.Xna.Framework;
+using System.Collections;
 
 namespace Celeste.Mod.EmoteMod
 {
@@ -13,47 +14,72 @@ namespace Celeste.Mod.EmoteMod
 
         PlayerSprite sprite;
 
-        int width, height;
+        // int width, height;
 
         Vector2 ticket_shift, card_shift;
+        public IEnumerator coro;
 
         public override void Render()
         {
             base.Render();
 
+            if (!Visible)
+                return;
+
             HudRenderer.EndRender();
             HudRenderer.BeginRender(null, Microsoft.Xna.Framework.Graphics.SamplerState.PointClamp);
 
-            ticket.DrawCentered(Position);
-            card.DrawCentered(Position);
+            ticket.DrawCentered(Position + ticket_shift);
+            card.DrawCentered(Position + card_shift);
             sprite.Render();
 
-            EmoteModModule.echo($"lol rendering at {X}:{Y}");
+            // EmoteModModule.echo($"lol rendering at {X}:{Y}");
             HudRenderer.EndRender();
             HudRenderer.BeginRender();
+
         }
 
         public override void Update()
         {
             base.Update();
-            sprite.Position = Position + new Vector2(-width / 4, height / 4);
+            sprite.Position = Position + new Vector2(-card.Width / 4, card.Height / 4) + card_shift;
             sprite.Update();
 
-            EmoteModModule.echo($"lol updating at {X}:{Y}");
+            if (coro != null)
+                coro.MoveNext();
+
+            Visible = X > -card.Width && X < Celeste.TargetWidth + card.Width
+                && Y > -card.Width && Y < Celeste.TargetHeight + card.Height;
+
+            // EmoteModModule.echo($"lol updating at {X}:{Y}");
         }
 
         public void Select()
         {
-
+            coro = OnSelect();
         }
+
+        #region animations
+
+        public IEnumerator OnSelect()
+        {
+            for (float d = 0; d < 1f; d += Engine.DeltaTime * 4)
+            {
+                EmoteModModule.echo("moving");
+                ticket_shift.X = Ease.CubeInOut(d) * card.Width / 4;
+                card_shift.X = -Ease.CubeInOut(d) * card.Width / 4;
+                yield return null;
+            }
+            yield return null;
+        }
+
+        #endregion
 
         public EmoteCard(EmoteEntry emote)
         {
             Tag = Tags.HUD;
 
             this.emote = emote;
-            this.width = card.Width;
-            this.height = card.Height;
 
             this.ticket_shift = Vector2.Zero;
             this.card_shift = Vector2.Zero;
