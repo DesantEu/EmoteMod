@@ -1,5 +1,6 @@
 using Monocle;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using System.Collections;
 
 namespace Celeste.Mod.EmoteMod
@@ -31,7 +32,25 @@ namespace Celeste.Mod.EmoteMod
             HudRenderer.BeginRender(null, Microsoft.Xna.Framework.Graphics.SamplerState.PointClamp);
 
             ticket.DrawCentered(Position + ticket_shift);
+            ActiveFont.DrawOutline("Edit", Position + ticket_shift + new Vector2(card.Width / 4, ActiveFont.LineHeight / 2),
+                    Vector2.One, Vector2.One, Color.White, 1f, Color.Black);
+
             card.DrawCentered(Position + card_shift);
+
+            ActiveFont.Draw(emote.animation, Position + card_shift + new Vector2(card.Width / 6, -30)
+                    , new Vector2(0.5f, 1), Vector2.One, Color.Black * 0.8f);
+            ActiveFont.Draw(emote.animation, Position + card_shift + new Vector2(card.Width / 6, 10)
+                    , new Vector2(0.5f, 1), Vector2.One * 0.8f, Color.Black * 0.6f);
+            if (emote.bind.Keys.Count > 0)
+            {
+                foreach (Keys k in emote.bind.Keys)
+                {
+                    // TODO actually render all the buttons
+                    MTexture tex = GFX.Gui[$"controls/keyboard/{k}"];
+                    tex.DrawCentered(Position + card_shift + new Vector2(card.Width / 6, 50));
+
+                }
+            }
             sprite.Render();
 
             // EmoteModModule.echo($"lol rendering at {X}:{Y}");
