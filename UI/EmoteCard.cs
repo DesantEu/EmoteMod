@@ -238,6 +238,7 @@ namespace Celeste.Mod.EmoteMod
             }
             edit_scale = 0;
             anim_name_scale = spritebank_scale = 1f;
+            // drawTicketOnTop = true;
 
             for (float d = 0; d < 1f; d += Engine.DeltaTime * 4)
             {
@@ -255,6 +256,7 @@ namespace Celeste.Mod.EmoteMod
             save_scale = cancel_scale = delete_scale = 1f;
             Focused = true;
             atButton = Butt.Animation;
+            wiggler.Start();
             yield return null;
 
         }
@@ -295,6 +297,7 @@ namespace Celeste.Mod.EmoteMod
 
             save_scale = cancel_scale = delete_scale = 0f;
             anim_name_scale = spritebank_scale = -1f;
+            drawTicketOnTop = false;
 
             for (float d = 0; d < 1f; d += Engine.DeltaTime * 4)
             {

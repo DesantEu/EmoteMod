@@ -30,7 +30,7 @@ namespace Celeste.Mod.EmoteMod
         public override IEnumerator Enter(Oui from)
         {
             Visible = true;
-            Focused = true;
+            // Focused = true;
             cards = new();
             cards_shift = Celeste.TargetHeight / 2 - 310;
             atCard = 0;
@@ -65,7 +65,8 @@ namespace Celeste.Mod.EmoteMod
                 yield return null;
             }
 
-            cards.First()?.Select();
+            cards[atCard].Select();
+            Focused = true;
 
             // cards.First().coro = cards.First().Select();
             // yield return null;
