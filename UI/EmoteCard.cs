@@ -1,4 +1,5 @@
 using Monocle;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System.Collections;
@@ -41,15 +42,35 @@ namespace Celeste.Mod.EmoteMod
                     , new Vector2(0.5f, 1), Vector2.One, Color.Black * 0.8f);
             ActiveFont.Draw(emote.animation, Position + card_shift + new Vector2(card.Width / 6, 10)
                     , new Vector2(0.5f, 1), Vector2.One * 0.8f, Color.Black * 0.6f);
-            if (emote.bind.Keys.Count > 0)
+
+            Vector2 keys_center = new(card.Width / 6, 50);
+            if (emote.bind.Keys.Count == 1)
             {
+                MTexture tex = GFX.Gui[$"controls/keyboard/{emote.bind.Keys[0]}"];
+                tex.DrawOutlineCentered(Position + card_shift + keys_center);
+            }
+            else if (emote.bind.Keys.Count > 1)
+            {
+                List<MTexture> keytextures = new();
+                float totalwidth = 0;
+
                 foreach (Keys k in emote.bind.Keys)
                 {
-                    // TODO actually render all the buttons
                     MTexture tex = GFX.Gui[$"controls/keyboard/{k}"];
-                    tex.DrawCentered(Position + card_shift + new Vector2(card.Width / 6, 50));
-
+                    keytextures.Add(tex);
+                    totalwidth += tex.Width;
+                    // tex.DrawOutlineCentered(Position + card_shift + new Vector2(card.Width / 6, 50));
                 }
+                float half = totalwidth / 2;
+                foreach (MTexture t in keytextures)
+                {
+                    totalwidth -= t.Width;
+                    t.DrawOutlineCentered(Position + card_shift + keys_center + new Vector2(half - totalwidth - t.Width / 2, 0));
+                }
+            }
+            else
+            {
+                ActiveFont.Draw("Add keys", Position + card_shift + keys_center, Vector2.One, new Vector2(0.5f, 0.5f), Color.White);
             }
             sprite.Render();
 
