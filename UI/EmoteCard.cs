@@ -7,6 +7,10 @@ using System;
 
 namespace Celeste.Mod.EmoteMod
 {
+    public enum Butt
+    {
+        None, Animation, Spritebank, Keys, Save, Cancel, Delete
+    }
     internal class EmoteCard : Entity
     {
         MTexture card = GFX.Gui["emotemod/card"];
@@ -19,10 +23,13 @@ namespace Celeste.Mod.EmoteMod
         public bool Focused;
         public bool Selected;
         public bool Opened;
+        Butt atButton = Butt.None;
+        Wiggler wiggler = Wiggler.Create(0.25f, 3f);
 
         float edit_scale, anim_name_scale, spritebank_scale, save_scale, cancel_scale, delete_scale;
 
         public OuiEmoteConfigMenu parent;
+        Color flashing_color => !Settings.Instance.DisableFlashes && !this.Scene.BetweenInterval(0.1f) ? TextMenu.HighlightColorB : TextMenu.HighlightColorA;
 
         // int width, height;
 
@@ -65,31 +72,40 @@ namespace Celeste.Mod.EmoteMod
                     Color.White, 2f, Color.Black);
             // save cancel delete
 
-            ActiveFont.DrawOutline("Save", Position + ticket_shift + new Vector2(0, -70),
+            ActiveFont.DrawOutline("Save", Position + ticket_shift + new Vector2(atButton == Butt.Save ? wiggler.Value * 8f : 0, -70),
                     Vector2.One * 0.5f, new Vector2(1, save_scale),
-                    Color.White, 2f, Color.Black);
-            ActiveFont.DrawOutline("Cancel", Position + ticket_shift,
+                    atButton == Butt.Save ? flashing_color : Color.White, 2f, Color.Black);
+            ActiveFont.DrawOutline("Cancel", Position + ticket_shift + new Vector2(atButton == Butt.Cancel ? wiggler.Value * 8f : 0, 0),
                     Vector2.One * 0.5f, new Vector2(1, cancel_scale),
-                    Color.White, 2f, Color.Black);
-            ActiveFont.DrawOutline("Delete", Position + ticket_shift + new Vector2(0, 70),
+                    atButton == Butt.Cancel ? flashing_color : Color.White, 2f, Color.Black);
+            ActiveFont.DrawOutline("Delete", Position + ticket_shift + new Vector2(atButton == Butt.Delete ? wiggler.Value * 8f : 0, 70),
                     Vector2.One * 0.5f, new Vector2(1, delete_scale),
-                    Color.White, 2f, Color.Black);
+                    atButton == Butt.Delete ? flashing_color : Color.White, 2f, Color.Black);
         }
 
         void renderCard()
         {
             card.DrawCentered(Position + card_shift);
 
+            ActiveFont.DrawOutline(emote.animation, Position + card_shift + new Vector2(card.Width / 6, -30) + new Vector2(atButton == Butt.Animation ? wiggler.Value * 8f : 0, 0)
+                    , new Vector2(0.5f, 1), new Vector2(1, Math.Max(anim_name_scale, 0)),
+                    atButton == Butt.Animation ? flashing_color : Color.White, 2f, Color.Black);
+            ActiveFont.DrawOutline(emote.animation, Position + card_shift + new Vector2(card.Width / 6, 10) + new Vector2(atButton == Butt.Spritebank ? wiggler.Value * 8f : 0, 0)
+                    , new Vector2(0.5f, 1), new Vector2(1, Math.Max(spritebank_scale, 0)) * 0.8f,
+                    atButton == Butt.Spritebank ? flashing_color : Color.White, 2f, Color.Black);
+
             ActiveFont.Draw(emote.animation, Position + card_shift + new Vector2(card.Width / 6, -30)
-                    , new Vector2(0.5f, 1), Vector2.One, Color.Black * 0.8f);
+                    , new Vector2(0.5f, 1), new Vector2(1, Math.Max(-anim_name_scale, 0)), Color.Black * 0.8f);
             ActiveFont.Draw(emote.animation, Position + card_shift + new Vector2(card.Width / 6, 10)
-                    , new Vector2(0.5f, 1), Vector2.One * 0.8f, Color.Black * 0.6f);
+                    , new Vector2(0.5f, 1), new Vector2(1, Math.Max(-spritebank_scale, 0)) * 0.8f, Color.Black * 0.6f);
+
 
             Vector2 keys_center = new(card.Width / 6, 50);
             if (emote.bind.Keys.Count == 1)
             {
                 MTexture tex = GFX.Gui[$"controls/keyboard/{emote.bind.Keys[0]}"];
-                tex.DrawOutlineCentered(Position + card_shift + keys_center);
+                tex.DrawOutlineCentered(Position + card_shift + keys_center + new Vector2(atButton == Butt.Keys ? wiggler.Value * 8f : 0, 0)
+                        , atButton == Butt.Keys ? flashing_color : Color.White);
             }
             else if (emote.bind.Keys.Count > 1)
             {
@@ -107,12 +123,16 @@ namespace Celeste.Mod.EmoteMod
                 foreach (MTexture t in keytextures)
                 {
                     totalwidth -= t.Width;
-                    t.DrawOutlineCentered(Position + card_shift + keys_center + new Vector2(half - totalwidth - t.Width / 2, 0));
+                    t.DrawOutlineCentered(Position + card_shift + keys_center + new Vector2(half - totalwidth - t.Width / 2, 0) + new Vector2(atButton == Butt.Keys ? wiggler.Value * 8f : 0, 0)
+
+                            , atButton == Butt.Keys ? flashing_color : Color.White);
                 }
             }
             else
             {
-                ActiveFont.Draw("Add keys", Position + card_shift + keys_center, Vector2.One, new Vector2(0.5f, 0.5f), Color.White);
+                ActiveFont.Draw("Add keys", Position + card_shift + keys_center + new Vector2(atButton == Butt.Keys ? wiggler.Value * 8f : 0, 0)
+
+                        , Vector2.One, new Vector2(0.5f, 0.5f), atButton == Butt.Keys ? flashing_color : Color.White);
             }
             sprite.Render();
         }
@@ -123,6 +143,8 @@ namespace Celeste.Mod.EmoteMod
             sprite.Position = Position + new Vector2(-card.Width / 4, card.Height / 4) + card_shift;
             sprite.Update();
 
+            wiggler.Update();
+
             if (coro != null)
                 coro.MoveNext();
 
@@ -131,6 +153,22 @@ namespace Celeste.Mod.EmoteMod
                 if (Input.MenuCancel.Pressed)
                 {
                     coro = OnClose();
+                }
+                else if (Input.MenuDown.Pressed)
+                {
+                    if (atButton == Butt.Delete)
+                        atButton = Butt.None;
+
+                    atButton++;
+                    wiggler.Start();
+                }
+                else if (Input.MenuUp.Pressed)
+                {
+                    atButton--;
+                    if (atButton == Butt.None)
+                        atButton = Butt.Delete;
+                    wiggler.Start();
+
                 }
             }
 
@@ -190,12 +228,16 @@ namespace Celeste.Mod.EmoteMod
 
                 edit_scale = 1f - d;
 
+                anim_name_scale = Math.Clamp(-1 + 4 * d, -1, 1);
+                spritebank_scale = Math.Clamp(-1 + 4 * (d - 0.5f), -1, 1);
+
                 card_shift = new Vector2(l - (1f - easingo) * (l - cs.X), 0);
                 ticket_shift = new Vector2(r - (1f - easingo) * (r - ts.X), 0);
                 yield return null;
 
             }
             edit_scale = 0;
+            anim_name_scale = spritebank_scale = 1f;
 
             for (float d = 0; d < 1f; d += Engine.DeltaTime * 4)
             {
@@ -212,6 +254,7 @@ namespace Celeste.Mod.EmoteMod
             }
             save_scale = cancel_scale = delete_scale = 1f;
             Focused = true;
+            atButton = Butt.Animation;
             yield return null;
 
         }
@@ -224,6 +267,7 @@ namespace Celeste.Mod.EmoteMod
             float b = card.Height;
 
             Focused = false;
+            atButton = Butt.None;
             // parent.Focused = true;
             //
             // card_shift = Vector2.Zero;
@@ -238,6 +282,9 @@ namespace Celeste.Mod.EmoteMod
                 cancel_scale = 1f - Math.Clamp((d - 0.33f) * 3, 0, 1);
                 save_scale = 1f - Math.Clamp((d - 0.66f) * 3, 0, 1);
 
+                spritebank_scale = -Math.Clamp(-1 + 4 * d, -1, 1);
+                anim_name_scale = -Math.Clamp(-1 + 4 * (d - 0.5f), -1, 1);
+
                 card_shift = new Vector2(l - (1f - easingo) * (l - cs.X), 0);
                 ticket_shift = new Vector2(r - (1f - easingo) * (r - ts.X), b * (1f - easingo));
 
@@ -247,6 +294,7 @@ namespace Celeste.Mod.EmoteMod
             parent.releaseCards = true;
 
             save_scale = cancel_scale = delete_scale = 0f;
+            anim_name_scale = spritebank_scale = -1f;
 
             for (float d = 0; d < 1f; d += Engine.DeltaTime * 4)
             {

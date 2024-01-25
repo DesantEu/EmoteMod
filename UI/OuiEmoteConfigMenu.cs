@@ -33,6 +33,7 @@ namespace Celeste.Mod.EmoteMod
             Focused = true;
             cards = new();
             cards_shift = Celeste.TargetHeight / 2 - 310;
+            atCard = 0;
 
             // make cards
             // TODO maybe change to for and remove index
