@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System.Collections;
+using System;
 
 namespace Celeste.Mod.EmoteMod
 {
@@ -16,10 +17,16 @@ namespace Celeste.Mod.EmoteMod
 
         PlayerSprite sprite;
         public bool Focused;
+        public bool Selected;
+        public bool Opened;
+
+        public OuiEmoteConfigMenu parent;
 
         // int width, height;
 
         Vector2 ticket_shift, card_shift;
+        bool drawTicketOnTop = false;
+
         public IEnumerator coro;
 
         public override void Render()
@@ -89,6 +96,14 @@ namespace Celeste.Mod.EmoteMod
             if (coro != null)
                 coro.MoveNext();
 
+            if (Focused)
+            {
+                if (Input.MenuCancel.Pressed)
+                {
+                    coro = OnClose();
+                }
+            }
+
             Visible = X > -card.Width && X < Celeste.TargetWidth + card.Width
                 && Y > -card.Width && Y < Celeste.TargetHeight + card.Height;
 
@@ -100,18 +115,22 @@ namespace Celeste.Mod.EmoteMod
             coro = OnSelect();
         }
 
+        public void Open()
+        {
+            coro = OnOpen();
+        }
+
         public void Deselect()
         {
             coro = OnDeselect();
         }
 
         #region animations
-
+        // TODO remake to work from any position (add cs/ts)
         public IEnumerator OnSelect()
         {
             Vector2 cs = card_shift;
-            if (sprite.Animations.ContainsKey(emote.animation))
-                sprite.Play(emote.animation);
+
             for (float d = 0; d < 1f; d += Engine.DeltaTime * 4)
             {
                 EmoteModModule.echo($"moving {cs.X}");
@@ -119,29 +138,101 @@ namespace Celeste.Mod.EmoteMod
                 card_shift.X = -Ease.CubeInOut(d) * card.Width / 4;
                 yield return null;
             }
-            Focused = true;
+            Selected = true;
+            if (sprite.Animations.ContainsKey(emote.animation))
+                sprite.Play(emote.animation);
             yield return null;
 
         }
 
-        public IEnumerator OnDeselect()
+        public IEnumerator OnOpen()
+        {
+            Vector2 ts = ticket_shift;
+            Vector2 cs = card_shift;
+            float l = -card.Width / 2;
+            float r = card.Width / 2;
+            float b = card.Height;
+
+            for (float d = 0; d < 1f; d += Engine.DeltaTime * 4)
+            {
+                float easingo = Math.Clamp(Ease.CubeOut(d), 0f, 1f);
+                float easingio = Math.Clamp(Ease.CubeInOut(d), 0f, 1f);
+
+                card_shift = new Vector2(l - (1f - easingo) * (l - cs.X), 0);
+                ticket_shift = new Vector2(r - (1f - easingo) * (r - ts.X), 0);
+                yield return null;
+
+            }
+
+            for (float d = 0; d < 1f; d += Engine.DeltaTime * 4)
+            {
+                float easing = Math.Clamp(Ease.CubeInOut(d), 0, 1);
+
+                card_shift = new Vector2(l * (1f - easing), 0);
+                ticket_shift = new Vector2(r * (1f - easing),
+                        b * easing);
+                yield return null;
+            }
+            Focused = true;
+            yield return null;
+
+        }
+        public IEnumerator OnClose()
+        {
+            Vector2 ts = ticket_shift;
+            Vector2 cs = card_shift;
+            float l = -card.Width / 2;
+            float r = card.Width / 2;
+            float b = card.Height;
+
+            Focused = false;
+            // parent.Focused = true;
+            //
+            // card_shift = Vector2.Zero;
+            // ticket_shift = Vector2.Zero;
+
+
+            for (float d = 0; d < 1f; d += Engine.DeltaTime * 4)
+            {
+
+                float easingo = Math.Clamp(Ease.CubeOut(d), 0f, 1f);
+
+                card_shift = new Vector2(l - (1f - easingo) * (l - cs.X), 0);
+                ticket_shift = new Vector2(r - (1f - easingo) * (r - ts.X), b * (1f - easingo));
+
+                yield return null;
+
+            }
+            parent.Focused = true;
+            for (float d = 0; d < 1f; d += Engine.DeltaTime * 4)
+            {
+                card_shift.X = -card.Width / 4 + (-card.Width / 4) * (1f - Ease.CubeInOut(d));
+                ticket_shift.X = card.Width / 4 + (card.Width / 4) * (1f - Ease.CubeInOut(d));
+
+                yield return null;
+
+            }
+
+            // coro = OnSelect();
+
+            yield return null;
+
+        }
+        IEnumerator OnDeselect()
         {
             Vector2 ts = ticket_shift;
             Vector2 cs = card_shift;
 
             for (float d = 0; d < 1f; d += Engine.DeltaTime * 4)
             {
-                // card_shift.X = Position
-                card_shift = cs * Ease.CubeInOut(1f - d);
-                ticket_shift = ts * Ease.CubeInOut(1f - d);
+                card_shift = cs * (1f - Ease.CubeInOut(d));
+                ticket_shift = ts * (1f - Ease.CubeInOut(d));
 
                 yield return null;
-
             }
-            Focused = false;
-            yield return null;
-
         }
+
+
 
         #endregion
 

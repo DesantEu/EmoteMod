@@ -42,8 +42,7 @@ namespace Celeste.Mod.EmoteMod
                 {
                     X = Celeste.TargetWidth / 2,
                     Y = cards_shift + index * 310,
-                    // TODO: figure out if you even need this
-                    // Visible = Y < Celeste.TargetHeight + 300 && Y > -300
+                    parent = this,
                 });
                 Scene.Add(cards[index]);
             }
@@ -111,6 +110,12 @@ namespace Celeste.Mod.EmoteMod
                     cards[atCard].Select();
                     coro = Refocus();
                 }
+                if (Input.MenuConfirm.Pressed)
+                {
+                    cards[atCard].Open();
+                    coro = FocusCard();
+                    Focused = false;
+                }
             }
             // if (Focused && Input.MenuConfirm.Pressed)
             //     // cards.First().coro = cards.First().Select();
@@ -138,6 +143,60 @@ namespace Celeste.Mod.EmoteMod
 
                 yield return null;
             }
+        }
+
+        IEnumerator FocusCard()
+        {
+            Vector2 focused_target_pos = new Vector2(Celeste.TargetWidth / 2, Celeste.TargetHeight / 2 - 150f);
+            // move cards out of the way
+            for (float d = 0; d < 1f; d += Engine.DeltaTime * 4)
+            {
+                for (int i = 0; i < cards.Count; i++)
+                {
+                    Vector2 default_pos = new(Celeste.TargetWidth / 2,
+                                cards_shift + i * 310f);
+                    if (i < atCard)
+                    {
+                        cards[i].Position = default_pos + new Vector2(0, -Celeste.TargetHeight * Ease.CubeIn(d));
+                    }
+                    else if (i > atCard)
+                    {
+                        cards[i].Position = default_pos + new Vector2(0, Celeste.TargetHeight * Ease.CubeIn(d));
+                    }
+                    else
+                    {
+                        cards[i].Position = default_pos - (default_pos - focused_target_pos) * Ease.CubeInOut(d);
+                    }
+                }
+                yield return null;
+            }
+            // wait for focus
+            while (!Focused)
+                yield return null;
+
+            // put cards back
+            for (float d = 1; d > 0; d -= Engine.DeltaTime * 4)
+            {
+                for (int i = 0; i < cards.Count; i++)
+                {
+                    Vector2 default_pos = new(Celeste.TargetWidth / 2,
+                                cards_shift + i * 310f);
+                    if (i < atCard)
+                    {
+                        cards[i].Position = default_pos + new Vector2(0, -Celeste.TargetHeight * Ease.CubeIn(d));
+                    }
+                    else if (i > atCard)
+                    {
+                        cards[i].Position = default_pos + new Vector2(0, Celeste.TargetHeight * Ease.CubeIn(d));
+                    }
+                    else
+                    {
+                        cards[i].Position = default_pos - (default_pos - focused_target_pos) * Ease.CubeInOut(d);
+                    }
+                }
+                yield return null;
+            }
+            yield return null;
         }
 
         public override IEnumerator Leave(Oui next)
