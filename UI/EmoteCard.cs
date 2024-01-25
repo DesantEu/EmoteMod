@@ -20,6 +20,8 @@ namespace Celeste.Mod.EmoteMod
         public bool Selected;
         public bool Opened;
 
+        float edit_scale, anim_name_scale, spritebank_scale, save_scale, cancel_scale, delete_scale;
+
         public OuiEmoteConfigMenu parent;
 
         // int width, height;
@@ -39,10 +41,43 @@ namespace Celeste.Mod.EmoteMod
             HudRenderer.EndRender();
             HudRenderer.BeginRender(null, Microsoft.Xna.Framework.Graphics.SamplerState.PointClamp);
 
-            ticket.DrawCentered(Position + ticket_shift);
-            ActiveFont.DrawOutline("Edit", Position + ticket_shift + new Vector2(card.Width / 4, ActiveFont.LineHeight / 2),
-                    Vector2.One, Vector2.One, Color.White, 1f, Color.Black);
 
+            if (!drawTicketOnTop)
+                renderTicket();
+            renderCard();
+            if (drawTicketOnTop)
+                renderTicket();
+
+
+            // EmoteModModule.echo($"lol rendering at {X}:{Y}");
+            HudRenderer.EndRender();
+            HudRenderer.BeginRender();
+
+        }
+
+        void renderTicket()
+        {
+            ticket.DrawCentered(Position + ticket_shift);
+
+            // edit button
+            ActiveFont.DrawOutline("Edit", Position + ticket_shift + new Vector2(card.Width / 4, ActiveFont.LineHeight / 2),
+                    Vector2.One, new Vector2(1, Math.Clamp(edit_scale, 0, 1)),
+                    Color.White, 2f, Color.Black);
+            // save cancel delete
+
+            ActiveFont.DrawOutline("Save", Position + ticket_shift + new Vector2(0, -70),
+                    Vector2.One * 0.5f, new Vector2(1, save_scale),
+                    Color.White, 2f, Color.Black);
+            ActiveFont.DrawOutline("Cancel", Position + ticket_shift,
+                    Vector2.One * 0.5f, new Vector2(1, cancel_scale),
+                    Color.White, 2f, Color.Black);
+            ActiveFont.DrawOutline("Delete", Position + ticket_shift + new Vector2(0, 70),
+                    Vector2.One * 0.5f, new Vector2(1, delete_scale),
+                    Color.White, 2f, Color.Black);
+        }
+
+        void renderCard()
+        {
             card.DrawCentered(Position + card_shift);
 
             ActiveFont.Draw(emote.animation, Position + card_shift + new Vector2(card.Width / 6, -30)
@@ -80,11 +115,6 @@ namespace Celeste.Mod.EmoteMod
                 ActiveFont.Draw("Add keys", Position + card_shift + keys_center, Vector2.One, new Vector2(0.5f, 0.5f), Color.White);
             }
             sprite.Render();
-
-            // EmoteModModule.echo($"lol rendering at {X}:{Y}");
-            HudRenderer.EndRender();
-            HudRenderer.BeginRender();
-
         }
 
         public override void Update()
@@ -158,21 +188,29 @@ namespace Celeste.Mod.EmoteMod
                 float easingo = Math.Clamp(Ease.CubeOut(d), 0f, 1f);
                 float easingio = Math.Clamp(Ease.CubeInOut(d), 0f, 1f);
 
+                edit_scale = 1f - d;
+
                 card_shift = new Vector2(l - (1f - easingo) * (l - cs.X), 0);
                 ticket_shift = new Vector2(r - (1f - easingo) * (r - ts.X), 0);
                 yield return null;
 
             }
+            edit_scale = 0;
 
             for (float d = 0; d < 1f; d += Engine.DeltaTime * 4)
             {
                 float easing = Math.Clamp(Ease.CubeInOut(d), 0, 1);
+
+                save_scale = Math.Clamp(d * 3, 0, 1);
+                cancel_scale = Math.Clamp((d - 0.33f) * 3, 0, 1);
+                delete_scale = Math.Clamp((d - 0.66f) * 3, 0, 1);
 
                 card_shift = new Vector2(l * (1f - easing), 0);
                 ticket_shift = new Vector2(r * (1f - easing),
                         b * easing);
                 yield return null;
             }
+            save_scale = cancel_scale = delete_scale = 1f;
             Focused = true;
             yield return null;
 
@@ -196,24 +234,32 @@ namespace Celeste.Mod.EmoteMod
             {
 
                 float easingo = Math.Clamp(Ease.CubeOut(d), 0f, 1f);
+                delete_scale = 1f - Math.Clamp(d * 3, 0, 1);
+                cancel_scale = 1f - Math.Clamp((d - 0.33f) * 3, 0, 1);
+                save_scale = 1f - Math.Clamp((d - 0.66f) * 3, 0, 1);
 
                 card_shift = new Vector2(l - (1f - easingo) * (l - cs.X), 0);
                 ticket_shift = new Vector2(r - (1f - easingo) * (r - ts.X), b * (1f - easingo));
 
                 yield return null;
-
             }
-            parent.Focused = true;
+
+            parent.releaseCards = true;
+
+            save_scale = cancel_scale = delete_scale = 0f;
+
             for (float d = 0; d < 1f; d += Engine.DeltaTime * 4)
             {
+                edit_scale = d;
+
                 card_shift.X = -card.Width / 4 + (-card.Width / 4) * (1f - Ease.CubeInOut(d));
                 ticket_shift.X = card.Width / 4 + (card.Width / 4) * (1f - Ease.CubeInOut(d));
 
                 yield return null;
-
             }
+            edit_scale = 1f;
 
-            // coro = OnSelect();
+            parent.Focused = true;
 
             yield return null;
 
@@ -241,6 +287,10 @@ namespace Celeste.Mod.EmoteMod
             Tag = Tags.HUD;
 
             this.emote = emote;
+
+            edit_scale = 1;
+            anim_name_scale = spritebank_scale = -1f;
+            save_scale = cancel_scale = delete_scale = 0f;
 
             this.ticket_shift = Vector2.Zero;
             this.card_shift = Vector2.Zero;

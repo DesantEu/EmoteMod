@@ -24,6 +24,8 @@ namespace Celeste.Mod.EmoteMod
         IEnumerator coro;
         float cards_shift = 0f;
 
+        public bool releaseCards = false;
+
 
         public override IEnumerator Enter(Oui from)
         {
@@ -171,8 +173,10 @@ namespace Celeste.Mod.EmoteMod
                 yield return null;
             }
             // wait for focus
-            while (!Focused)
+            while (!releaseCards)
                 yield return null;
+
+            releaseCards = false;
 
             // put cards back
             for (float d = 1; d > 0; d -= Engine.DeltaTime * 4)
