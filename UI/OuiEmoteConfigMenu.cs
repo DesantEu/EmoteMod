@@ -30,7 +30,6 @@ namespace Celeste.Mod.EmoteMod
         public override IEnumerator Enter(Oui from)
         {
             Visible = true;
-            // Focused = true;
             cards = new();
             cards_shift = Celeste.TargetHeight / 2 - 310;
             atCard = 0;
@@ -40,6 +39,7 @@ namespace Celeste.Mod.EmoteMod
             foreach (EmoteEntry emote in EmoteModModule.Settings.Emotes)
             {
                 int index = cards.Count;
+                emote.RefreshInfo();
 
                 cards.Add(new EmoteCard(emote)
                 {
@@ -67,9 +67,6 @@ namespace Celeste.Mod.EmoteMod
 
             cards[atCard].Select();
             Focused = true;
-
-            // cards.First().coro = cards.First().Select();
-            // yield return null;
         }
 
         public override void Render()
@@ -77,12 +74,6 @@ namespace Celeste.Mod.EmoteMod
             base.Render();
 
             ActiveFont.Draw("text", new Vector2(960f, 50f), Vector2.One, Vector2.One, Color.White);
-            // EmoteModModule.echo("menu render");
-            //
-            // foreach (EmoteCard card in cards)
-            // {
-            //     card.Render();
-            // }
         }
 
         public override void Update()
@@ -121,12 +112,7 @@ namespace Celeste.Mod.EmoteMod
                     Focused = false;
                 }
             }
-            // if (Focused && Input.MenuConfirm.Pressed)
-            //     // cards.First().coro = cards.First().Select();
-            //     if (!cards.First().Focused)
-            //         cards.First()?.Select();
-            //     else
-            //         cards.First()?.Deselect();
+
             base.Update();
         }
 
@@ -211,6 +197,18 @@ namespace Celeste.Mod.EmoteMod
             Focused = false;
             Visible = false;
 
+            int centerw = Celeste.TargetWidth / 2;
+            int offscreenw = Celeste.TargetWidth + 300;
+            int target = Math.Max(Math.Min(atCard, cards.Count - 2), 2);
+            for (float d = 0f; d < 1f; d += Engine.DeltaTime * 3f)
+            {
+                for (int i = 0; i < cards.Count; i++)
+                {
+                    float shift = (offscreenw * 2) * (Ease.SineIn(d)) - 600 * Math.Clamp(i - target + 2, 0, 4);
+                    cards[i].X = centerw + Math.Max(0, shift);
+                }
+                yield return null;
+            }
             foreach (EmoteCard card in cards)
             {
                 card.RemoveSelf();
