@@ -73,7 +73,7 @@ namespace Celeste.Mod.EmoteMod
         {
             base.Render();
 
-            ActiveFont.Draw("text", new Vector2(960f, 50f), Vector2.One, Vector2.One, Color.White);
+            // ActiveFont.Draw(Dialog.Clean("BTN_CONFIG_INFO"), new Vector2(960f, 50f), Vector2.One, Vector2.One, Color.White);
         }
 
         public override void Update()
