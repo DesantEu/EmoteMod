@@ -14,6 +14,8 @@ using System.Runtime.Loader;
 using System.Threading;
 using Microsoft.Xna.Framework;
 using Monocle;
+using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
 // using YamlDotNet.Serialization;
 
 namespace Celeste.Mod.EmoteMod
@@ -21,10 +23,33 @@ namespace Celeste.Mod.EmoteMod
 
     public class EmoteEntry
     {
+        // string _animation;
+        EmoteInfo info;
         public string animation;
+        // {
+        //     get { return _animation; }
+        //     set
+        //     {
+        //         this.info = AnimationHelper.GetInfo(value);
+        //         this._animation = value;
+        //     }
+        // }
         public ButtonBinding bind;
 
         public EmoteEntry() { }
+
+        public EmoteEntry Clone()
+        {
+            // i mean thats one way to do it...
+            ISerializer serializer = new SerializerBuilder().Build();
+            IDeserializer deserializer = new DeserializerBuilder().Build();
+
+            string serialized = serializer.Serialize(this);
+            EmoteEntry tmp = deserializer.Deserialize<EmoteEntry>(serialized);
+
+            tmp.RefreshInfo();
+            return tmp;
+        }
 
         public EmoteEntry(string emote, ButtonBinding button)
         {
@@ -33,6 +58,14 @@ namespace Celeste.Mod.EmoteMod
             this.bind = new();
             button.Keys.ForEach((k) => this.bind.Keys.Add(k));
             button.Buttons.ForEach((k) => this.bind.Buttons.Add(k));
+        }
+        public void RefreshInfo()
+        {
+            this.info = AnimationHelper.GetInfo(animation);
+        }
+        public EmoteInfo GetInfo()
+        {
+            return info;
         }
     }
     //so this is for emotes category
@@ -264,13 +297,17 @@ namespace Celeste.Mod.EmoteMod
         public string EmoteBindings { get; set; } = ""; // do not remove or it wont work
         public void CreateEmoteBindingsEntry(TextMenu menu, bool inGame) // create emotes submenu
         {
-            if (!inGame)
-            {
-                menu.Add(new TextMenu.Button("Emotes Config")
-                // .Pressed(() => OuiGenericMenu.Goto<EmoteBindings>(overworld => overworld.Goto<OuiModOptions>(), new object[0])));
+            // if (!inGame)
+            // {
+            menu.Add(new TextMenu.Button("Emotes Config")
+            // .Pressed(() => OuiGenericMenu.Goto<EmoteBindings>(overworld => overworld.Goto<OuiModOptions>(), new object[0])));
 
-                .Pressed(() => OuiModOptions.Instance.Overworld.Goto<OuiEmoteConfigMenu>()));
-            }
+            .Pressed(() =>
+            {
+                Audio.Play(SFX.ui_main_savefile_rename_start);
+                OuiModOptions.Instance.Overworld.Goto<OuiEmoteConfigMenu>();
+            }));
+            // }
         }
 
         // backpack

@@ -39,6 +39,7 @@ namespace Celeste.Mod.EmoteMod
         // TODO: this looks dumb, find a better way
         public override void LoadSettings()
         {
+            AnimationHelper.Init();
             base.LoadSettings();
 
             if (!Settings.ConvertedToV2)
@@ -77,6 +78,10 @@ namespace Celeste.Mod.EmoteMod
             EmoteWheel.Load();
             MadhuntNerf.Load();
             CNetHelper.Load();
+
+            if (Engine.Scene is Level)
+                foreach (EmoteEntry e in Settings.Emotes)
+                    e.RefreshInfo();
         }
 
         public override void Unload()
