@@ -51,13 +51,53 @@ namespace Celeste.Mod.EmoteMod
             return tmp;
         }
 
-        public EmoteEntry(string emote, ButtonBinding button)
+        public EmoteEntry(string emote, ButtonBinding button, bool from_old = false)
         {
-            this.animation = emote;
+            if (emote == null)
+            {
+                this.animation = "spin";
+            }
+            else if (!from_old)
+                this.animation = emote;
+            else
+            {
+                if (AnimationHelper.GetInfo(emote) != null)
+                {
+                    this.animation = emote;
+                }
+                else
+                {
+                    // this.animation = "laugh";
+
+                    string[] splits = emote.Split('_');
+                    bool success = false;
+
+                    for (int i = 1; i < splits.Length; i++)
+                    {
+                        string sb_name = string.Join("_", splits.Take(i));
+                        string anim_name = string.Join("_", splits.Skip(i));
+
+                        Logger.Log(LogLevel.Info, "EmoteMod", $"trying '{sb_name}:{anim_name}'");
+
+                        if ((GFX.SpriteBank?.SpriteData?.ContainsKey(sb_name) ?? false)
+                                && (GFX.SpriteBank?.SpriteData[sb_name]?.Sprite?.Animations?.ContainsKey(anim_name) ?? false))
+                        {
+                            this.animation = $"{sb_name}:{anim_name}";
+                            Logger.Log(LogLevel.Info, "EmoteMod", $"success");
+                            success = true;
+                            break;
+                        }
+                        else
+                            Logger.Log(LogLevel.Info, "EmoteMod", $"fail");
+                    }
+                    if (!success)
+                        this.animation = emote;
+                }
+            }
 
             this.bind = new();
-            button.Keys.ForEach((k) => this.bind.Keys.Add(k));
-            button.Buttons.ForEach((k) => this.bind.Buttons.Add(k));
+            button.Keys?.ForEach((k) => this.bind.Keys.Add(k));
+            button.Buttons?.ForEach((k) => this.bind.Buttons.Add(k));
         }
         public void RefreshInfo()
         {
