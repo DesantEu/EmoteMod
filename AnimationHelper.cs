@@ -45,11 +45,9 @@ namespace Celeste.Mod.EmoteMod
         // }
         public static EmoteInfo GetInfo(string anim)
         {
-            Logger.Log("emotemod", "hit getinfo");
-
             EmoteInfo info = new();
 
-            // TODO finish
+            // TODO: finish
 
             if (anim.Contains(":"))
             {
@@ -86,21 +84,15 @@ namespace Celeste.Mod.EmoteMod
             }
             else
             {
-                Logger.Log("emotemod", "hit else");
                 foreach (string sb in global_emotes.Keys)
                 {
-                    EmoteModModule.echo(GFX.SpriteBank.SpriteData.Keys.ToString());
-                    Logger.Log("emotemod", $"looping {sb}");
                     if (!GFX.SpriteBank.SpriteData.ContainsKey(sb))
                     {
-                        Logger.Log("emotemod", $"err {sb}");
-                        EmoteModModule.echo($"could not find key {sb}");
                         return null;
                     }
 
                     if (GFX.SpriteBank.SpriteData[sb].Sprite.Animations.ContainsKey(anim))
                     {
-                        Logger.Log("emotemod", $"found fucker {sb}");
                         info.changeSpriteMode = false;
                         info.animation = anim;
                         info.spritebank = sb;
