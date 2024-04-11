@@ -63,6 +63,18 @@ namespace Celeste.Mod.EmoteMod
         {
             this.info = AnimationHelper.GetInfo(animation);
         }
+        public bool CheckPressed()
+        {
+            bool isPressed = false;
+            foreach (Microsoft.Xna.Framework.Input.Keys k in bind?.Keys)
+                isPressed |= MInput.Keyboard.Pressed(k);
+            foreach (Buttons b in bind?.Buttons)
+                isPressed |= MInput.GamePads.First()?.Pressed(b) ?? false;
+            foreach (MInput.MouseData.MouseButtons mb in bind?.MouseButtons)
+                isPressed |= MInput.Mouse.Pressed(mb);
+
+            return isPressed;
+        }
         public EmoteInfo GetInfo()
         {
             return info;
