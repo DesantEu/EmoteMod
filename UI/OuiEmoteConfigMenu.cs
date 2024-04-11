@@ -25,6 +25,9 @@ namespace Celeste.Mod.EmoteMod
         float cards_shift = 0f;
 
         public bool releaseCards = false;
+        public string debug_text = "#Debug";
+
+        public SpriteGrid gallery;
 
 
         public override IEnumerator Enter(Oui from)
@@ -35,7 +38,7 @@ namespace Celeste.Mod.EmoteMod
             atCard = 0;
 
             // make cards
-            // TODO maybe change to for and remove index
+            // TODO: maybe change to for and remove index
             foreach (EmoteEntry emote in EmoteModModule.Settings.Emotes)
             {
                 int index = cards.Count;
@@ -49,6 +52,8 @@ namespace Celeste.Mod.EmoteMod
                 });
                 Scene.Add(cards[index]);
             }
+
+            // Scene.Add(gallery);
 
             int centerw = Celeste.TargetWidth / 2;
             int offscreenw = Celeste.TargetWidth + 300;
@@ -73,6 +78,9 @@ namespace Celeste.Mod.EmoteMod
         {
             base.Render();
 
+#if DEBUG
+            ActiveFont.Draw(debug_text, Vector2.Zero, Vector2.Zero, Vector2.One, Color.White);
+#endif
             // ActiveFont.Draw(Dialog.Clean("BTN_CONFIG_INFO"), new Vector2(960f, 50f), Vector2.One, Vector2.One, Color.White);
         }
 

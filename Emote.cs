@@ -80,7 +80,7 @@ namespace Celeste.Mod.EmoteMod
                             else if (addCustomEmote(animation)) // the cool part
                             {
                                 player.ResetSprite(PlayerSpriteMode.Madeline);
-                                EmoteCancel.customEmote = animation;
+                                // EmoteCancel.customEmote = animation;
                             }
                         }
                     // bounc e
@@ -115,7 +115,7 @@ namespace Celeste.Mod.EmoteMod
 
 
 
-        private static bool addCustomEmote(string name)
+        public static bool addCustomEmote(string name)
         {
             char split = ':';
             // EmoteModModule.echo($"a, '{name}'");
@@ -125,6 +125,9 @@ namespace Celeste.Mod.EmoteMod
                 test += i;
             }
             // EmoteModModule.echo(test);
+
+            if (madeline_bp.ContainsKey(name))
+                return false;
 
             if (!name.Contains(split))
                 return false;
@@ -169,6 +172,7 @@ namespace Celeste.Mod.EmoteMod
             madeline_bp.Add(name, copyAnim(newAnim, name));
 
             // EmoteModModule.echo("d");
+            EmoteCancel.customEmotes.Add(name);
             return true;
 
 

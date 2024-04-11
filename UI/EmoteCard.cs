@@ -24,6 +24,8 @@ namespace Celeste.Mod.EmoteMod
 
         float animation_scale = 10f;
         public EmoteEntry emote;
+        private EmoteInfo placeholder_info;
+        public EmoteInfo info => emote.GetInfo() == null ? placeholder_info : emote.GetInfo();
         public EmoteEntry old_emote;
 
         PlayerSprite sprite;
@@ -33,7 +35,8 @@ namespace Celeste.Mod.EmoteMod
         public bool Opened;
         bool changesMade;
         bool isReadingKey = false;
-        Butt atButton = Butt.None;
+        public bool stopVisibilityChecks = false;
+        public Butt atButton = Butt.None;
         Wiggler wiggler = Wiggler.Create(0.25f, 3f);
         Wiggler save_cancel_wiggler = Wiggler.Create(0.25f, 3f);
 
@@ -89,7 +92,7 @@ namespace Celeste.Mod.EmoteMod
             ActiveFont.DrawOutline("Save", Position + ticket_shift + new Vector2((atButton == Butt.Save ? wiggler.Value * 8f : 0) + save_cancel_wiggler.Value * 8f, -70),
                     Vector2.One * 0.5f, new Vector2(1, save_scale),
                     atButton == Butt.Save ? flashing_color : Color.White, 2f, Color.Black);
-            ActiveFont.DrawOutline("Cancel", Position + ticket_shift + new Vector2((atButton == Butt.Cancel ? wiggler.Value * 8f : 0) + save_cancel_wiggler.Value * 8f, 0),
+            ActiveFont.DrawOutline("Cancel", Position + ticket_shift + new Vector2((atButton == Butt.Cancel ? wiggler.Value * 8f : 0) - save_cancel_wiggler.Value * 8f, 0),
                     Vector2.One * 0.5f, new Vector2(1, cancel_scale),
                     atButton == Butt.Cancel ? flashing_color : Color.White, 2f, Color.Black);
             ActiveFont.DrawOutline("Delete", Position + ticket_shift + new Vector2(atButton == Butt.Delete ? wiggler.Value * 8f : 0, 70),
@@ -102,17 +105,17 @@ namespace Celeste.Mod.EmoteMod
             card.DrawCentered(Position + card_shift);
 
             // emote name
-            ActiveFont.DrawOutline(emote.GetInfo().animation, Position + card_shift + new Vector2(card.Width / 6, -30) + new Vector2(atButton == Butt.Animation ? wiggler.Value * 8f : 0, 0)
+            ActiveFont.DrawOutline(emote.animation, Position + card_shift + new Vector2(card.Width / 6, -30) + new Vector2(atButton == Butt.Animation ? wiggler.Value * 8f : 0, 0)
                     , new Vector2(0.5f, 1), new Vector2(1, Math.Max(anim_name_scale, 0)),
                     atButton == Butt.Animation ? flashing_color : Color.White, 2f, Color.Black);
             // spritebank
-            string sb = emote.GetInfo().isCustom ? emote.GetInfo().spritebank : "Default";
+            string sb = this.info.isCustom ? this.info.spritebank : "Default";
             ActiveFont.DrawOutline(sb, Position + card_shift + new Vector2(card.Width / 6, 10) + new Vector2(atButton == Butt.Spritebank ? wiggler.Value * 8f : 0, 0)
                     , new Vector2(0.5f, 1), new Vector2(1, Math.Max(spritebank_scale, 0)) * 0.8f,
                     atButton == Butt.Spritebank ? flashing_color : Color.White, 2f, Color.Black);
 
             // same but with outline
-            ActiveFont.Draw(emote.GetInfo().animation, Position + card_shift + new Vector2(card.Width / 6, -30)
+            ActiveFont.Draw(emote.animation, Position + card_shift + new Vector2(card.Width / 6, -30)
                     , new Vector2(0.5f, 1), new Vector2(1, Math.Max(-anim_name_scale, 0)), Color.Black * 0.8f);
             ActiveFont.Draw(sb, Position + card_shift + new Vector2(card.Width / 6, 10)
                     , new Vector2(0.5f, 1), new Vector2(1, Math.Max(-spritebank_scale, 0)) * 0.8f, Color.Black * 0.6f);
@@ -249,6 +252,7 @@ namespace Celeste.Mod.EmoteMod
                     {
                         changesMade = false;
                         emote = old_emote;
+                        RegenerateKeyTextures();
                         coro = OnClose();
                     }
                     // add keys/buttons
@@ -262,14 +266,17 @@ namespace Celeste.Mod.EmoteMod
                         Focused = false;
                         atButton = Butt.None;
 
-                        // gallery = new SpriteGrid(emote.GetInfo().spritebank);
+                        // gallery = new SpriteGrid(emote.GetInfo().spritebank, this);
+                        // parent.Scene.Add(gallery);
+                        parent.gallery = new(info.spritebank, this);
 
                     }
                 }
             }
 
-            Visible = X > -card.Width && X < Celeste.TargetWidth + card.Width
-                && Y > -card.Width && Y < Celeste.TargetHeight + card.Height;
+            if (!stopVisibilityChecks)
+                Visible = X > -card.Width && X < Celeste.TargetWidth + card.Width
+                    && Y > -card.Width && Y < Celeste.TargetHeight + card.Height;
 
             // EmoteModModule.echo($"lol updating at {X}:{Y}");
         }
@@ -310,53 +317,52 @@ namespace Celeste.Mod.EmoteMod
             for (float d = 0; d < 5f; d += Engine.DeltaTime)
             {
                 // this feels very dumb but cheching input.menuconfirm doesnt work idk
-                if (menu_confirm_keys.Intersect(Monocle.MInput.Keyboard.CurrentState.GetPressedKeys()).Count() > 0 && confirm_skip)
+                if (confirm_skip && menu_confirm_keys.Intersect(Monocle.MInput.Keyboard.CurrentState.GetPressedKeys()).Count() > 0)
+                {
                     yield return null;
+                }
                 else
                 {
                     confirm_skip = false;
-                    // Monocle.MInput.Keyboard.CurrentState.GetPressedKeys().
+
                     if (MInput.Keyboard.HasAnyInput())
                     {
                         changesMade = true;
                         Keys pressed_key = MInput.Keyboard.CurrentState.GetPressedKeys()[0];
 
+                        EmoteModModule.echo("looking up");
                         if (emote.bind.Keys.Contains(pressed_key))
                             emote.bind.Keys.Remove(pressed_key);
                         else
                             emote.bind.Keys.Add(pressed_key);
                         break;
                     }
-                    else if (MInput.GamePads[Input.Gamepad].HasAnyInput())
-                    {
-
-                    }
-                    // else if ()
-                    //     yield return null;
+                    // else if (MInput.GamePads[Input.Gamepad].HasAnyInput())
+                    // {
+                    //
+                    // }
+                    else
+                        yield return null;
                 }
             }
 
-            // Input.MenuConfirm.ConsumePress();
-            // Input.MenuJournal.ConsumePress();
-            // Input.MenuCancel.ConsumePress();
-            // Input.menu
-            // MInput.Mouse.
+            // void all menu button presses
             foreach (FieldInfo f in typeof(Input).GetFields().Where(i => i.Name.Contains("Menu")))
-                f.GetType().GetMethod("ConsumePress").Invoke(f, null);
+                f.FieldType.GetMethod("ConsumePress").Invoke(f.GetValue(null), null);
 
             RegenerateKeyTextures();
             isReadingKey = false;
             Focused = true;
             yield return null;
         }
-        // TODO remake to work from any position (add cs/ts)
+        // when floating over the card
+        // TODO: remake to work from any position (add cs/ts)
         public IEnumerator OnSelect()
         {
             Vector2 cs = card_shift;
 
             for (float d = 0; d < 1f; d += Engine.DeltaTime * 4)
             {
-                EmoteModModule.echo($"moving {cs.X}");
                 ticket_shift.X = Ease.CubeInOut(d) * card.Width / 4;
                 card_shift.X = -Ease.CubeInOut(d) * card.Width / 4;
                 yield return null;
@@ -368,6 +374,7 @@ namespace Celeste.Mod.EmoteMod
 
         }
 
+        // when MenuConfirm is pressed
         public IEnumerator OnOpen()
         {
             // whar
@@ -420,6 +427,8 @@ namespace Celeste.Mod.EmoteMod
             yield return null;
 
         }
+
+        // when menu back is pressed
         public IEnumerator OnClose()
         {
             Vector2 ts = ticket_shift;
@@ -430,11 +439,6 @@ namespace Celeste.Mod.EmoteMod
 
             Focused = false;
             atButton = Butt.None;
-            // parent.Focused = true;
-            //
-            // card_shift = Vector2.Zero;
-            // ticket_shift = Vector2.Zero;
-
 
             for (float d = 0; d < 1f; d += Engine.DeltaTime * 4)
             {
@@ -498,6 +502,23 @@ namespace Celeste.Mod.EmoteMod
             Tag = Tags.HUD;
 
             this.emote = emote;
+            // this.info = emote.GetInfo();
+
+            // if (this.info == null)
+            {
+                // this.info = new();
+                placeholder_info = new();
+                placeholder_info.animation = "faint";
+                placeholder_info.spritebank = "Unknown";
+                placeholder_info.isCustom = true;
+                placeholder_info.spritemode = PlayerSpriteMode.Madeline;
+            }
+
+            if (info.isCustom)
+            {
+                Emote.addCustomEmote(emote.animation);
+            }
+
             RegenerateKeyTextures();
             // On.Monocle.Engine.
 
@@ -509,14 +530,17 @@ namespace Celeste.Mod.EmoteMod
             this.card_shift = Vector2.Zero;
             this.Focused = false;
 
-            sprite = new(emote.GetInfo().spritemode);
+            sprite = new(this.info.spritemode);
             sprite.Scale = Vector2.One * animation_scale;
 
             hair = new(sprite) { SimulateMotion = true };
             hair.Visible = true;
             // hair.
 
-            sprite.Play(emote.GetInfo().animation);
+            if (emote.GetInfo() != null)
+                sprite.Play(emote.animation);
+            else
+                sprite.Play(info.animation);
 
             // if (sprite.Animations.ContainsKey(emote.animation))
             //     sprite.Play(emote.animation);

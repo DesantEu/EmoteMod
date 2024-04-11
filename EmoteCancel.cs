@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Monocle;
+using System.Collections.Generic;
 
 namespace Celeste.Mod.EmoteMod
 {
@@ -9,7 +10,8 @@ namespace Celeste.Mod.EmoteMod
 
         public static bool invincibilityDefault;
         // public static bool interactDefault;
-        public static string customEmote;
+        // public static string customEmote;
+        public static List<string> customEmotes;
 
         public static void cancelEmote()
         {
@@ -44,11 +46,21 @@ namespace Celeste.Mod.EmoteMod
             }
 
             // remove custom animations because packet size
-            if (customEmote != "")
+            // if (customEmote != "")
+            // {
+            //     Emote.madeline_bp.Remove(customEmote);
+            //     customEmote = "";
+            // }
+            foreach (string e in customEmotes)
             {
-                Emote.madeline_bp.Remove(customEmote);
-                customEmote = "";
+                try
+                {
+                    Emote.madeline_bp.Remove(e);
+                }
+                catch { }
             }
+
+            customEmotes.Clear();
 
             Emote.bounced = false;
 
@@ -116,7 +128,8 @@ namespace Celeste.Mod.EmoteMod
 
         internal static void Load()
         {
-            customEmote = "";
+            // customEmote = "";
+            customEmotes = new();
 
             On.Celeste.LevelExit.ctor += LevelExit;
             On.Celeste.Player.Update += Player_Update;
