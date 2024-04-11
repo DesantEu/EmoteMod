@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Monocle;
 
 namespace Celeste.Mod.EmoteMod
@@ -28,11 +29,16 @@ namespace Celeste.Mod.EmoteMod
         }
 
         // easier way to yea
-        public static void echo(string text)
+        public static void echo(string text, bool debug = true)
         {
             try
             {
-                Engine.Commands.Log(text);
+                if (!debug)
+                    Engine.Commands.Log(text);
+#if DEBUG
+                else
+                    Engine.Commands.Log(text);
+#endif
             }
             catch { }
         }
