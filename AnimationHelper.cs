@@ -26,7 +26,7 @@ namespace Celeste.Mod.EmoteMod
     }
     public static class AnimationHelper
     {
-        static Dictionary<string, PlayerSpriteMode> global_emotes;
+        public static Dictionary<string, PlayerSpriteMode> global_emotes;
         // TODO: remove probably
         public static void Init()
         {
@@ -35,7 +35,7 @@ namespace Celeste.Mod.EmoteMod
             {"badeline", PlayerSpriteMode.Badeline},
             {"player", PlayerSpriteMode.Madeline},
             {"player_playback", PlayerSpriteMode.Playback},
-            // {"player_badeline", PlayerSpriteMode.MadelineAsBadeline},
+            {"player_badeline", PlayerSpriteMode.MadelineAsBadeline},
         };
 
         }
@@ -88,7 +88,8 @@ namespace Celeste.Mod.EmoteMod
                 {
                     if (!GFX.SpriteBank.SpriteData.ContainsKey(sb))
                     {
-                        return null;
+                        // return null;
+                        continue;
                     }
 
                     if (GFX.SpriteBank.SpriteData[sb].Sprite.Animations.ContainsKey(anim))
