@@ -105,7 +105,8 @@ namespace Celeste.Mod.EmoteMod
             card.DrawCentered(Position + card_shift);
 
             // emote name
-            ActiveFont.DrawOutline(emote.animation, Position + card_shift + new Vector2(card.Width / 6, -30) + new Vector2(atButton == Butt.Animation ? wiggler.Value * 8f : 0, 0)
+            ActiveFont.DrawOutline(info.spritebank == "Unknown" ? emote.animation : info.animation
+                    , Position + card_shift + new Vector2(card.Width / 6, -30) + new Vector2(atButton == Butt.Animation ? wiggler.Value * 8f : 0, 0)
                     , new Vector2(0.5f, 1), new Vector2(1, Math.Max(anim_name_scale, 0)),
                     atButton == Butt.Animation ? flashing_color : Color.White, 2f, Color.Black);
             // spritebank
@@ -115,7 +116,8 @@ namespace Celeste.Mod.EmoteMod
                     atButton == Butt.Spritebank ? flashing_color : Color.White, 2f, Color.Black);
 
             // same but with outline
-            ActiveFont.Draw(emote.animation, Position + card_shift + new Vector2(card.Width / 6, -30)
+            ActiveFont.Draw(info.spritebank == "Unknown" ? emote.animation : info.animation,
+                    Position + card_shift + new Vector2(card.Width / 6, -30)
                     , new Vector2(0.5f, 1), new Vector2(1, Math.Max(-anim_name_scale, 0)), Color.Black * 0.8f);
             ActiveFont.Draw(sb, Position + card_shift + new Vector2(card.Width / 6, 10)
                     , new Vector2(0.5f, 1), new Vector2(1, Math.Max(-spritebank_scale, 0)) * 0.8f, Color.Black * 0.6f);
@@ -163,6 +165,8 @@ namespace Celeste.Mod.EmoteMod
 
                         , new Vector2(0.5f, 0.5f), Vector2.One, atButton == Butt.Keys ? flashing_color : Color.White);
             }
+
+            sprite.Position = Position + new Vector2(-card.Width / 4, card.Height / 4) + card_shift;
             sprite.Render();
         }
 
@@ -186,7 +190,7 @@ namespace Celeste.Mod.EmoteMod
             //     EmoteModModule.echo($"old keys:{old_emote.bind.Keys.Count}, new:{emote.bind.Keys.Count}");
             base.Update();
             // do we need to do this?
-            sprite.Position = Position + new Vector2(-card.Width / 4, card.Height / 4) + card_shift;
+            // sprite.Position = Position + new Vector2(-card.Width / 4, card.Height / 4) + card_shift;
             sprite.Update();
 
             wiggler.Update();
