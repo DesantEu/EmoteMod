@@ -37,12 +37,19 @@ namespace Celeste.Mod.EmoteMod
             yield return null;
         }
 
+        internal void RecalculatePosition()
+        {
+            Pos = Position - new Vector2(0, parent.scroll_offset);
+        }
+
         public override void Update()
         {
             base.Update();
 
             if (coro != null)
                 coro.MoveNext();
+
+            RecalculatePosition();
 
             if (Pos.X < -visible_margin
                     || Pos.X > Celeste.TargetWidth
@@ -59,7 +66,12 @@ namespace Celeste.Mod.EmoteMod
 
         private IEnumerator fadeOut(string direction)
         {
-            yield return null;
+            for (float d = 1; d > 0; d -= Engine.DeltaTime * 8)
+            {
+                alpha = d;
+                yield return null;
+            }
+            alpha = 0;
         }
 
         public void FadeOut(string direction = "none")
@@ -90,9 +102,10 @@ namespace Celeste.Mod.EmoteMod
 
         void Init(Vector2 pos, string text, SpriteGrid parent, float fadeInDelay)
         {
-            this.Pos = pos;
-            this.text = text;
+            this.Position = pos;
             this.parent = parent;
+            RecalculatePosition();
+            this.text = text;
             this.fade_in_delay = fadeInDelay;
             parent.Scene.Add(this);
             this.text_height = (ActiveFont.Measure(text) * text_scale).Y;
@@ -114,7 +127,7 @@ namespace Celeste.Mod.EmoteMod
     public class SpriteGridCell : SpriteGridElement
     {
         PlayerSprite sprite;
-        string text;
+        public string text;
         Wiggler wiggler;
         bool isSelected;
         float downscale;
@@ -158,7 +171,7 @@ namespace Celeste.Mod.EmoteMod
 
             sprite.Render();
             float rect_side = default_size * upscale;
-            Draw.HollowRect(Pos, rect_side, rect_side, Color.Snow * alpha);
+            // Draw.HollowRect(Pos, rect_side, rect_side, Color.Snow * alpha);
 
             ActiveFont.DrawOutline(text, Pos + new Vector2(rect_side / 2, rect_side),
                     new Vector2(0.5f, 0), Vector2.One * 0.5f,
@@ -173,7 +186,9 @@ namespace Celeste.Mod.EmoteMod
         public SpriteGridCell(EmoteInfo emote, string text, Vector2 pos, SpriteGrid parent, float fadeInDelay = 0f)
         {
             Tag = Tags.HUD;
-            this.Pos = pos;
+            this.Position = pos;
+            this.parent = parent;
+            RecalculatePosition();
             this.text = text;
             fade_in_delay = fadeInDelay;
             alpha = 0;
