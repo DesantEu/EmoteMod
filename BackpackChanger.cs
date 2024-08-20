@@ -2,6 +2,7 @@ using Monocle;
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Celeste.Mod.UI;
 
 namespace Celeste.Mod.EmoteMod
 {
@@ -20,7 +21,8 @@ namespace Celeste.Mod.EmoteMod
         internal static void PlayerSprite(On.Celeste.PlayerSprite.orig_ctor orig, PlayerSprite self, PlayerSpriteMode mode)
         {
             // code stolen from max (extended variant mode)
-            if (EmoteModModule.anim_by_game != 1)
+            if (EmoteModModule.anim_by_game != 1 &&
+                    !(OuiModOptions.Instance?.Overworld.GetUI<OuiEmoteConfigMenu>().Visible ?? false))
                 if (mode == PlayerSpriteMode.Madeline || mode == PlayerSpriteMode.MadelineNoBackpack)
                 {
                     mode = GetMode(EmoteModModule.Settings.Backpack, mode);
