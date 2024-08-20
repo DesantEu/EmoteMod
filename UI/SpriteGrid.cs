@@ -137,22 +137,15 @@ namespace Celeste.Mod.EmoteMod
                     }
                     else if (stage == Stages.Emote)
                     {
-                        EmoteModModule.echo("getting selected");
                         SpriteGridCell selected = cells[cursor_at];
 
-                        EmoteModModule.echo("getting info");
                         string animation = selected.info.animation;
                         string sb = selected.info.spritebank;
 
-                        // parent.info = selected.info;
-                        EmoteModModule.echo("setting parent emote");
                         parent.emote = new(sb == "Default" ? animation : $"{sb}:{animation}", parent.emote.bind);
                         parent.emote.RefreshInfo();
-                        EmoteModModule.echo(sb);
-                        EmoteModModule.echo("trying to refresh sprite");
                         parent.RefreshSprite();
 
-                        EmoteModModule.echo("end");
                         parent.changesMade = true;
                         Focused = false;
                         coro = EmoteExit();
