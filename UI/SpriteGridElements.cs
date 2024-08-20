@@ -82,7 +82,7 @@ namespace Celeste.Mod.EmoteMod
 
     public class SpriteGridTitle : SpriteGridElement
     {
-        string text;
+        public string text;
         public static Vector2 text_scale = Vector2.One;
         public float text_height;
         public static float line_offset = 15;
@@ -109,7 +109,7 @@ namespace Celeste.Mod.EmoteMod
             this.fade_in_delay = fadeInDelay;
             parent.Scene.Add(this);
             this.text_height = (ActiveFont.Measure(text) * text_scale).Y;
-            Tag = Tags.HUD;
+            Tag = parent.Tag;
             coro = FadeIn();
         }
 
@@ -131,6 +131,8 @@ namespace Celeste.Mod.EmoteMod
         Wiggler wiggler;
         bool isSelected;
         float downscale;
+        public EmoteInfo info;
+        private String anim_name;
         Color flashing_color => !Settings.Instance.DisableFlashes && !this.Scene.BetweenInterval(0.1f) ? TextMenu.HighlightColorB : TextMenu.HighlightColorA;
 
 
@@ -139,6 +141,7 @@ namespace Celeste.Mod.EmoteMod
 
         public void Select()
         {
+            sprite.Play(anim_name);
             isSelected = true;
         }
 
@@ -185,18 +188,19 @@ namespace Celeste.Mod.EmoteMod
 
         public SpriteGridCell(EmoteInfo emote, string text, Vector2 pos, SpriteGrid parent, float fadeInDelay = 0f)
         {
-            Tag = Tags.HUD;
+            Tag = parent.Tag;
             this.Position = pos;
             this.parent = parent;
             RecalculatePosition();
             this.text = text;
+            this.info = emote;
             fade_in_delay = fadeInDelay;
             alpha = 0;
             coro = FadeIn();
 
             this.sprite = new(emote.spritemode);
 
-            string anim_name = AnimationHelper.global_emotes.ContainsKey(emote.spritebank)
+            anim_name = AnimationHelper.global_emotes.ContainsKey(emote.spritebank)
                 ? emote.animation
                 : emote.isCustom ? $"{emote.spritebank}:{emote.animation}" : emote.animation;
             MTexture first_frame = sprite.Animations[anim_name].Frames[0];

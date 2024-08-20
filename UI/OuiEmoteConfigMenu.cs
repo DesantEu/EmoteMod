@@ -14,11 +14,11 @@ using System.Linq;
 using System;
 namespace Celeste.Mod.EmoteMod
 {
-    public class OuiEmoteConfigMenu : Oui
+    public class OuiEmoteConfigMenu : Oui, OuiModOptions.ISubmenu
     {
 
         TextMenu menu;
-        List<EmoteCard> cards;
+        public List<EmoteCard> cards;
 
         int atCard;
         IEnumerator coro;
@@ -26,11 +26,28 @@ namespace Celeste.Mod.EmoteMod
 
         public bool releaseCards = false;
         public string debug_text = "#Debug";
+        private bool from_pause = false;
+        public TextMenu parentMenu;
 
         public SpriteGrid gallery;
 
 
         public override IEnumerator Enter(Oui from)
+        {
+            from_pause = false;
+            Tag = Tags.HUD;
+            yield return OnEnter();
+        }
+
+        public void EnterFromPause()
+        {
+            from_pause = true;
+            Tag = Tags.HUD | Tags.PauseUpdate;
+            // AddTag(Tags.HUD);
+            coro = OnEnter();
+        }
+
+        private IEnumerator OnEnter()
         {
             Visible = true;
             cards = new();
@@ -49,6 +66,7 @@ namespace Celeste.Mod.EmoteMod
                     X = Celeste.TargetWidth / 2,
                     Y = cards_shift + index * 310,
                     parent = this,
+                    Tag = this.Tag,
                 });
                 Scene.Add(cards[index]);
             }
@@ -74,6 +92,7 @@ namespace Celeste.Mod.EmoteMod
             Focused = true;
         }
 
+
         public override void Render()
         {
             base.Render();
@@ -92,7 +111,14 @@ namespace Celeste.Mod.EmoteMod
             if (Focused)
             {
                 if (Input.MenuCancel.Pressed)
-                    Overworld.Goto<OuiModOptions>();
+                {
+                    if (!from_pause)
+                        Overworld.Goto<OuiModOptions>();
+                    else
+                    {
+                        coro = OnLeave();
+                    }
+                }
                 if (Input.MenuDown.Pressed)
                 {
 
@@ -201,6 +227,11 @@ namespace Celeste.Mod.EmoteMod
 
         public override IEnumerator Leave(Oui next)
         {
+            yield return OnLeave();
+        }
+
+        private IEnumerator OnLeave()
+        {
             // throw new NotImplementedException();
             Focused = false;
             Visible = false;
@@ -223,6 +254,12 @@ namespace Celeste.Mod.EmoteMod
             }
 
             cards.Clear();
+
+            if (from_pause)
+            {
+                Scene.Add(parentMenu);
+                this.RemoveSelf();
+            }
 
             yield return null;
         }

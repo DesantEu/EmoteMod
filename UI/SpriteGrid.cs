@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Celeste.Mod.EmoteMod
 {
-    public enum EmotePickerStage
+    public enum Stages
     {
         SpriteBank,
         Emote,
@@ -19,7 +19,7 @@ namespace Celeste.Mod.EmoteMod
     public class SpriteGrid : Entity
     {
         IEnumerator coro;
-        EmotePickerStage stage;
+        Stages stage;
         EmoteCard parent;
 
         List<string> customsForRemoval;
@@ -42,6 +42,7 @@ namespace Celeste.Mod.EmoteMod
         bool Focused;
 
         float top_free_space = 90;
+        float fadeIn => Math.Min(0.125f + cells.Count * 0.02f, 0.375f);
 
         Vector2 new_cell_pos(float vert_offset = 0, int reset_at = 0)
         {
@@ -129,15 +130,40 @@ namespace Celeste.Mod.EmoteMod
 
                 else if (Input.MenuConfirm.Pressed)
                 {
-                    if (stage == EmotePickerStage.SpriteBank)
+                    if (stage == Stages.SpriteBank)
                     {
                         cells[cursor_at].Deselect();
                         coro = SpriteBankToEmote();
                     }
+                    else if (stage == Stages.Emote)
+                    {
+                        EmoteModModule.echo("getting selected");
+                        SpriteGridCell selected = cells[cursor_at];
+
+                        EmoteModModule.echo("getting info");
+                        string animation = selected.info.animation;
+                        string sb = selected.info.spritebank;
+
+                        // parent.info = selected.info;
+                        EmoteModModule.echo("setting parent emote");
+                        parent.emote = new(sb == "Default" ? animation : $"{sb}:{animation}", parent.emote.bind);
+                        parent.emote.RefreshInfo();
+                        EmoteModModule.echo(sb);
+                        EmoteModModule.echo("trying to refresh sprite");
+                        parent.RefreshSprite();
+
+                        EmoteModModule.echo("end");
+                        parent.changesMade = true;
+                        Focused = false;
+                        coro = EmoteExit();
+                    }
                 }
                 else if (Input.MenuCancel.Pressed)
                 {
-                    coro = SpriteBankExit();
+                    if (stage == Stages.SpriteBank)
+                        coro = SpriteBankExit();
+                    else if (stage == Stages.Emote)
+                        coro = EmoteToSpritebank();
                 }
             }
         }
@@ -151,19 +177,20 @@ namespace Celeste.Mod.EmoteMod
                     Color.Black * bg_alpha, bg_thickness);
         }
 
-        private IEnumerator SpriteBankEnter()
+        void fillWithSpriteBanks(bool gradualFadeIn = false)
         {
-            Visible = true;
-            parent.stopVisibilityChecks = true;
-
             // add not-so-customs
-            titles.Add(new("Visible to everyone", new(left_start, top_free_space), this, 0.125f + cells.Count * 0.02f));
+            titles.Add(new("Visible to everyone", new(left_start, top_free_space), this,
+                        // gradualFadeIn ? 0.125f + cells.Count * 0.02f : 0.125f));
+                        gradualFadeIn ? fadeIn : 0.125f));
 
             float defaults_y_start = top_free_space + titles.Last().total_height;
 
             foreach (string m in AnimationHelper.global_emotes.Keys.ToList())
             {
-                cells.Add(new(AnimationHelper.GetInfo($"{m}:idle"), m, new_cell_pos(defaults_y_start), this, 0.125f + cells.Count * 0.02f));
+                cells.Add(new(AnimationHelper.GetInfo($"{m}:idle"), m, new_cell_pos(defaults_y_start), this,
+                        // 0.125f + cells.Count * 0.02f));
+                        gradualFadeIn ? fadeIn : 0.125f));
             }
 
             first_cell_y = cells.First().Position.Y;
@@ -181,7 +208,9 @@ namespace Celeste.Mod.EmoteMod
             int cells_reset = cells.Count;
             Vector2 customs_start_pos = new_cell_pos(defaults_y_start, cells_reset);
 
-            titles.Add(new("Visible to EmoteMod users", new(left_start, customs_start_pos.Y), this, 0.125f + cells.Count * 0.02f));
+            titles.Add(new("Visible to EmoteMod users", new(left_start, customs_start_pos.Y), this,
+                        // fadeIn));
+                        gradualFadeIn ? fadeIn : 0.125f));
 
             float customs_y_start = defaults_y_start + titles.Last().total_height;
             // float customs_y_start = customs_start_pos.Y + titles.Last().total_height;
@@ -210,10 +239,18 @@ namespace Celeste.Mod.EmoteMod
                     customsForRemoval.Add($"{full_name}");
                 }
 
-                cells.Add(new(info, m, new_cell_pos(customs_y_start, cells_reset), this, 0.125f + cells.Count * 0.02f));
-                // Scene.Add(cells.Last());
+                cells.Add(new(info, m, new_cell_pos(customs_y_start, cells_reset), this,
+                        // fadeIn));
+                        gradualFadeIn ? fadeIn : 0.125f));
             }
+        }
 
+        private IEnumerator SpriteBankEnter()
+        {
+            Visible = true;
+            parent.stopVisibilityChecks = true;
+
+            fillWithSpriteBanks(gradualFadeIn: true);
 
             // lmaoo no rotating rectangles?
             // too bad
@@ -241,19 +278,23 @@ namespace Celeste.Mod.EmoteMod
 
             parent.Visible = false;
 
-
-
             // obligatory wait
             for (float d = 0; d < 1; d += Engine.DeltaTime * 8)
                 yield return null;
 
-            cursor_at = 0;
+            cursor_at = cells.FindIndex(c => c.info.spritebank == parent.info.spritebank);
+            if (cursor_at < 0)
+                cursor_at = 0;
+
             cells[cursor_at].Select();
 
 
             Focused = true;
 
             yield return null;
+
+            if (cursor_at != 0)
+                coro = Refocus();
 
         }
 
@@ -280,7 +321,7 @@ namespace Celeste.Mod.EmoteMod
 
             // display text and emotes
             titles.Add(new(spritebank, new(left_start, top_free_space), this));
-            float cells_occset = top_free_space + titles.First().total_height;
+            float cells_offset = top_free_space + titles.First().total_height;
 
             foreach (string a in anims)
             {
@@ -288,7 +329,7 @@ namespace Celeste.Mod.EmoteMod
 
                 if (info == null)
                 {
-                    Logger.Log(LogLevel.Info, "EmoteMod", $"could not get info for '{info.animation}'");
+                    Logger.Log(LogLevel.Info, "EmoteMod", $"could not get info for '{a}'");
                     continue;
                 }
                 else if (info.isCustom)
@@ -297,18 +338,97 @@ namespace Celeste.Mod.EmoteMod
                     customsForRemoval.Add($"{spritebank}:{a}");
                 }
 
-                cells.Add(new(info, a, new_cell_pos(cells_occset), this, cells.Count * 0.02f));
+                cells.Add(new(info, a, new_cell_pos(cells_offset), this, cells.Count * 0.02f));
             }
 
             for (float d = 1; d > 0; d -= Engine.DeltaTime * 8)
                 yield return null;
 
-            stage = EmotePickerStage.Emote;
+            stage = Stages.Emote;
+
             cells[cursor_at].Select();
             Focused = true;
 
             yield return null;
 
+        }
+
+        private IEnumerator EmoteToSpritebank()
+        {
+            string spritebank = titles.First().text;
+            Focused = false;
+
+            foreach (SpriteGridCell c in cells)
+                c.FadeOut();
+            foreach (SpriteGridTitle t in titles)
+                t.FadeOut();
+
+            for (float d = 1; d > 0; d -= Engine.DeltaTime * 8)
+                yield return null;
+
+            Clear();
+
+            fillWithSpriteBanks();
+
+            cursor_at = cells.FindIndex(c => c.info.spritebank == spritebank);
+            if (cursor_at < 0)
+                cursor_at = 0;
+
+            scroll_offset = get_new_shift();
+
+            // obligatory wait
+            for (float d = 0; d < 1; d += Engine.DeltaTime * 8)
+                yield return null;
+
+            stage = Stages.SpriteBank;
+            cells[cursor_at].Select();
+            Focused = true;
+            yield return null;
+        }
+
+        private IEnumerator EmoteExit()
+        {
+            Focused = false;
+
+            foreach (SpriteGridCell c in cells)
+                c.FadeOut();
+            foreach (SpriteGridTitle t in titles)
+                t.FadeOut();
+
+            for (float d = 1; d > 0; d -= Engine.DeltaTime * 16)
+                yield return null;
+
+            parent.Visible = true;
+
+            // remove bg
+            bg_origin = new Vector2(Celeste.TargetWidth, Celeste.TargetHeight - bg_thickness / 2);
+            bg_alpha = 0xff;
+
+            // rotate the bg in
+            for (float d = 0; d < 1; d += Engine.DeltaTime * 4)
+            {
+                bg_rotation = ((float)Math.PI) * (1.5f - 0.5f * (1 - d));
+                bg_origin = new Vector2(
+                        Celeste.TargetWidth - ((float)Math.Sin(bg_rotation)) * bg_thickness / 2,
+                        Celeste.TargetHeight + bg_thickness / 2 * ((float)Math.Cos(bg_rotation))
+                        );
+
+                EmoteModModule.echo(Math.Cos(bg_rotation).ToString());
+                yield return null;
+            }
+
+            bg_origin = new Vector2(Celeste.TargetWidth + bg_thickness / 2, Celeste.TargetHeight);
+            bg_rotation = ((float)Math.PI) * 2;
+            bg_alpha = 0f;
+
+
+            Clear();
+
+            parent.Focused = true;
+            parent.atButton = Butt.Animation;
+            parent.stopVisibilityChecks = false;
+            RemoveSelf();
+            yield return null;
         }
 
         private IEnumerator SpriteBankExit()
@@ -332,10 +452,9 @@ namespace Celeste.Mod.EmoteMod
             RemoveSelf();
 
         }
-        IEnumerator Refocus()
-        {
-            float old_shift = scroll_offset;
 
+        float get_new_shift()
+        {
             int row = cursor_at / 5;
 
             float target;
@@ -350,6 +469,14 @@ namespace Celeste.Mod.EmoteMod
                 target = cells[cursor_at].Position.Y - Celeste.TargetHeight / 2;
                 new_shift = target + SpriteGridCell.default_size / 2 * SpriteGridCell.upscale;
             }
+            return new_shift;
+        }
+
+        IEnumerator Refocus()
+        {
+            float old_shift = scroll_offset;
+
+            float new_shift = get_new_shift();
 
             for (float d = 1f; d > 0f; d -= Engine.DeltaTime * 4)
             {
@@ -364,9 +491,9 @@ namespace Celeste.Mod.EmoteMod
             }
             scroll_offset = new_shift;
         }
+
         void Init()
         {
-            Tag = Tags.HUD;
             customsForRemoval = new();
             cells = new();
             titles = new();
@@ -413,10 +540,11 @@ namespace Celeste.Mod.EmoteMod
         public SpriteGrid(string spritebank, EmoteCard parent)
         {
             Init();
-            stage = EmotePickerStage.SpriteBank;
+            stage = Stages.SpriteBank;
             coro = SpriteBankEnter();
             Visible = true;
             this.parent = parent;
+            Tag = parent.Tag;
             parent.parent.Scene.Add(this);
 
             // parent.Scene.Add(this);

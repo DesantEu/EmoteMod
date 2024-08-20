@@ -349,17 +349,13 @@ namespace Celeste.Mod.EmoteMod
         public string EmoteBindings { get; set; } = ""; // do not remove or it wont work
         public void CreateEmoteBindingsEntry(TextMenu menu, bool inGame) // create emotes submenu
         {
-            // if (!inGame)
-            // {
-            menu.Add(new TextMenu.Button("Emotes Config")
-            // .Pressed(() => OuiGenericMenu.Goto<EmoteBindings>(overworld => overworld.Goto<OuiModOptions>(), new object[0])));
-
-            .Pressed(() =>
-            {
-                Audio.Play(SFX.ui_main_savefile_rename_start);
-                OuiModOptions.Instance.Overworld.Goto<OuiEmoteConfigMenu>();
-            }));
-            // }
+            if (!inGame)
+                menu.Add(new TextMenu.Button("Emotes Config")
+                .Pressed(() =>
+                {
+                    Audio.Play(SFX.ui_main_savefile_rename_start);
+                    OuiModOptions.Instance.Overworld.Goto<OuiEmoteConfigMenu>();
+                }));
         }
 
         // backpack

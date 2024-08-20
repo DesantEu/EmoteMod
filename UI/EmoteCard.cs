@@ -33,7 +33,7 @@ namespace Celeste.Mod.EmoteMod
         public bool Focused;
         public bool Selected;
         public bool Opened;
-        bool changesMade;
+        public bool changesMade;
         bool isReadingKey = false;
         public bool stopVisibilityChecks = false;
         public Butt atButton = Butt.None;
@@ -256,7 +256,11 @@ namespace Celeste.Mod.EmoteMod
                     {
                         changesMade = false;
                         emote = old_emote;
+                        // if (!Emote.madeline_bp.Keys.Contains(emote.animation))
+                        Emote.addCustomEmote(emote.animation);
+
                         RegenerateKeyTextures();
+                        RefreshSprite();
                         coro = OnClose();
                     }
                     // add keys/buttons
@@ -497,13 +501,46 @@ namespace Celeste.Mod.EmoteMod
             }
         }
 
+        public void RefreshSprite()
+        {
+            if (sprite != null)
+                sprite.RemoveSelf();
+            if (hair != null)
+                hair.RemoveSelf();
+
+            sprite = new PlayerSprite(info.spritemode);
+            Engine.Commands.Log($"New sprite with {info.spritemode} (is {sprite.Mode})");
+
+            sprite.Scale = Vector2.One * animation_scale;
+
+            hair = new(sprite) { SimulateMotion = true };
+            hair.Visible = true;
+
+            if (emote.GetInfo() != null)
+            {
+                bool contains = sprite.Animations.Keys.Contains(emote.animation);
+                EmoteModModule.echo($"Trying to play '{emote.animation}' with '{info.spritemode}'. sprite has anim: {contains}");
+                if (!contains)
+                {
+                    string all_anims = string.Join(", ", sprite.Animations.Keys);
+                    EmoteModModule.echo($"SpriteMode: '{sprite.Mode}', \nAll animations: {all_anims}");
+                }
+
+
+
+                sprite.Play(emote.animation);
+            }
+            else
+                sprite.Play(info.animation);
+        }
+
 
 
         #endregion
 
         public EmoteCard(EmoteEntry emote)
         {
-            Tag = Tags.HUD;
+            // Tag = Tags.HUD;
 
             this.emote = emote;
             // this.info = emote.GetInfo();
@@ -534,17 +571,8 @@ namespace Celeste.Mod.EmoteMod
             this.card_shift = Vector2.Zero;
             this.Focused = false;
 
-            sprite = new(this.info.spritemode);
-            sprite.Scale = Vector2.One * animation_scale;
+            RefreshSprite();
 
-            hair = new(sprite) { SimulateMotion = true };
-            hair.Visible = true;
-            // hair.
-
-            if (emote.GetInfo() != null)
-                sprite.Play(emote.animation);
-            else
-                sprite.Play(info.animation);
 
             // if (sprite.Animations.ContainsKey(emote.animation))
             //     sprite.Play(emote.animation);

@@ -95,6 +95,7 @@ namespace Celeste.Mod.EmoteMod
             EmoteWheel.Load();
             MadhuntNerf.Load();
             CNetHelper.Load();
+            PauseButton.Load();
 
             if (Engine.Scene is Level)
                 foreach (EmoteEntry e in Settings.Emotes)

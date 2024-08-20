@@ -1,0 +1,69 @@
+using System;
+using Celeste.Mod.UI;
+using Monocle;
+
+namespace Celeste.Mod.EmoteMod
+
+{
+    public class PauseButton
+    {
+        public static void Load()
+        {
+
+
+            Everest.Events.Level.OnCreatePauseMenuButtons += OnCreatePauseMenuButtons;
+
+        }
+
+        private static void OnCreatePauseMenuButtons(Level level, TextMenu menu, bool minimal)
+        {
+            int index = menu.Items.FindIndex(item =>
+                    item.GetType() == typeof(TextMenu.Button) && ((TextMenu.Button)item).Label == Dialog.Clean("menu_pause_variant"));
+
+            menu.Insert(index, BuildConfigButton(menu, true, null));
+
+        }
+
+        // mostly stolen from ex variants
+        public static TextMenu.Button BuildConfigButton(TextMenu parentMenu, bool inGame, Action backToParentMenu)
+        {
+            if (inGame)
+            {
+                return (TextMenu.Button)new TextMenu.Button("Emotes COnfig").Pressed(() =>
+                {
+
+                    Level level = Engine.Scene as Level;
+                    bool fromPause = level.PauseMainMenuOpen;
+                    level.PauseMainMenuOpen = false;
+                    OuiEmoteConfigMenu menu = null;
+
+                    if (OuiModOptions.Instance?.Overworld == null)
+                    {
+                        menu = (OuiEmoteConfigMenu)Activator.CreateInstance(typeof(OuiEmoteConfigMenu));
+                        EmoteModModule.echo("had to create instance");
+                    }
+                    else
+                    {
+                        menu = OuiModOptions.Instance.Overworld.GetUI<OuiEmoteConfigMenu>();
+                        EmoteModModule.echo("found");
+                    }
+
+                    menu.EnterFromPause();
+                    menu.parentMenu = parentMenu;
+
+                    parentMenu.RemoveSelf();
+                    level.Add(menu);
+                });
+            }
+            else
+            {
+                return (TextMenu.Button)new TextMenu.Button("Emotes Config").Pressed(() =>
+                {
+                    Audio.Play(SFX.ui_main_savefile_rename_start);
+                    OuiModOptions.Instance.Overworld.Goto<OuiEmoteConfigMenu>();
+
+                });
+            }
+        }
+    }
+}
