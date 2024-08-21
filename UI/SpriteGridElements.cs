@@ -128,7 +128,7 @@ namespace Celeste.Mod.EmoteMod
     {
         PlayerSprite sprite;
         public string text;
-        Wiggler wiggler;
+        Wiggler wiggler = Wiggler.Create(0.25f, 3f);
         bool isSelected;
         float downscale;
         public EmoteInfo info;
@@ -141,6 +141,7 @@ namespace Celeste.Mod.EmoteMod
 
         public void Select()
         {
+            wiggler.Start();
             sprite.Play(anim_name);
             isSelected = true;
         }
@@ -153,6 +154,7 @@ namespace Celeste.Mod.EmoteMod
         public override void Update()
         {
             base.Update();
+            wiggler.Update();
 
             // if (coro != null)
             //     coro.MoveNext();
@@ -169,7 +171,7 @@ namespace Celeste.Mod.EmoteMod
             HudRenderer.EndRender();
             HudRenderer.BeginRender(null, Microsoft.Xna.Framework.Graphics.SamplerState.PointClamp);
 
-            sprite.Position = Pos;
+            sprite.Position = Pos - new Vector2(0, SpriteGrid.spacing * 0.2f * wiggler.Value);
             sprite.Color = Color.White * alpha;
 
             sprite.Render();
