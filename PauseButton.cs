@@ -18,9 +18,9 @@ namespace Celeste.Mod.EmoteMod
         private static void OnCreatePauseMenuButtons(Level level, TextMenu menu, bool minimal)
         {
             int index = menu.Items.FindIndex(item =>
-                    item.GetType() == typeof(TextMenu.Button) && ((TextMenu.Button)item).Label == Dialog.Clean("menu_pause_variant"));
+                    item.GetType() == typeof(TextMenu.Button) && ((TextMenu.Button)item).Label == Dialog.Clean("menu_pause_retry"));
 
-            menu.Insert(index, BuildConfigButton(menu, true, null));
+            menu.Insert(index + 1, BuildConfigButton(menu, true, null));
 
         }
 
