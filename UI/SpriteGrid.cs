@@ -83,6 +83,9 @@ namespace Celeste.Mod.EmoteMod
                         cursor_at = 0;
 
                     cells[cursor_at].Select();
+
+                    if (cursor_at % 5 == 0)
+                        coro = Refocus();
                 }
                 else if (Input.MenuLeft.Pressed)
                 {
@@ -93,6 +96,9 @@ namespace Celeste.Mod.EmoteMod
                         cursor_at = cells.Count - 1;
 
                     cells[cursor_at].Select();
+
+                    if (cursor_at % 5 == 4)
+                        coro = Refocus();
                 }
                 else if (Input.MenuUp.Pressed)
                 {
