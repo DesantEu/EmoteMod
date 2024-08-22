@@ -80,7 +80,10 @@ namespace Celeste.Mod.EmoteMod
 
                     cursor_at++;
                     if (cursor_at >= cells.Count)
+                    {
                         cursor_at = 0;
+                        coro = Refocus();
+                    }
 
                     cells[cursor_at].Select();
 
@@ -93,7 +96,10 @@ namespace Celeste.Mod.EmoteMod
 
                     cursor_at--;
                     if (cursor_at < 0)
+                    {
                         cursor_at = cells.Count - 1;
+                        coro = Refocus();
+                    }
 
                     cells[cursor_at].Select();
 
