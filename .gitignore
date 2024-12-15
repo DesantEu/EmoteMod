@@ -354,3 +354,4 @@ MigrationBackup/
 # JetBrains Rider
 .idea
 
+.zed
