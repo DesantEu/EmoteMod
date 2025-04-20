@@ -49,7 +49,6 @@ namespace Celeste.Mod.EmoteMod
                     // if we were not doing an emote before, save default interactions state
                     if (EmoteModModule.anim_by_game == 0)
                     {
-                        // EmoteCancel.interactDefault = EmoteModModule.celestenetSettings.Interactions; // (because if we record it during an emote its just going to be false)
                         CNetHelper.InteractionsAllowed = false;
                         EmoteCancel.invincibilityDefault = SaveData.Instance.Assists.Invincible;
                         SaveData.Instance.Assists.Invincible = true; // TODO: wanna get rid of changing settings at all
@@ -63,32 +62,6 @@ namespace Celeste.Mod.EmoteMod
 
                     // new sprite changes
                     if (animation != "b" && animation != "bounce")
-                        // if (!player.Sprite.Animations.ContainsKey(animation))
-                        // {
-                        //     EmoteModModule.echo("ANIMATION LOOKUP");
-
-                        //     // change sprite if animation not found
-                        //     if (madeline_no_bp.Keys.Contains(animation, StringComparer.OrdinalIgnoreCase))
-                        //     {
-                        //         player.ResetSprite(PlayerSpriteMode.MadelineNoBackpack);
-                        //     }
-                        //     else if (badeline.Keys.Contains(animation, StringComparer.OrdinalIgnoreCase))
-                        //     {
-                        //         player.ResetSprite(PlayerSpriteMode.Badeline);
-                        //     }
-                        //     else if (madeline_bp.Keys.Contains(animation, StringComparer.OrdinalIgnoreCase))
-                        //     {
-                        //         player.ResetSprite(PlayerSpriteMode.Madeline);
-                        //     }
-
-                        //     else if (addCustomEmote(animation)) // the cool part
-                        //     {
-                        //         player.ResetSprite(PlayerSpriteMode.Madeline);
-                        //         // EmoteCancel.customEmote = animation;
-                        //     }
-                        // }
-
-
                         if (info.changeSpriteMode)
                         {
                             if (PlayerHelper.GetPlayer()?.Sprite.Mode != info.spritemode)
@@ -167,71 +140,19 @@ namespace Celeste.Mod.EmoteMod
             string sdata_name = name.Split(split)[0];
             string anim_name = name.Split(split, 2)[1];
 
-            // EmoteModModule.echo("a.5" + name.Split(split)[0]);
-            // try
-            // {
-            //     sdata_name = name.Split(split)[0];
-            //     anim_name = name.Split(split, 2)[1];
-            // }
-            // catch (Exception e)
-            // {
-            //     EmoteModModule.echo($"EXCEPROIS: {e}");
-            // }
-
-            // EmoteModModule.echo($"sdata: '{sdata_name}', anim: '{anim_name}'");
-
             if (!GFX.SpriteBank.SpriteData.ContainsKey(sdata_name))
                 return false;
 
-            // EmoteModModule.echo("b");
-            // try
-            // {
-            //     sdata_name = GFX.SpriteBank.SpriteData.Where((e) => e.Key.ToLower() == name.ToLower()).First().Key;
-            // }
-            // catch
-            // {
-            //     return false;
-            // }
-
-            // Dictionary<string, Sprite.Animation> player = GFX.SpriteBank.SpriteData["player"].Sprite.Animations;
             Dictionary<string, Sprite.Animation> anims = GFX.SpriteBank.SpriteData[sdata_name].Sprite.Animations;
 
             if (!anims.ContainsKey(anim_name))
                 return false;
 
-            // EmoteModModule.echo("c");
             KeyValuePair<string, Sprite.Animation> newAnim = new KeyValuePair<string, Sprite.Animation>(anim_name, anims[anim_name]);
             madeline_bp.Add(name, copyAnim(newAnim, name));
 
-            // EmoteModModule.echo("d");
             EmoteCancel.customEmotes.Add(name);
             return true;
-
-
-
-            // foreach (KeyValuePair<string, SpriteData> sdata in GFX.SpriteBank.SpriteData)
-            // {
-            //     if (name.ToLower().Contains(sdata.Key.ToLower()))
-            //     {
-            //         try
-            //         {
-            //             Dictionary<string, Sprite.Animation> player = GFX.SpriteBank.SpriteData["player"].Sprite.Animations;
-            //             Dictionary<string, Sprite.Animation> anims = sdata.Value.Sprite.Animations;
-            //
-            //             string animName = name.Remove(0, sdata.Key.Length + 1); // strip sprite name
-            //
-            //             KeyValuePair<string, Sprite.Animation> newAnim = new KeyValuePair<string, Sprite.Animation>(animName, anims[animName]);
-            //             player.Add(name, copyAnim(newAnim, name));
-            //
-            //             return true;
-            //         }
-            //         catch
-            //         {
-            //             return false;
-            //         }
-            //     }
-            // }
-            // return false;
         }
 
         private static Sprite.Animation copyAnim(KeyValuePair<string, Sprite.Animation> anim, string name)
@@ -269,8 +190,6 @@ namespace Celeste.Mod.EmoteMod
         {
             try
             {
-                // Dictionary<string, Sprite.Animation> playerAnimations = graphics.SpriteMode
-                // Dictionary<string, Sprite.Animation> playerAnimations = GFX.SpriteBank.SpriteData["player"].Sprite.Animations;
                 if (graphics.SpriteAnimations.Count() > defaultAnimationsCount) // detect if there are any foreign animations
                 {
 

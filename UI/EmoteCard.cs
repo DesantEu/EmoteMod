@@ -16,11 +16,7 @@ namespace Celeste.Mod.EmoteMod
     public class EmoteCard : Entity
     {
         MTexture card = MTN.FileSelect.Textures["card"];
-        // MTexture card = GFX.Gui["emotemod/card"];
-        // MTexture ticket = GFX.Gui["emotemod/ticket"];
         MTexture ticket = MTN.FileSelect.Textures["ticket"];
-
-        // SpriteGrid gallery;
 
         float animation_padding = 40f;
         float animation_scale;
@@ -30,7 +26,6 @@ namespace Celeste.Mod.EmoteMod
         private EmoteInfo placeholder_info;
         public EmoteInfo info => emote.GetInfo() ?? placeholder_info;
         private string animation_to_play => emote.GetInfo().isCustom ? emote.animation : info.animation ?? info.animation;
-        // public EmoteInfo info => emote.GetInfo() == null ? placeholder_info : emote.GetInfo();
         public EmoteEntry old_emote;
 
         PlayerSprite sprite;
@@ -131,27 +126,10 @@ namespace Celeste.Mod.EmoteMod
 
             // keybinds
             Vector2 keys_center = new(card.Width / 6, 50);
-            // draw one
-            // if (emote.bind.Keys.Count == 1)
-            // {
-            //     MTexture tex = GFX.Gui[$"controls/keyboard/{emote.bind.Keys[0]}"];
-            //     tex.DrawOutlineCentered(Position + card_shift + keys_center + new Vector2(atButton == Butt.Keys ? wiggler.Value * 8f : 0, 0)
-            //             , atButton == Butt.Keys ? flashing_color : Color.White);
-            // }
             // draw an array centered
             if (keytextures.Count > 0)
             // if (emote.bind.Keys.Count > 0)
             {
-                // List<MTexture> keytextures = new();
-                // float totalwidth = 0;
-                //
-                // foreach (Keys k in emote.bind.Keys)
-                // {
-                //     MTexture tex = GFX.Gui[$"controls/keyboard/{k}"];
-                //     keytextures.Add(tex);
-                //     totalwidth += tex.Width;
-                //     // tex.DrawOutlineCentered(Position + card_shift + new Vector2(card.Width / 6, 50));
-                // }
                 float half = total_keys_width / 2;
                 float used = 0;
                 foreach (MTexture t in keytextures)
@@ -186,18 +164,13 @@ namespace Celeste.Mod.EmoteMod
                 MTexture tex = GFX.Gui[$"controls/keyboard/{k}"];
                 keytextures.Add(tex);
                 total_keys_width += tex.Width;
-                // tex.DrawOutlineCentered(Position + card_shift + new Vector2(card.Width / 6, 50));
             }
         }
         #endregion
         #region updates
         public override void Update()
         {
-            // if (Focused)
-            //     EmoteModModule.echo($"old keys:{old_emote.bind.Keys.Count}, new:{emote.bind.Keys.Count}");
             base.Update();
-            // do we need to do this?
-            // sprite.Position = Position + new Vector2(-card.Width / 4, card.Height / 4) + card_shift;
             sprite.Update();
 
             wiggler.Update();
@@ -265,7 +238,6 @@ namespace Celeste.Mod.EmoteMod
                     {
                         changesMade = false;
                         emote = old_emote;
-                        // if (!Emote.madeline_bp.Keys.Contains(emote.animation))
                         Emote.addCustomEmote(emote.animation);
 
                         RegenerateKeyTextures();
@@ -283,8 +255,6 @@ namespace Celeste.Mod.EmoteMod
                         Focused = false;
                         atButton = Butt.None;
 
-                        // gallery = new SpriteGrid(emote.GetInfo().spritebank, this);
-                        // parent.Scene.Add(gallery);
                         parent.gallery = new(info.spritebank, this);
                     }
                 }
@@ -294,7 +264,6 @@ namespace Celeste.Mod.EmoteMod
                 Visible = X > -card.Width && X < Celeste.TargetWidth + card.Width
                     && Y > -card.Width && Y < Celeste.TargetHeight + card.Height;
 
-            // EmoteModModule.echo($"lol updating at {X}:{Y}");
         }
 
         public void Select()
@@ -425,7 +394,6 @@ namespace Celeste.Mod.EmoteMod
             }
             edit_scale = 0;
             anim_name_scale = spritebank_scale = 1f;
-            // drawTicketOnTop = true;
 
             for (float d = 0; d < 1f; d += Engine.DeltaTime * 4)
             {
@@ -540,14 +508,11 @@ namespace Celeste.Mod.EmoteMod
                     EmoteModModule.echo($"SpriteMode: '{sprite.Mode}', \nAll animations: {all_anims}");
                 }
 
-                // handle "sb:anim" and "anim"
-                // sprite.Play(info.isCustom ? emote.animation : info.animation);
                 sprite.Play(animation_to_play);
             }
             else // this will play a placeholder probably
                 sprite.Play(info.animation);
 
-            // sprite.JustifyOrigin(0.5f, 0.5f);
             sprite.Justify = new(0.5f, 0);
 
             // scaling
@@ -563,23 +528,15 @@ namespace Celeste.Mod.EmoteMod
         #region constructors
         public EmoteCard(EmoteEntry emote)
         {
-            // Tag = Tags.HUD;
-
             this.emote = emote;
             animation_scale = (card.Height - animation_padding * 2) / SpriteGridCell.default_size;
-            // animation_offset = new(-card.Width / 4, 0);
             animation_offset = new(-card.Width / 4, -card.Height / 2 + animation_padding);
-            // this.info = emote.GetInfo();
 
-            // if (this.info == null)
-            {
-                // this.info = new();
-                placeholder_info = new();
-                placeholder_info.animation = "faint";
-                placeholder_info.spritebank = "Unknown";
-                placeholder_info.isCustom = true;
-                placeholder_info.spritemode = PlayerSpriteMode.Madeline;
-            }
+            placeholder_info = new();
+            placeholder_info.animation = "faint";
+            placeholder_info.spritebank = "Unknown";
+            placeholder_info.isCustom = true;
+            placeholder_info.spritemode = PlayerSpriteMode.Madeline;
 
             if (info.isCustom)
             {
@@ -587,7 +544,6 @@ namespace Celeste.Mod.EmoteMod
             }
 
             RegenerateKeyTextures();
-            // On.Monocle.Engine.
 
             edit_scale = 1;
             anim_name_scale = spritebank_scale = -1f;
@@ -598,10 +554,6 @@ namespace Celeste.Mod.EmoteMod
             this.Focused = false;
 
             RefreshSprite();
-
-
-            // if (sprite.Animations.ContainsKey(emote.animation))
-            //     sprite.Play(emote.animation);
 
         }
         #endregion

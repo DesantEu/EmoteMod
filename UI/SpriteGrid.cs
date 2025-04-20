@@ -1,10 +1,8 @@
 using Monocle;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using System.Collections;
 using System;
-using System.Reflection;
 using System.Linq;
 
 namespace Celeste.Mod.EmoteMod
@@ -40,8 +38,6 @@ namespace Celeste.Mod.EmoteMod
         float y_offset = 90;
 
         bool Focused;
-
-        // private int cells_reset;
 
         float fadeIn => Math.Min(0.125f + cells.Count * 0.02f, 0.375f); // TODO: move to SpriteGridElement constructor probably idk
 
@@ -89,21 +85,6 @@ namespace Celeste.Mod.EmoteMod
                     int cursor_past = cursor_at;
                     cells[cursor_at].Deselect();
 
-                    // if (cursor_at - 5 < 0)
-                    // {
-                    //     int temp_pos = ((int)Math.Ceiling(cells.Count / 5f)) * 5 + cursor_at - 5;
-                    //     if (temp_pos >= cells.Count)
-                    //         cursor_at = temp_pos - 5;
-                    //     else
-                    //         cursor_at = temp_pos;
-                    // }
-                    // else
-                    // {
-                    //     cursor_at -= 5;
-                    //     if (cursor_at < cells_reset && cursor_past > cells_reset)
-                    //         cursor_at -= cells_reset % 5;
-                    // }
-
                     SpriteGridCell next_cell = cursor_at >= 5 //              if we have something above
                         ? cells.Where(c => //                                 find
                             c.Position.Y < cells[cursor_at].Position.Y //     something above
@@ -119,11 +100,6 @@ namespace Celeste.Mod.EmoteMod
                 else if (Input.MenuDown.Pressed)
                 {
                     cells[cursor_at].Deselect();
-
-                    // if (cursor_at + 5 >= cells.Count)
-                    //     cursor_at %= 5;
-                    // else
-                    //     cursor_at += 5;
 
                     SpriteGridCell next_cell = cursor_at + 5 < cells.Count // if we have something below
                         ? cells.Where(c => //                                 find
@@ -215,7 +191,6 @@ namespace Celeste.Mod.EmoteMod
                         Celeste.TargetHeight - bg_thickness / 2 * ((float)Math.Cos(bg_rotation))
                         );
 
-                // EmoteModModule.echo($"bg:({bg_origin.X}, {bg_origin.Y}) at {bg_rotation}");
                 yield return null;
             }
 
@@ -301,7 +276,6 @@ namespace Celeste.Mod.EmoteMod
                     customsForRemoval.Add($"{spritebank}:{a}");
                 }
 
-                // cells.Add(new(info, a, new_cell_pos(cells_offset), this, cells.Count * 0.02f));
                 cells.Add(new(info, a, new_cell_pos(cells.Count), this, cells.Count * 0.02f));
             }
 
@@ -420,26 +394,6 @@ namespace Celeste.Mod.EmoteMod
         #endregion
 
         #region Helper methods
-        // int even_ifier => cells_reset == 0 ? 0 : 5 - cells_reset % 5;
-
-        // // Vector2 new_cell_pos(int index)
-        // Vector2 new_cell_pos(float vert_offset = 0, int reset_at = 0)
-        // {
-        //     // float length = SpriteGridCell.upscale * SpriteGridCell.default_size;
-
-        //     // float X = index % 5 * (length + spacing);
-        //     // float Y = index % 5 * length * 1.3f;
-
-        //     // return new Vector2(X, Y);
-
-        //     int even_ifier = cells_reset == 0 ? 0 : 5 - cells_reset % 5;
-
-        //     float x = left_start + (cells.Count - cells_reset) % 5 * (length + spacing);
-        //     float y = (cells.Count + even_ifier) / 5 * length * 1.3f + vert_offset;
-
-        //     return new(x, y);
-        // }
-
         /// <summary>
         /// Returns an absolute cell pos
         /// </summary>
@@ -466,8 +420,7 @@ namespace Celeste.Mod.EmoteMod
         void fillWithContent(Dictionary<string, Dictionary<string, string>> content, bool gradualFadeIn = false)
         {
             Vector2 abs_offset = new(x_offset, y_offset);
-            // Vector2 vert_offset = Vector2.Zero;
-            int title_after_ind;
+            int title_after_ind; // index of the cell before the last title
             Vector2 title_rel_pos = Vector2.Zero;
 
             foreach (KeyValuePair<string, Dictionary<string, string>> kvp_title_spr in content)
@@ -485,7 +438,6 @@ namespace Celeste.Mod.EmoteMod
                     gradualFadeIn ? fadeIn : 0.125f
                 ));
 
-                // vert_offset.Y += titles.Last().total_height;
 
                 foreach (KeyValuePair<string, string> kvp_text_anim in sprites)
                 {
@@ -497,7 +449,6 @@ namespace Celeste.Mod.EmoteMod
                         new_cell_pos(cells.Count - title_after_ind),
                         this,
                         fadeIn
-
                     ));
                 }
 
@@ -516,25 +467,7 @@ namespace Celeste.Mod.EmoteMod
 
 
             // add not-so-customs
-            // titles.Add(new(
-            //     "Visible to everyone",
-            //     new(x_offset, y_offset),
-            //     this,
-            //     gradualFadeIn ? fadeIn : 0.125f)
-            // );
-
             Dictionary<string, string> global = new();
-
-            // offset = new(x_offset, y_offset + titles.Last().total_height);
-
-
-            // cells.Add(new(
-            //     AnimationHelper.GetInfo("player:idle"),
-            //     "Default",
-            //     new_cell_pos(0) + offset,
-            //     this,
-            //     gradualFadeIn ? fadeIn : 0.125f
-            // ));
             global["Default"] = "player:idle";
 
             foreach (string gsm in AnimationHelper.GlobalEmotes.Keys.ToList())
@@ -542,37 +475,7 @@ namespace Celeste.Mod.EmoteMod
 
             content["Visible to everyone:"] = global;
 
-            // int count = 1;
-            // foreach (string sm in AnimationHelper.GlobalEmotes.Keys.ToList())
-            // {
-            //     SpriteGridCell cell = new(
-            //         AnimationHelper.GetInfo($"{sm}:idle"),
-            //         sm,
-            //         new_cell_pos(count) + offset,
-            //         this,
-            //         gradualFadeIn ? fadeIn : 0.125f
-            //     );
-
-            //     if (cells.Count > 1)
-            //         cell.left = cells.Last();
-
-            //     if (cells.Count > 5)
-            //         cell.up = cells.Last().left.left.left.left.left; // this is aids
-
-            //     cells.Add(cell);
-            //     count++;
-            // }
-
-
-            // titles.Add(new(
-            //     "Visible to Emotemod users",
-            //     new_cell_pos(count + count % 5) + offset,
-            //     this,
-            //     gradualFadeIn ? fadeIn : 0.125f)
-            // );
-
-            // count = 0;
-            // offset = titles.Last().Position + titles.Last().total_height * Vector2.UnitY;
+            // add customs
             Dictionary<string, string> customs = new();
 
             List<string> sprites = GFX.SpriteBank.SpriteData.Keys // get all non-global sprites
@@ -588,69 +491,16 @@ namespace Celeste.Mod.EmoteMod
                 List<string> anims = GFX.SpriteBank.SpriteData[sprite].Sprite.Animations.Keys.ToList();
                 string anim_name = anims.Contains("idle") ? "idle" : anims.First();
 
+                // add here and there
                 string full_name = $"{sprite}:{anim_name}";
                 customs[sprite] = full_name;
                 Emote.addCustomEmote(full_name);
                 customsForRemoval.Add(full_name);
-                // EmoteInfo info = AnimationHelper.GetInfo(full_name);
-
-
-
             }
 
             content["Visible to Emotemod users"] = customs;
 
             fillWithContent(content, gradualFadeIn);
-
-            // // add DEFAULT
-            // float defaults_y_start = top_free_space + titles.Last().total_height;
-            // cells.Add(new(AnimationHelper.GetInfo("player:idle"), "Default", new_cell_pos(defaults_y_start), this,
-            //             gradualFadeIn ? fadeIn : 0.125f));
-            // // add the rest
-            // foreach (string m in AnimationHelper.global_emotes.Keys.ToList())
-            // {
-            //     cells.Add(new(AnimationHelper.GetInfo($"{m}:idle"), m, new_cell_pos(defaults_y_start), this,
-            //             gradualFadeIn ? fadeIn : 0.125f));
-            // }
-
-            // // collect customs
-            // List<string> modes = GFX.SpriteBank.SpriteData.Keys
-            //     .Where(i => !AnimationHelper.global_emotes.ContainsKey(i))
-            //     .ToList();
-            // cells_reset = cells.Count;
-            // Vector2 customs_start_pos = new_cell_pos(defaults_y_start);
-
-            // // add cells
-            // titles.Add(new("Visible to EmoteMod users", new(left_start, customs_start_pos.Y), this,
-            //             gradualFadeIn ? fadeIn : 0.125f));
-
-            // float customs_y_start = defaults_y_start + titles.Last().total_height;
-            // foreach (string m in modes)
-            // {
-            //     // skip the ones with no animations if those even exist
-            //     if (GFX.SpriteBank.SpriteData[m].Sprite.Animations.Count() == 0)
-            //         continue;
-
-            //     List<string> anims = GFX.SpriteBank.SpriteData[m].Sprite.Animations.Keys.ToList();
-            //     string anim_name = anims.Contains("idle") ? "idle" : anims.First();
-            //     string full_name = $"{m}:{anim_name}";
-            //     EmoteInfo info = AnimationHelper.GetInfo(full_name);
-
-            //     if (info == null)
-            //     {
-            //         Logger.Log(LogLevel.Info, "EmoteMod", $"could not get info for '{full_name}'");
-            //         continue;
-            //     }
-            //     else if (info.isCustom)
-            //     {
-            //         Emote.addCustomEmote(full_name);
-            //         customsForRemoval.Add($"{full_name}");
-            //     }
-
-            //     cells.Add(new(info, m, new_cell_pos(customs_y_start), this,
-            //             // fadeIn));
-            //             gradualFadeIn ? fadeIn : 0.125f));
-            // }
         }
 
         float get_new_shift()
@@ -681,11 +531,6 @@ namespace Celeste.Mod.EmoteMod
             for (float d = 1f; d > 0f; d -= Engine.DeltaTime * 4)
             {
                 scroll_offset = new_shift - (new_shift - old_shift) * Ease.CubeIn(d);
-                // for (int i = 0; i < cards.Count; i++)
-                // {
-                //     cards[i].Position = new Vector2(Celeste.TargetWidth / 2,
-                //             cards_shift + i * 310f);
-                // }
 
                 yield return null;
             }
@@ -749,8 +594,6 @@ namespace Celeste.Mod.EmoteMod
             this.parent = parent;
             Tag = parent.Tag;
             parent.parent.Scene.Add(this);
-
-            // parent.Scene.Add(this);
         }
         #endregion
     }

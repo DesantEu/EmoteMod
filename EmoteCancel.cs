@@ -6,11 +6,7 @@ namespace Celeste.Mod.EmoteMod
 {
     public class EmoteCancel
     {
-        // public static Player player;
-
         public static bool invincibilityDefault;
-        // public static bool interactDefault;
-        // public static string customEmote;
         public static List<string> customEmotes;
 
         public static void cancelEmote()
@@ -26,7 +22,6 @@ namespace Celeste.Mod.EmoteMod
             player.StateMachine.State = Player.StNormal; // idk maybe its supposed to make player moveable or something i dont remember
             player.Speed = Vector2.Zero;
 
-            // EmoteModModule.celestenetSettings.Interactions = interactDefault; // return interactions do their default value
             CNetHelper.InteractionsAllowed = true;
             SaveData.Instance.Assists.Invincible = invincibilityDefault;
 
@@ -45,12 +40,6 @@ namespace Celeste.Mod.EmoteMod
                 player.ResetSprite(player.DefaultSpriteMode);
             }
 
-            // remove custom animations because packet size
-            // if (customEmote != "")
-            // {
-            //     Emote.madeline_bp.Remove(customEmote);
-            //     customEmote = "";
-            // }
             foreach (string e in customEmotes)
             {
                 try
@@ -96,17 +85,6 @@ namespace Celeste.Mod.EmoteMod
                 if (Input.Dash.Pressed || Input.Jump.Pressed || Input.MoveY == 1 || Input.Grab.Pressed || player.Dead)
                     cancelEmote();
             }
-            // TODO: why do it twice tho
-            // // if idle after emote cancel emote
-            // if (EmoteModModule.anim_by_game == 1 && player.Sprite.CurrentAnimationID == "idle")
-            //     cancelEmote();
-            // // something
-            // if (EmoteModModule.anim_by_game == 1 && player.StateMachine.State == 0)
-            //     cancelEmote();
-            // // cancel emote on press keys or if we die so that we dont respawn in a bad spot
-            // if (Input.Dash.Pressed || Input.Jump.Pressed || Input.MoveY == 1 || Input.Grab.Pressed || player.Dead)
-            //     if (EmoteModModule.anim_by_game == 1)
-            //         cancelEmote();
             // cancel emote if below level
             if (Engine.Scene is Level level && player.Y > level.Bounds.Bottom && EmoteModModule.anim_by_game == 1)
                 cancelEmote();
@@ -136,8 +114,6 @@ namespace Celeste.Mod.EmoteMod
             On.Celeste.Level.Update += Level_Update;
             On.Celeste.LevelExit.Begin += LevelExit_Begin;
             On.Celeste.Level.LoadLevel += LoadLevel;
-
-            // interactDefault = EmoteModModule.celestenetSettings.Interactions; // yea need to do that
         }
 
         internal static void Unload()

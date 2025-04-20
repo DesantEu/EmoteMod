@@ -1,11 +1,7 @@
 using Monocle;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using System.Collections;
 using System;
-using System.Reflection;
-using System.Linq;
 
 namespace Celeste.Mod.EmoteMod
 {
@@ -125,11 +121,6 @@ namespace Celeste.Mod.EmoteMod
         {
             Init(pos, text, parent, fadeInDelay);
         }
-        // public SpriteGridTitle(Vector2 pos, string text, string subtext, SpriteGrid parent)
-        // {
-        //     Init(pos, text, parent);
-        //
-        // }
     }
 
     public class SpriteGridCell : SpriteGridElement
@@ -168,13 +159,6 @@ namespace Celeste.Mod.EmoteMod
         {
             base.Update();
             wiggler.Update();
-
-            // if (coro != null)
-            //     coro.MoveNext();
-            //
-            // sprite.Color = Color.White * alpha;
-            //
-            // sprite.Position = Pos;
             sprite.Update();
         }
 

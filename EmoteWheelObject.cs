@@ -5,7 +5,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Monocle;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 // stolen from celestenet by Jade "0x0ade" BiggestNutsackInTheWorld
 
@@ -316,89 +315,5 @@ namespace Celeste.Mod.EmoteMod
             }
             #endregion
         }
-
-        // private Sprite.Animation getAnimationByName(string animation)
-        // {
-        //     // Dictionary<string, Sprite.Animation> madeline_bp = GFX.SpriteBank.SpriteData["player"].Sprite.Animations;
-        //     // Dictionary<string, Sprite.Animation> madeline_no_bp = GFX.SpriteBank.SpriteData["player_no_backpack"].Sprite.Animations;
-        //     // Dictionary<string, Sprite.Animation> madeline_badeline = GFX.SpriteBank.SpriteData["player_badeline"].Sprite.Animations;
-        //     // Dictionary<string, Sprite.Animation> badeline = GFX.SpriteBank.SpriteData["badeline"].Sprite.Animations;
-        //
-        //     // b
-        //     if (animation == "b")
-        //     {
-        //         return getAnimationByName("spin");
-        //     }
-        //
-        //     // this sucks but idk
-        //     if (Emote.madeline_no_bp.Keys.Contains(animation, StringComparer.OrdinalIgnoreCase))
-        //     {
-        //         return Emote.madeline_no_bp[animation];
-        //     }
-        //     else if (Emote.madeline_bp.Keys.Contains(animation, StringComparer.OrdinalIgnoreCase))
-        //     {
-        //         return Emote.madeline_bp[animation];
-        //     }
-        //     else if (Emote.badeline.Keys.Contains(animation, StringComparer.OrdinalIgnoreCase))
-        //     {
-        //         return Emote.badeline[animation];
-        //     }
-        //
-        //     else if (findCustomEmote(animation) != null)
-        //     {
-        //         return findCustomEmote(animation);
-        //     }
-        //
-        //     else
-        //     {
-        //         EmoteModModule.echo($"EMOTEMOD ERROR: Could not find '{animation}'");
-        //
-        //         return getAnimationByName("player:idle");
-        //     }
-        // }
-        //
-        // private Sprite.Animation findCustomEmote(string name)
-        // {
-        //     char split = ':';
-        //
-        //     if (!name.Contains(split))
-        //         return null;
-        //
-        //     string sdata_name = name.Split(split)[0];
-        //     string anim_name = name.Split(split, 2)[1];
-        //
-        //     if (!GFX.SpriteBank.SpriteData.ContainsKey(sdata_name))
-        //         return null;
-        //
-        //
-        //     Dictionary<string, Sprite.Animation> anims = GFX.SpriteBank.SpriteData[sdata_name].Sprite.Animations;
-        //
-        //     if (!anims.ContainsKey(anim_name))
-        //         return null;
-        //
-        //
-        //     return anims[anim_name];
-        //
-        //     // foreach (KeyValuePair<string, SpriteData> sdata in GFX.SpriteBank.SpriteData)
-        //     // {
-        //     //     if (animation.ToLower().Contains(sdata.Key.ToLower()))
-        //     //     {
-        //     //         try
-        //     //         {
-        //     //             Dictionary<string, Sprite.Animation> player = GFX.SpriteBank.SpriteData["player"].Sprite.Animations;
-        //     //             Dictionary<string, Sprite.Animation> anims = sdata.Value.Sprite.Animations;
-        //     //             string animName = animation.Remove(0, sdata.Key.Length + 1); // strip sprite name
-        //     //             KeyValuePair<string, Sprite.Animation> newAnim = new KeyValuePair<string, Sprite.Animation>(animName, anims[animName]);
-        //     //
-        //     //             return newAnim.Value;
-        //     //         }
-        //     //         catch
-        //     //         {
-        //     //             return null;
-        //     //         }
-        //     //     }
-        //     // }
-        //     // return null;
-        // }
     }
 }

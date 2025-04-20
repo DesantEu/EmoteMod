@@ -1,21 +1,9 @@
 using Microsoft.Xna.Framework.Input;
 using Celeste.Mod.UI;
-using Celeste.Mod.Core;
-using Celeste.Mod.Helpers;
-using Mono.Cecil;
-using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Runtime.Loader;
-using System.Threading;
-using Microsoft.Xna.Framework;
 using Monocle;
 using YamlDotNet.Serialization;
-using YamlDotNet.Serialization.NamingConventions;
 // using YamlDotNet.Serialization;
 
 namespace Celeste.Mod.EmoteMod
@@ -23,17 +11,8 @@ namespace Celeste.Mod.EmoteMod
 
     public class EmoteEntry
     {
-        // string _animation;
         EmoteInfo info;
         public string animation;
-        // {
-        //     get { return _animation; }
-        //     set
-        //     {
-        //         this.info = AnimationHelper.GetInfo(value);
-        //         this._animation = value;
-        //     }
-        // }
         public ButtonBinding bind;
 
         public EmoteEntry() { }
