@@ -22,10 +22,15 @@ namespace Celeste.Mod.EmoteMod
 
         // SpriteGrid gallery;
 
-        float animation_scale = 10f;
+        float animation_padding = 40f;
+        float animation_scale;
+        Vector2 animation_offset;
+
         public EmoteEntry emote;
         private EmoteInfo placeholder_info;
-        public EmoteInfo info => emote.GetInfo() == null ? placeholder_info : emote.GetInfo();
+        public EmoteInfo info => emote.GetInfo() ?? placeholder_info;
+        private string animation_to_play => emote.GetInfo().isCustom ? emote.animation : info.animation ?? info.animation;
+        // public EmoteInfo info => emote.GetInfo() == null ? placeholder_info : emote.GetInfo();
         public EmoteEntry old_emote;
 
         PlayerSprite sprite;
@@ -53,6 +58,7 @@ namespace Celeste.Mod.EmoteMod
         List<MTexture> keytextures = new();
         float total_keys_width;
 
+        #region render
         public override void Render()
         {
             base.Render();
@@ -110,7 +116,7 @@ namespace Celeste.Mod.EmoteMod
                     , new Vector2(0.5f, 1), new Vector2(1, Math.Max(anim_name_scale, 0)),
                     atButton == Butt.Animation ? flashing_color : Color.White, 2f, Color.Black);
             // spritebank
-            string sb = this.info.isCustom ? this.info.spritebank : "Default";
+            string sb = this.info.changeSpriteMode ? this.info.spritebank : "Default";
             ActiveFont.DrawOutline(sb, Position + card_shift + new Vector2(card.Width / 6, 10) + new Vector2(atButton == Butt.Spritebank ? wiggler.Value * 8f : 0, 0)
                     , new Vector2(0.5f, 1), new Vector2(1, Math.Max(spritebank_scale, 0)) * 0.8f,
                     atButton == Butt.Spritebank ? flashing_color : Color.White, 2f, Color.Black);
@@ -166,7 +172,7 @@ namespace Celeste.Mod.EmoteMod
                         , new Vector2(0.5f, 0.5f), Vector2.One, atButton == Butt.Keys ? flashing_color : Color.White);
             }
 
-            sprite.Position = Position + new Vector2(-card.Width / 4, card.Height / 4) + card_shift;
+            sprite.Position = Position + animation_offset + card_shift;
             sprite.Render();
         }
 
@@ -183,7 +189,8 @@ namespace Celeste.Mod.EmoteMod
                 // tex.DrawOutlineCentered(Position + card_shift + new Vector2(card.Width / 6, 50));
             }
         }
-
+        #endregion
+        #region updates
         public override void Update()
         {
             // if (Focused)
@@ -209,6 +216,7 @@ namespace Celeste.Mod.EmoteMod
                     {
                         // save_cancel_wiggle = true;
                         save_cancel_wiggler.Start();
+                        Audio.Play("event:/ui/main/button_invalid");
                     }
                     else
                         coro = OnClose();
@@ -249,6 +257,7 @@ namespace Celeste.Mod.EmoteMod
                     {
                         int index = EmoteModModule.Settings.Emotes.IndexOf(old_emote);
                         EmoteModModule.Settings.Emotes[index] = emote;
+                        EmoteModModule.Settings.Emotes[index].RefreshInfo();
                         coro = OnClose();
                     }
                     // cancel
@@ -277,7 +286,6 @@ namespace Celeste.Mod.EmoteMod
                         // gallery = new SpriteGrid(emote.GetInfo().spritebank, this);
                         // parent.Scene.Add(gallery);
                         parent.gallery = new(info.spritebank, this);
-
                     }
                 }
             }
@@ -303,8 +311,9 @@ namespace Celeste.Mod.EmoteMod
         {
             coro = OnDeselect();
         }
+        #endregion
 
-        #region animations
+        #region transitions
         public IEnumerator OnAddBind()
         {
             // todo rewrite this pretty much
@@ -377,7 +386,8 @@ namespace Celeste.Mod.EmoteMod
             }
             Selected = true;
             if (sprite.Animations.ContainsKey(emote.animation))
-                sprite.Play(emote.animation);
+                // sprite.Play(emote.animation);
+                sprite.Play(animation_to_play);
             yield return null;
 
         }
@@ -395,6 +405,8 @@ namespace Celeste.Mod.EmoteMod
             float l = -card.Width / 2;
             float r = card.Width / 2;
             float b = card.Height;
+
+            Audio.Play("event:/ui/main/whoosh_savefile_out");
 
             for (float d = 0; d < 1f; d += Engine.DeltaTime * 4)
             {
@@ -447,6 +459,8 @@ namespace Celeste.Mod.EmoteMod
 
             Focused = false;
             atButton = Butt.None;
+
+            Audio.Play("event:/ui/main/whoosh_savefile_in");
 
             for (float d = 0; d < 1f; d += Engine.DeltaTime * 4)
             {
@@ -511,7 +525,7 @@ namespace Celeste.Mod.EmoteMod
             sprite = new PlayerSprite(info.spritemode);
             Engine.Commands.Log($"New sprite with {info.spritemode} (is {sprite.Mode})");
 
-            sprite.Scale = Vector2.One * animation_scale;
+
 
             hair = new(sprite) { SimulateMotion = true };
             hair.Visible = true;
@@ -526,23 +540,35 @@ namespace Celeste.Mod.EmoteMod
                     EmoteModModule.echo($"SpriteMode: '{sprite.Mode}', \nAll animations: {all_anims}");
                 }
 
-
-
-                sprite.Play(emote.animation);
+                // handle "sb:anim" and "anim"
+                // sprite.Play(info.isCustom ? emote.animation : info.animation);
+                sprite.Play(animation_to_play);
             }
-            else
+            else // this will play a placeholder probably
                 sprite.Play(info.animation);
+
+            // sprite.JustifyOrigin(0.5f, 0.5f);
+            sprite.Justify = new(0.5f, 0);
+
+            // scaling
+            MTexture frame = sprite.Animations[animation_to_play].Frames.First();
+            float bigger_side = Math.Max(frame.Width, frame.Height);
+            sprite.Scale = Vector2.One * animation_scale / bigger_side * SpriteGridCell.default_size;
+            EmoteModModule.echo($"{emote.animation}:\n    w:{sprite.Width},h:{sprite.Height}; origin:({sprite.Origin.X}, {sprite.Origin.Y})");
         }
 
 
 
         #endregion
-
+        #region constructors
         public EmoteCard(EmoteEntry emote)
         {
             // Tag = Tags.HUD;
 
             this.emote = emote;
+            animation_scale = (card.Height - animation_padding * 2) / SpriteGridCell.default_size;
+            // animation_offset = new(-card.Width / 4, 0);
+            animation_offset = new(-card.Width / 4, -card.Height / 2 + animation_padding);
             // this.info = emote.GetInfo();
 
             // if (this.info == null)
@@ -578,7 +604,7 @@ namespace Celeste.Mod.EmoteMod
             //     sprite.Play(emote.animation);
 
         }
-
+        #endregion
 
     }
 }

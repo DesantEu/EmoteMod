@@ -72,6 +72,7 @@ namespace Celeste.Mod.EmoteMod
             }
 
             // Scene.Add(gallery);
+            Audio.Play("event:/ui/main/whoosh_list_in");
 
             int centerw = Celeste.TargetWidth / 2;
             int offscreenw = Celeste.TargetWidth + 300;
@@ -88,6 +89,7 @@ namespace Celeste.Mod.EmoteMod
                 yield return null;
             }
 
+            Audio.Play("event:/ui/main/whoosh_savefile_in");
             cards[atCard].Select();
             Focused = true;
         }
@@ -121,7 +123,7 @@ namespace Celeste.Mod.EmoteMod
                 }
                 if (Input.MenuDown.Pressed)
                 {
-
+                    Audio.Play("event:/ui/main/rollover_down");
                     cards[atCard].Deselect();
                     atCard++;
                     if (atCard >= cards.Count)
@@ -131,7 +133,7 @@ namespace Celeste.Mod.EmoteMod
                 }
                 if (Input.MenuUp.Pressed)
                 {
-
+                    Audio.Play("event:/ui/main/rollover_up");
                     cards[atCard].Deselect();
                     atCard--;
                     if (atCard < 0)
@@ -141,6 +143,7 @@ namespace Celeste.Mod.EmoteMod
                 }
                 if (Input.MenuConfirm.Pressed)
                 {
+                    // Audio.Play("event:/ui/main/savefile_rename_start");
                     cards[atCard].Open();
                     coro = FocusCard();
                     Focused = false;
@@ -239,6 +242,10 @@ namespace Celeste.Mod.EmoteMod
             int centerw = Celeste.TargetWidth / 2;
             int offscreenw = Celeste.TargetWidth + 300;
             int target = Math.Max(Math.Min(atCard, cards.Count - 2), 2);
+
+            Audio.Play("event:/ui/main/whoosh_list_out");
+            Audio.Play("event:/ui/main/button_back");
+
             for (float d = 0f; d < 1f; d += Engine.DeltaTime * 3f)
             {
                 for (int i = 0; i < cards.Count; i++)
@@ -389,7 +396,7 @@ namespace Celeste.Mod.EmoteMod
     //
     //             // set up the menu instance
     //             menuInstance.backToParentMenu = backToParentMenu;
-    //             menuInstance.parameters = parameters;
+    //      menuInstance.parameters = parameters;
     //
     //             // then navigate to it
     //             overworld.Goto<T>();
