@@ -14,7 +14,7 @@ namespace Celeste.Mod.EmoteMod
         internal IEnumerator coro;
         internal float fade_in_delay;
         internal float alpha;
-        internal Vector2 Pos;
+        internal Vector2 render_pos;
         internal SpriteGrid parent;
         internal float scroll_shift => parent.scroll_offset;
 
@@ -39,7 +39,7 @@ namespace Celeste.Mod.EmoteMod
 
         internal void RecalculatePosition()
         {
-            Pos = Position - new Vector2(0, parent.scroll_offset);
+            render_pos = Position - new Vector2(0, parent.scroll_offset);
         }
 
         public override void Update()
@@ -51,10 +51,10 @@ namespace Celeste.Mod.EmoteMod
 
             RecalculatePosition();
 
-            if (Pos.X < -visible_margin
-                    || Pos.X > Celeste.TargetWidth
-                    || Pos.Y < -visible_margin
-                    || Pos.Y > Celeste.TargetHeight)
+            if (render_pos.X < -visible_margin
+                    || render_pos.X > Celeste.TargetWidth
+                    || render_pos.Y < -visible_margin
+                    || render_pos.Y > Celeste.TargetHeight)
             {
                 Visible = false;
             }
@@ -84,8 +84,14 @@ namespace Celeste.Mod.EmoteMod
     {
         public string text;
         public static Vector2 text_scale = Vector2.One;
+        /// <summary>
+        /// Text height. Use `total_height` for height with padding
+        /// </summary>
         public float text_height;
         public static float line_offset = 15;
+        /// <summary>
+        /// Height with padding
+        /// </summary>
         public float total_height => text_height + line_offset + 5 + line_offset;
         // string bottom_text = "";
 
@@ -93,11 +99,13 @@ namespace Celeste.Mod.EmoteMod
         {
             base.Render();
 
-            ActiveFont.DrawOutline(text, Pos, Vector2.Zero, text_scale, Color.Snow * alpha, 3, Color.Black * alpha);
-            Draw.Line(new Vector2(Pos.X, Pos.Y + text_height + line_offset)
-                    , new Vector2(Celeste.TargetWidth - Pos.X, Pos.Y + text_height + line_offset)
-                    , Color.Snow * alpha, 5);
-            // Draw.Line(SpriteGridCell.)
+            // text
+            ActiveFont.DrawOutline(text, render_pos, Vector2.Zero, text_scale, Color.Snow * alpha, 3, Color.Black * alpha);
+
+            // line
+            Vector2 line_start = new Vector2(render_pos.X, render_pos.Y + text_height + line_offset);
+            Vector2 line_end = new Vector2(Celeste.TargetWidth - render_pos.X, render_pos.Y + text_height + line_offset);
+            Draw.Line(line_start, line_end, Color.Snow * alpha, 5);
         }
 
         void Init(Vector2 pos, string text, SpriteGrid parent, float fadeInDelay)
@@ -128,16 +136,21 @@ namespace Celeste.Mod.EmoteMod
     {
         PlayerSprite sprite;
         public string text;
-        Wiggler wiggler = Wiggler.Create(0.25f, 3f);
+        Wiggler wiggler = Wiggler.Create(0.4f, 3f);
         bool isSelected;
         float downscale;
         public EmoteInfo info;
+        public float total_height = 0;
         private String anim_name;
         Color flashing_color => !Settings.Instance.DisableFlashes && !this.Scene.BetweenInterval(0.1f) ? TextMenu.HighlightColorB : TextMenu.HighlightColorA;
 
 
         public static float default_size = 32;
         public static float upscale = 6;
+        /// <summary>
+        /// Upscaled sprite size
+        /// </summary>
+        public static float sprite_size = default_size * upscale;
 
         public void Select()
         {
@@ -171,16 +184,17 @@ namespace Celeste.Mod.EmoteMod
             HudRenderer.EndRender();
             HudRenderer.BeginRender(null, Microsoft.Xna.Framework.Graphics.SamplerState.PointClamp);
 
-            sprite.Position = Pos - new Vector2(0, SpriteGrid.spacing * 0.2f * wiggler.Value);
+            sprite.Position = render_pos - new Vector2(0, SpriteGrid.spacing * 0.25f * wiggler.Value);
             sprite.Color = Color.White * alpha;
 
             sprite.Render();
-            float rect_side = default_size * upscale;
-            // Draw.HollowRect(Pos, rect_side, rect_side, Color.Snow * alpha);
 
-            ActiveFont.DrawOutline(text, Pos + new Vector2(rect_side / 2, rect_side),
-                    new Vector2(0.5f, 0), Vector2.One * 0.5f,
-                    isSelected ? flashing_color : Color.Snow * alpha, 3, Color.Black * alpha);
+            ActiveFont.DrawOutline(
+                text
+                , render_pos + new Vector2(sprite_size / 2, sprite_size) // at bottom center
+                , new Vector2(0.5f, 0) // justify top center
+                , Vector2.One * 0.5f // scale // TODO: calculate instead
+                , isSelected ? flashing_color : Color.Snow * alpha, 3, Color.Black * alpha); // color
 
             HudRenderer.EndRender();
             HudRenderer.BeginRender();
@@ -199,10 +213,11 @@ namespace Celeste.Mod.EmoteMod
             fade_in_delay = fadeInDelay;
             alpha = 0;
             coro = FadeIn();
+            this.total_height = sprite_size + ActiveFont.LineHeight * 0.5f;
 
             this.sprite = new(emote.spritemode);
 
-            anim_name = AnimationHelper.global_emotes.ContainsKey(emote.spritebank)
+            anim_name = AnimationHelper.GlobalEmotes.ContainsKey(emote.spritebank)
                 ? emote.animation
                 : emote.isCustom ? $"{emote.spritebank}:{emote.animation}" : emote.animation;
             MTexture first_frame = sprite.Animations[anim_name].Frames[0];
