@@ -30,10 +30,13 @@ namespace Celeste.Mod.EmoteMod
 
         // public static bool changedSprite;
 
-        public static void DoEmote(string animation, bool by_command, Player player)
+        public static void DoEmote(EmoteInfo info, bool by_command, Player player)
+        // public static void DoEmote(string animation, bool by_command, Player player)
         {
             if (EmoteModModule.anim_by_game != 2) // if the game is not playing a cutscene
             {
+                string animation = info.isCustom ? $"{info.spritebank}:{info.animation}" : info.animation;
+
                 try // anticrash3000
                 {
                     player.StateMachine.State = Player.StDummy; // make player not able to move
@@ -57,12 +60,45 @@ namespace Celeste.Mod.EmoteMod
                             playback = true;
                     }
 
+
                     // new sprite changes
                     if (animation != "b" && animation != "bounce")
-                        if (!player.Sprite.Animations.ContainsKey(animation))
-                        {
-                            EmoteModModule.echo("ANIMATION LOOKUP");
+                        // if (!player.Sprite.Animations.ContainsKey(animation))
+                        // {
+                        //     EmoteModModule.echo("ANIMATION LOOKUP");
 
+                        //     // change sprite if animation not found
+                        //     if (madeline_no_bp.Keys.Contains(animation, StringComparer.OrdinalIgnoreCase))
+                        //     {
+                        //         player.ResetSprite(PlayerSpriteMode.MadelineNoBackpack);
+                        //     }
+                        //     else if (badeline.Keys.Contains(animation, StringComparer.OrdinalIgnoreCase))
+                        //     {
+                        //         player.ResetSprite(PlayerSpriteMode.Badeline);
+                        //     }
+                        //     else if (madeline_bp.Keys.Contains(animation, StringComparer.OrdinalIgnoreCase))
+                        //     {
+                        //         player.ResetSprite(PlayerSpriteMode.Madeline);
+                        //     }
+
+                        //     else if (addCustomEmote(animation)) // the cool part
+                        //     {
+                        //         player.ResetSprite(PlayerSpriteMode.Madeline);
+                        //         // EmoteCancel.customEmote = animation;
+                        //     }
+                        // }
+
+
+                        if (info.changeSpriteMode)
+                        {
+                            if (PlayerHelper.GetPlayer()?.Sprite.Mode != info.spritemode)
+                                player.ResetSprite(info.spritemode);
+
+                            if (info.isCustom)
+                                addCustomEmote(animation);
+                        }
+                        else if (!player.Sprite.Animations.ContainsKey(animation))
+                        {
                             // change sprite if animation not found
                             if (madeline_no_bp.Keys.Contains(animation, StringComparer.OrdinalIgnoreCase))
                             {
@@ -76,15 +112,11 @@ namespace Celeste.Mod.EmoteMod
                             {
                                 player.ResetSprite(PlayerSpriteMode.Madeline);
                             }
-
-                            else if (addCustomEmote(animation)) // the cool part
-                            {
-                                player.ResetSprite(PlayerSpriteMode.Madeline);
-                                // EmoteCancel.customEmote = animation;
-                            }
                         }
+
+
                     // bounc e
-                    if (animation == "bounce" || animation == "b")
+                    if (info.animation == "bounce" || info.animation == "b")
                     {
                         if (!bounced)
                             Gravity.playerY -= 1;
@@ -96,7 +128,7 @@ namespace Celeste.Mod.EmoteMod
                     else
                     {
                         player.Sprite.Play(animation); // do emote
-                        // Speed.currentDelay = player.Sprite.Animations[animation].Delay;
+                                                       // Speed.currentDelay = player.Sprite.Animations[animation].Delay;
                         Speed.SetSpeed();
                     }
 
@@ -287,7 +319,12 @@ namespace Celeste.Mod.EmoteMod
             foreach (EmoteEntry e in EmoteModModule.Settings.Emotes)
             {
                 if (e.CheckPressed())
-                    DoEmote(e.animation, false, self);
+                {
+                    if (e.GetInfo() == null)
+                        e.RefreshInfo();
+
+                    DoEmote(e.GetInfo(), false, self);
+                }
             }
         }
     }
