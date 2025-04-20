@@ -17,11 +17,28 @@ namespace Celeste.Mod.EmoteMod
 
         private static void OnCreatePauseMenuButtons(Level level, TextMenu menu, bool minimal)
         {
+            EmoteModModule.echo("finding buttons");
+            // find retry button
             int index = menu.Items.FindIndex(item =>
                     item.GetType() == typeof(TextMenu.Button) && ((TextMenu.Button)item).Label == Dialog.Clean("menu_pause_retry"));
+            EmoteModModule.echo($"retry: {index}");
+            // or skip cutscene
+            if (index == -1)
+                index = menu.Items.FindIndex(item =>
+                        item.GetType() == typeof(TextMenu.Button) && ((TextMenu.Button)item).Label == Dialog.Clean("menu_pause_skip_cutscene"));
+            EmoteModModule.echo($"skip: {index}");
 
-            menu.Insert(index + 1, BuildConfigButton(menu, true, null));
-
+            // skip if none found
+            if (index != -1)
+                menu.Insert(index + 1, BuildConfigButton(menu, true, null));
+            else
+            {
+                foreach (TextMenu.Item item in menu.Items)
+                {
+                    if (item.GetType() == typeof(TextMenu.Button))
+                        EmoteModModule.echo(((TextMenu.Button)item).Label);
+                }
+            }
         }
 
         // mostly stolen from ex variants
