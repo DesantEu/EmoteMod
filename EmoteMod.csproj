@@ -34,7 +34,9 @@
         <Reference Include="$(CelestePrefix)\MMHOOK_Celeste.dll">
             <Private>false</Private>
         </Reference>
-
+        <Reference Include="$(CelestePrefix)\YamlDotNet.dll">
+            <Private>false</Private>
+        </Reference>
 
         <Reference Include="$(CelestePrefix)\Mods\CelesteNet.Client\CelesteNet.Client.dll">
             <Private>false</Private>
@@ -55,7 +57,7 @@
     </Target>
 
     <PropertyGroup>
-        <PathMap>$(MSBuildProjectDirectory)=modtest/</PathMap>
+        <PathMap>$(MSBuildProjectDirectory)=EmoteMod/</PathMap>
     </PropertyGroup>
 
 </Project>
