@@ -228,6 +228,7 @@ namespace Celeste.Mod.EmoteMod
                     // save
                     if (atButton == Butt.Save)
                     {
+                        changesMade = false;
                         int index = EmoteModModule.Settings.Emotes.IndexOf(old_emote);
                         EmoteModModule.Settings.Emotes[index] = emote;
                         EmoteModModule.Settings.Emotes[index].RefreshInfo();
