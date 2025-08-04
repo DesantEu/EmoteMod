@@ -86,7 +86,12 @@ namespace Celeste.Mod.EmoteMod
                 //         .GetProperty("Interactions", BindingFlags.Instance | BindingFlags.Public).GetGetMethod(), cnetInteractionsGet);
                 // CNModule.GetType().Assembly.GetType("Celeste.Mod.CelesteNet.Client.CelesteNetClientSettings.InGameMenu").GetProperties();
                 //
-                OnSendDataHook = new(CNModule.GetType().Assembly.GetType("Celeste.Mod.CelesteNet.Client.Components.CelesteNetMainComponent").GetMethod("SendState"), OnSendData);
+
+
+
+
+                // TODO: uncomment this we need it
+                // OnSendDataHook = new(CNModule.GetType().Assembly.GetType("Celeste.Mod.CelesteNet.Client.Components.CelesteNetMainComponent").GetMethod("SendState"), OnSendData);
 
 
 
