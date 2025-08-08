@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Celeste;
 using Celeste.Mod;
 using EmoteMod.Features;
+using EmoteMod.Hooks;
 using EmoteMod.Utility;
 using Monocle;
 
@@ -91,7 +92,7 @@ namespace EmoteMod.Module
             On.Celeste.GFX.LoadData += on_gfx_load_data;
 
             Gravity.Load();
-            Emote.Load();
+            EmoteHooks.Load();
             EmoteCancel.Load();
             BackpackChanger.Load();
             Speed.Load();
@@ -117,7 +118,7 @@ namespace EmoteMod.Module
         {
             EmoteCancel.cancelEmote();
 
-            Emote.Unload();
+            EmoteHooks.Unload();
             EmoteCancel.Unload();
             BackpackChanger.Unload();
             Speed.Unload();
