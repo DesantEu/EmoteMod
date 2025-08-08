@@ -94,7 +94,7 @@ namespace EmoteMod.Module
             GravityHooks.Load();
             EmoteHooks.Load();
             BackpackHooks.Load();
-            Stretcher.Load();
+            StretchHooks.Load();
             EmoteWheel.Load();
             MadhuntNerf.Load();
             CNetHelper.Load();
@@ -117,7 +117,7 @@ namespace EmoteMod.Module
 
             EmoteHooks.Unload();
             BackpackHooks.Unload();
-            Stretcher.Unload();
+            StretchHooks.Unload();
             GravityHooks.Unload();
             EmoteWheel.Unload();
             MadhuntNerf.Unload();

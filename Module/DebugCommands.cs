@@ -166,20 +166,20 @@ namespace EmoteMod.Module
 
                 else if (custom == "x")
                 {
-                    Stretcher.stretch_x(emoteFloat);
+                    Stretch.stretch_x(emoteFloat);
                 }
                 else if (custom == "y")
                 {
-                    Stretcher.stretch_y(emoteFloat);
+                    Stretch.stretch_y(emoteFloat);
                 }
                 else if (custom == "xy")
                 {
                     if (emote == "lock" || emote == "l")
-                        Stretcher.lock_stretch();
+                        Stretch.lock_stretch();
                     else
                     {
-                        Stretcher.stretch_x(emoteFloat);
-                        Stretcher.stretch_y(emoteFloat);
+                        Stretch.stretch_x(emoteFloat);
+                        Stretch.stretch_y(emoteFloat);
                     }
                 }
                 else if (custom == "test")
