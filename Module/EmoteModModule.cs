@@ -91,7 +91,7 @@ namespace EmoteMod.Module
 
             On.Celeste.GFX.LoadData += on_gfx_load_data;
 
-            Gravity.Load();
+            GravityHooks.Load();
             EmoteHooks.Load();
             BackpackChanger.Load();
             Speed.Load();
@@ -120,7 +120,7 @@ namespace EmoteMod.Module
             BackpackChanger.Unload();
             Speed.Unload();
             Stretcher.Unload();
-            Gravity.Unload();
+            GravityHooks.Unload();
             EmoteWheel.Unload();
             MadhuntNerf.Unload();
             CNetHelper.Unload();
