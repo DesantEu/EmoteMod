@@ -50,7 +50,7 @@ namespace EmoteMod.Features
                     if (EmoteModModule.anim_by_game == 0)
                     {
                         CNetHelper.InteractionsAllowed = false;
-                        EmoteCancel.invincibilityDefault = SaveData.Instance.Assists.Invincible;
+                        invincibilityDefault = SaveData.Instance.Assists.Invincible;
                         SaveData.Instance.Assists.Invincible = true; // TODO: wanna get rid of changing settings at all
                         EmoteModModule.anim_by_game = 1; // acknowledge that emote is playing
 
@@ -113,7 +113,7 @@ namespace EmoteMod.Features
                 {
                     Logger.Log("EmoteMod EXCEPTION", e.ToString()); // burh
                     EmoteModModule.echo($"failed to play {animation}");
-                    EmoteCancel.cancelEmote();
+                    cancelEmote();
                 }
             }
         }
@@ -151,7 +151,7 @@ namespace EmoteMod.Features
             KeyValuePair<string, Sprite.Animation> newAnim = new KeyValuePair<string, Sprite.Animation>(anim_name, anims[anim_name]);
             madeline_bp.Add(name, copyAnim(newAnim, name));
 
-            EmoteCancel.customEmotes.Add(name);
+            customEmotes.Add(name);
             return true;
         }
 
@@ -163,6 +163,58 @@ namespace EmoteMod.Features
             ae.Goto = new Chooser<string>(name);
 
             return ae;
+        }
+
+
+
+        public static bool invincibilityDefault;
+        public static List<string> customEmotes;
+
+        public static void cancelEmote()
+        {
+            Player player = PlayerHelper.GetPlayer();
+
+            if (player == null)
+                return;
+
+            Speed.ResetSpeed();
+
+            player.DummyAutoAnimate = true; // auto animate
+            player.StateMachine.State = Player.StNormal; // idk maybe its supposed to make player moveable or something i dont remember
+            player.Speed = Vector2.Zero;
+
+            CNetHelper.InteractionsAllowed = true;
+            SaveData.Instance.Assists.Invincible = invincibilityDefault;
+
+            // return player sprite mode
+            if (Emote.playback)
+            { //ex variants fix thing
+                player.ResetSpriteNextFrame(PlayerSpriteMode.Playback);
+                Emote.playback = false;
+            }
+            else if (SaveData.Instance.Assists.PlayAsBadeline)
+            {
+                player.ResetSprite(PlayerSpriteMode.MadelineAsBadeline);
+            }
+            else
+            {
+                player.ResetSprite(player.DefaultSpriteMode);
+            }
+
+            foreach (string e in customEmotes)
+            {
+                try
+                {
+                    Emote.madeline_bp.Remove(e);
+                }
+                catch { }
+            }
+
+            customEmotes.Clear();
+
+            Emote.bounced = false;
+
+            EmoteModModule.anim_by_game = 0; // tell yourself that no animation is playing
         }
     }
 }

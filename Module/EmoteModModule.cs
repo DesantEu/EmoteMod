@@ -93,7 +93,6 @@ namespace EmoteMod.Module
 
             Gravity.Load();
             EmoteHooks.Load();
-            EmoteCancel.Load();
             BackpackChanger.Load();
             Speed.Load();
             Stretcher.Load();
@@ -116,10 +115,8 @@ namespace EmoteMod.Module
 
         public override void Unload()
         {
-            EmoteCancel.cancelEmote();
 
             EmoteHooks.Unload();
-            EmoteCancel.Unload();
             BackpackChanger.Unload();
             Speed.Unload();
             Stretcher.Unload();
