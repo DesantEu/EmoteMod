@@ -6,8 +6,11 @@ using System;
 using MonoMod.Cil;
 using Mono.Cecil.Cil;
 using Microsoft.Xna.Framework;
+using EmoteMod.UI;
+using Celeste;
+using EmoteMod.Module;
 
-namespace Celeste.Mod.EmoteMod
+namespace EmoteMod.Features
 {
     public static class EmoteWheel
     {

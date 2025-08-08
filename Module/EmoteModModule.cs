@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using Celeste;
+using Celeste.Mod;
+using EmoteMod.Features;
+using EmoteMod.Utility;
 using Monocle;
 
-namespace Celeste.Mod.EmoteMod
+namespace EmoteMod.Module
 {
     public class EmoteModModule : EverestModule
     {
@@ -13,7 +17,7 @@ namespace Celeste.Mod.EmoteMod
         public override Type SessionType => typeof(EmoteModModuleSession);
         public static EmoteModModuleSession Session => (EmoteModModuleSession)Instance._Session;
 
-        public static CelesteNet.Client.CelesteNetClientSettings celestenetSettings = CelesteNet.Client.CelesteNetClientModule.Settings;
+        public static Celeste.Mod.CelesteNet.Client.CelesteNetClientSettings celestenetSettings = Celeste.Mod.CelesteNet.Client.CelesteNetClientModule.Settings;
 
         /// <summary>
 		/// If 0 we can make an animation;

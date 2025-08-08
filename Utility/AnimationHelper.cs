@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using System;
 using System.Linq;
-namespace Celeste.Mod.EmoteMod
+using Celeste;
+namespace EmoteMod.Utility
 {
     /// <summary>
     /// <paramref name="animation"/> asdfaf
@@ -35,6 +36,7 @@ namespace Celeste.Mod.EmoteMod
         public PlayerSpriteMode spritemode;
 
     }
+
     public static class AnimationHelper
     {
         public static Dictionary<string, PlayerSpriteMode> GlobalEmotes;

@@ -2,12 +2,14 @@ using System;
 using System.Linq;
 using MonoMod.RuntimeDetour;
 using MonoMod.Cil;
+using EmoteMod.Module;
+using Celeste.Mod;
 
 
 
-namespace Celeste.Mod.EmoteMod
+namespace EmoteMod.Utility
 {
-    internal class CNetHelper
+    internal static class CNetHelper
     {
         internal static bool InteractionsAllowed
         {
@@ -180,19 +182,19 @@ namespace Celeste.Mod.EmoteMod
             if (c.TryGotoNext(MoveType.Before, instr => instr.MatchStfld(DataPlayerState, "Interactive")))
             {
                 // test += $"found the bitch: {c.Next.ToString()}";
-                c.EmitDelegate<Func<bool, bool>>((orig) =>
-                {
-                    if (InteractionsAllowed)
-                    {
-                        EmoteModModule.echo($"returning orig: {orig}");
-                        return orig;
-                    }
-                    else
-                    {
-                        EmoteModModule.echo($"returning false");
-                        return false;
-                    }
-                });
+                c.EmitDelegate<Func<bool, bool>>((orig) => InteractionsAllowed ? orig : false);
+                // {
+                //     if (InteractionsAllowed)
+                //     {
+                //         EmoteModModule.echo($"returning orig: {orig}");
+                //         return orig;
+                //     }
+                //     else
+                //     {
+                //         EmoteModModule.echo($"returning false");
+                //         return false;
+                //     }
+                // });
             }
 
         }

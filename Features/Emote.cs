@@ -10,10 +10,14 @@ using System.Text;
 
 
 using MonoMod.RuntimeDetour;
+using Celeste;
+using EmoteMod.Utility;
+using EmoteMod.Module;
+using Celeste.Mod;
 
-namespace Celeste.Mod.EmoteMod
+namespace EmoteMod.Features
 {
-    public class Emote
+    public static class Emote
     {
         public static bool bounced = false;
         public static bool playback = false;

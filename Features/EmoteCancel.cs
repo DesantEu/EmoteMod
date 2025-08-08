@@ -1,10 +1,13 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Celeste;
+using EmoteMod.Module;
+using EmoteMod.Utility;
+using Microsoft.Xna.Framework;
 using Monocle;
 using System.Collections.Generic;
 
-namespace Celeste.Mod.EmoteMod
+namespace EmoteMod.Features
 {
-    public class EmoteCancel
+    public static class EmoteCancel
     {
         public static bool invincibilityDefault;
         public static List<string> customEmotes;

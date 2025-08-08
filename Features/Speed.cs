@@ -1,9 +1,12 @@
-﻿using Monocle;
+﻿using Celeste;
+using EmoteMod.Module;
+using EmoteMod.Utility;
+using Monocle;
 using MonoMod.Utils;
 using System;
 using System.Collections.Generic;
 
-namespace Celeste.Mod.EmoteMod
+namespace EmoteMod.Features
 {
     public class Speed
     {

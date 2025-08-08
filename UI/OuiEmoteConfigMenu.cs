@@ -4,7 +4,10 @@ using System.Collections;
 using System.Collections.Generic;
 using Celeste.Mod.UI;
 using System;
-namespace Celeste.Mod.EmoteMod
+using Celeste;
+using EmoteMod.Module;
+
+namespace EmoteMod.UI
 {
     public class OuiEmoteConfigMenu : Oui, OuiModOptions.ISubmenu
     {
@@ -43,7 +46,7 @@ namespace Celeste.Mod.EmoteMod
         {
             Visible = true;
             cards = new();
-            cards_shift = Celeste.TargetHeight / 2 - 310;
+            cards_shift = Celeste.Celeste.TargetHeight / 2 - 310;
             atCard = 0;
 
             // make cards
@@ -55,7 +58,7 @@ namespace Celeste.Mod.EmoteMod
 
                 cards.Add(new EmoteCard(emote)
                 {
-                    X = Celeste.TargetWidth / 2,
+                    X = Celeste.Celeste.TargetWidth / 2,
                     Y = cards_shift + index * 310,
                     parent = this,
                     Tag = this.Tag,
@@ -66,8 +69,8 @@ namespace Celeste.Mod.EmoteMod
             // Scene.Add(gallery);
             Audio.Play("event:/ui/main/whoosh_list_in");
 
-            int centerw = Celeste.TargetWidth / 2;
-            int offscreenw = Celeste.TargetWidth + 300;
+            int centerw = Celeste.Celeste.TargetWidth / 2;
+            int offscreenw = Celeste.Celeste.TargetWidth + 300;
 
             // make cool animation for cards
             for (float d = 0f; d < 1f; d += Engine.DeltaTime * 2f)
@@ -143,14 +146,14 @@ namespace Celeste.Mod.EmoteMod
         {
             float old_shift = cards_shift;
             int target = Math.Max(Math.Min(atCard, cards.Count - 2), 1);
-            float new_shift = Celeste.TargetHeight / 2 - 310 * target;
+            float new_shift = Celeste.Celeste.TargetHeight / 2 - 310 * target;
 
             for (float d = 1f; d > 0f; d -= Engine.DeltaTime * 4)
             {
                 cards_shift = new_shift - (new_shift - old_shift) * Ease.CubeIn(d);
                 for (int i = 0; i < cards.Count; i++)
                 {
-                    cards[i].Position = new Vector2(Celeste.TargetWidth / 2,
+                    cards[i].Position = new Vector2(Celeste.Celeste.TargetWidth / 2,
                             cards_shift + i * 310f);
                 }
 
@@ -160,21 +163,21 @@ namespace Celeste.Mod.EmoteMod
 
         IEnumerator FocusCard()
         {
-            Vector2 focused_target_pos = new Vector2(Celeste.TargetWidth / 2, Celeste.TargetHeight / 2 - 150f);
+            Vector2 focused_target_pos = new Vector2(Celeste.Celeste.TargetWidth / 2, Celeste.Celeste.TargetHeight / 2 - 150f);
             // move cards out of the way
             for (float d = 0; d < 1f; d += Engine.DeltaTime * 4)
             {
                 for (int i = 0; i < cards.Count; i++)
                 {
-                    Vector2 default_pos = new(Celeste.TargetWidth / 2,
+                    Vector2 default_pos = new(Celeste.Celeste.TargetWidth / 2,
                                 cards_shift + i * 310f);
                     if (i < atCard)
                     {
-                        cards[i].Position = default_pos + new Vector2(0, -Celeste.TargetHeight * Ease.CubeIn(d));
+                        cards[i].Position = default_pos + new Vector2(0, -Celeste.Celeste.TargetHeight * Ease.CubeIn(d));
                     }
                     else if (i > atCard)
                     {
-                        cards[i].Position = default_pos + new Vector2(0, Celeste.TargetHeight * Ease.CubeIn(d));
+                        cards[i].Position = default_pos + new Vector2(0, Celeste.Celeste.TargetHeight * Ease.CubeIn(d));
                     }
                     else
                     {
@@ -194,15 +197,15 @@ namespace Celeste.Mod.EmoteMod
             {
                 for (int i = 0; i < cards.Count; i++)
                 {
-                    Vector2 default_pos = new(Celeste.TargetWidth / 2,
+                    Vector2 default_pos = new(Celeste.Celeste.TargetWidth / 2,
                                 cards_shift + i * 310f);
                     if (i < atCard)
                     {
-                        cards[i].Position = default_pos + new Vector2(0, -Celeste.TargetHeight * Ease.CubeIn(d));
+                        cards[i].Position = default_pos + new Vector2(0, -Celeste.Celeste.TargetHeight * Ease.CubeIn(d));
                     }
                     else if (i > atCard)
                     {
-                        cards[i].Position = default_pos + new Vector2(0, Celeste.TargetHeight * Ease.CubeIn(d));
+                        cards[i].Position = default_pos + new Vector2(0, Celeste.Celeste.TargetHeight * Ease.CubeIn(d));
                     }
                     else
                     {
@@ -224,8 +227,8 @@ namespace Celeste.Mod.EmoteMod
             Focused = false;
             Visible = false;
 
-            int centerw = Celeste.TargetWidth / 2;
-            int offscreenw = Celeste.TargetWidth + 300;
+            int centerw = Celeste.Celeste.TargetWidth / 2;
+            int offscreenw = Celeste.Celeste.TargetWidth + 300;
             int target = Math.Max(Math.Min(atCard, cards.Count - 2), 2);
 
             Audio.Play("event:/ui/main/whoosh_list_out");

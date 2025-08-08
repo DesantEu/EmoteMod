@@ -1,24 +1,26 @@
 ﻿using System;
+using Celeste;
+using EmoteMod.Module;
 
-namespace Celeste.Mod.EmoteMod
+namespace EmoteMod.Features
 {
-    public class Gravity
-	{
+    public static class Gravity
+    {
 
         public static float playerY;
 
-		public static void Load()
-		{
-			On.Celeste.Player.Update += Player_Update;
-		}
+        public static void Load()
+        {
+            On.Celeste.Player.Update += Player_Update;
+        }
 
         private static void Player_Update(On.Celeste.Player.orig_Update orig, Player self)
         {
             orig(self);
 
-			if (EmoteModModule.Settings.CancelGravity && EmoteModModule.anim_by_game == 1)
-				self.Y = playerY;
-		}
+            if (EmoteModModule.Settings.CancelGravity && EmoteModModule.anim_by_game == 1)
+                self.Y = playerY;
+        }
 
         internal static void Unload()
         {

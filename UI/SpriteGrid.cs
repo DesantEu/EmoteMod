@@ -4,8 +4,13 @@ using Microsoft.Xna.Framework;
 using System.Collections;
 using System;
 using System.Linq;
+using Celeste;
+using EmoteMod.Utility;
+using Celeste.Mod;
+using EmoteMod.Features;
+using EmoteMod.Module;
 
-namespace Celeste.Mod.EmoteMod
+namespace EmoteMod.UI
 {
     public enum Stages
     {
@@ -30,11 +35,11 @@ namespace Celeste.Mod.EmoteMod
         float bg_rotation;
         float bg_alpha = 0f;
         Vector2 bg_origin;
-        static float bg_thickness = Celeste.TargetWidth;
+        static float bg_thickness = Celeste.Celeste.TargetWidth;
 
         // Spacing stuff
         public static float spacing = 70;
-        float x_offset = Celeste.TargetWidth / 2 - 2.5f * SpriteGridCell.default_size * SpriteGridCell.upscale - spacing * 2;
+        float x_offset = Celeste.Celeste.TargetWidth / 2 - 2.5f * SpriteGridCell.default_size * SpriteGridCell.upscale - spacing * 2;
         float y_offset = 90;
 
         bool Focused;
@@ -158,7 +163,7 @@ namespace Celeste.Mod.EmoteMod
             base.Render();
 
             Draw.LineAngle(bg_origin,
-                    bg_rotation, Celeste.TargetWidth * 2,
+                    bg_rotation, Celeste.Celeste.TargetWidth * 2,
                     Color.Black * bg_alpha, bg_thickness);
         }
 
@@ -179,7 +184,7 @@ namespace Celeste.Mod.EmoteMod
             Audio.Play("event:/ui/main/whoosh_large_in");
 
             // reset bg pos
-            bg_origin = new Vector2(-bg_thickness / 2, Celeste.TargetHeight);
+            bg_origin = new Vector2(-bg_thickness / 2, Celeste.Celeste.TargetHeight);
             bg_alpha = 0xff;
 
             // rotate the bg in
@@ -188,13 +193,13 @@ namespace Celeste.Mod.EmoteMod
                 bg_rotation = ((float)Math.PI) / 2 * (d - 1);
                 bg_origin = new Vector2(
                         ((float)Math.Sin(bg_rotation)) * bg_thickness / 2,
-                        Celeste.TargetHeight - bg_thickness / 2 * ((float)Math.Cos(bg_rotation))
+                        Celeste.Celeste.TargetHeight - bg_thickness / 2 * ((float)Math.Cos(bg_rotation))
                         );
 
                 yield return null;
             }
 
-            bg_origin = new Vector2(0, 5 + Celeste.TargetHeight - bg_thickness / 2);
+            bg_origin = new Vector2(0, 5 + Celeste.Celeste.TargetHeight - bg_thickness / 2);
             bg_rotation = 0;
 
             parent.Visible = false;
@@ -339,7 +344,7 @@ namespace Celeste.Mod.EmoteMod
             parent.Visible = true;
 
             // remove bg
-            bg_origin = new Vector2(Celeste.TargetWidth, Celeste.TargetHeight - bg_thickness / 2);
+            bg_origin = new Vector2(Celeste.Celeste.TargetWidth, Celeste.Celeste.TargetHeight - bg_thickness / 2);
             bg_alpha = 0xff;
 
             // rotate the bg in
@@ -347,15 +352,15 @@ namespace Celeste.Mod.EmoteMod
             {
                 bg_rotation = ((float)Math.PI) * (1.5f - 0.5f * (1 - d));
                 bg_origin = new Vector2(
-                        Celeste.TargetWidth - ((float)Math.Sin(bg_rotation)) * bg_thickness / 2,
-                        Celeste.TargetHeight + bg_thickness / 2 * ((float)Math.Cos(bg_rotation))
+                        Celeste.Celeste.TargetWidth - ((float)Math.Sin(bg_rotation)) * bg_thickness / 2,
+                        Celeste.Celeste.TargetHeight + bg_thickness / 2 * ((float)Math.Cos(bg_rotation))
                         );
 
                 EmoteModModule.echo(Math.Cos(bg_rotation).ToString());
                 yield return null;
             }
 
-            bg_origin = new Vector2(Celeste.TargetWidth + bg_thickness / 2, Celeste.TargetHeight);
+            bg_origin = new Vector2(Celeste.Celeste.TargetWidth + bg_thickness / 2, Celeste.Celeste.TargetHeight);
             bg_rotation = ((float)Math.PI) * 2;
             bg_alpha = 0f;
 
@@ -516,7 +521,7 @@ namespace Celeste.Mod.EmoteMod
             }
             else
             {
-                target = cells[cursor_at].Position.Y - Celeste.TargetHeight / 2;
+                target = cells[cursor_at].Position.Y - Celeste.Celeste.TargetHeight / 2;
                 new_shift = target + SpriteGridCell.default_size / 2 * SpriteGridCell.upscale;
             }
             return new_shift;

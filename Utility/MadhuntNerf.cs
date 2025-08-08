@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Linq;
+using Celeste;
+using Celeste.Mod;
 
-namespace Celeste.Mod.EmoteMod
+namespace EmoteMod.Utility
 {
-    internal class MadhuntNerf
+    internal static class MadhuntNerf
     {
 
         public static bool madhuntLoaded = false;

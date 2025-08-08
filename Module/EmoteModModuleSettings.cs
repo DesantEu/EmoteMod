@@ -4,9 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using Monocle;
 using YamlDotNet.Serialization;
+using EmoteMod.Utility;
+using Celeste.Mod;
+using Celeste;
+using EmoteMod.Features;
+using EmoteMod.UI;
 // using YamlDotNet.Serialization;
 
-namespace Celeste.Mod.EmoteMod
+namespace EmoteMod.Module
 {
 
     public class EmoteEntry

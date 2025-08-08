@@ -3,10 +3,14 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Celeste.Mod.UI;
+using EmoteMod.Module;
+using EmoteMod.UI;
+using Celeste;
+using EmoteMod.Utility;
 
-namespace Celeste.Mod.EmoteMod
+namespace EmoteMod.Features
 {
-    public class BackpackChanger
+    public static class BackpackChanger
     {
         //backpack formatter
         public static Func<int, string> backpackFormatter = arg =>

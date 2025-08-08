@@ -6,8 +6,11 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
 using System.Globalization;
+using Celeste.Mod;
+using Celeste;
+using EmoteMod.Module;
 
-namespace Celeste.Mod.EmoteMod
+namespace EmoteMod.Features
 {
     internal class Stretcher
     {

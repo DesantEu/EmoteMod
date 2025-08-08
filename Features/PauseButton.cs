@@ -1,8 +1,12 @@
 using System;
+using Celeste;
+using Celeste.Mod;
 using Celeste.Mod.UI;
+using EmoteMod.Module;
+using EmoteMod.UI;
 using Monocle;
 
-namespace Celeste.Mod.EmoteMod
+namespace EmoteMod.Features
 
 {
     public class PauseButton

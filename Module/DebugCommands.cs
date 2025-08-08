@@ -4,9 +4,12 @@ using System;
 using System.Numerics;
 using System.Reflection;
 using MonoMod.Cil;
+using EmoteMod.Utility;
+using EmoteMod.Features;
+using Celeste;
 
 
-namespace Celeste.Mod.EmoteMod
+namespace EmoteMod.Module
 {
     public static class DebugCommands
     {
@@ -131,9 +134,9 @@ namespace Celeste.Mod.EmoteMod
 
                                 foreach (Entity e in level.Entities)
                                 {
-                                    if (e is CelesteNet.Client.Entities.Ghost) // this gets all ghists in the level
+                                    if (e is Celeste.Mod.CelesteNet.Client.Entities.Ghost) // this gets all ghists in the level
                                     {
-                                        CelesteNet.Client.Entities.Ghost ghost = (CelesteNet.Client.Entities.Ghost)e;
+                                        Celeste.Mod.CelesteNet.Client.Entities.Ghost ghost = (Celeste.Mod.CelesteNet.Client.Entities.Ghost)e;
 
                                         EmoteModModule.echo($"{ghost.NameTag.Name}, ");
                                     }

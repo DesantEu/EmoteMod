@@ -6,8 +6,12 @@ using System.Collections;
 using System;
 using System.Reflection;
 using System.Linq;
+using Celeste;
+using EmoteMod.Module;
+using EmoteMod.Utility;
+using EmoteMod.Features;
 
-namespace Celeste.Mod.EmoteMod
+namespace EmoteMod.UI
 {
     public enum Butt
     {
@@ -262,8 +266,8 @@ namespace Celeste.Mod.EmoteMod
             }
 
             if (!stopVisibilityChecks)
-                Visible = X > -card.Width && X < Celeste.TargetWidth + card.Width
-                    && Y > -card.Width && Y < Celeste.TargetHeight + card.Height;
+                Visible = X > -card.Width && X < Celeste.Celeste.TargetWidth + card.Width
+                    && Y > -card.Width && Y < Celeste.Celeste.TargetHeight + card.Height;
 
         }
 

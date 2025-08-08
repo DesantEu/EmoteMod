@@ -1,5 +1,9 @@
-﻿using Celeste.Mod.CelesteNet.Client;
+﻿using Celeste;
+using Celeste.Mod.CelesteNet.Client;
 using Celeste.Mod.UI;
+using EmoteMod.Features;
+using EmoteMod.Module;
+using EmoteMod.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Monocle;
@@ -8,7 +12,7 @@ using System.Collections.Generic;
 
 // stolen from celestenet by Jade "0x0ade" BiggestNutsackInTheWorld
 
-namespace Celeste.Mod.EmoteMod
+namespace EmoteMod.UI
 {
     public class EmoteWheelObject : Entity
     {

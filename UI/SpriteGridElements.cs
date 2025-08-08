@@ -2,8 +2,10 @@ using Monocle;
 using Microsoft.Xna.Framework;
 using System.Collections;
 using System;
+using Celeste;
+using EmoteMod.Utility;
 
-namespace Celeste.Mod.EmoteMod
+namespace EmoteMod.UI
 {
     public abstract class SpriteGridElement : Entity
     {
@@ -48,9 +50,9 @@ namespace Celeste.Mod.EmoteMod
             RecalculatePosition();
 
             if (render_pos.X < -visible_margin
-                    || render_pos.X > Celeste.TargetWidth
+                    || render_pos.X > Celeste.Celeste.TargetWidth
                     || render_pos.Y < -visible_margin
-                    || render_pos.Y > Celeste.TargetHeight)
+                    || render_pos.Y > Celeste.Celeste.TargetHeight)
             {
                 Visible = false;
             }
@@ -100,7 +102,7 @@ namespace Celeste.Mod.EmoteMod
 
             // line
             Vector2 line_start = new Vector2(render_pos.X, render_pos.Y + text_height + line_offset);
-            Vector2 line_end = new Vector2(Celeste.TargetWidth - render_pos.X, render_pos.Y + text_height + line_offset);
+            Vector2 line_end = new Vector2(Celeste.Celeste.TargetWidth - render_pos.X, render_pos.Y + text_height + line_offset);
             Draw.Line(line_start, line_end, Color.Snow * alpha, 5);
         }
 

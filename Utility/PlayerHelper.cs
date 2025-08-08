@@ -2,15 +2,18 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using Celeste;
+using EmoteMod.Features;
+using EmoteMod.Module;
 
-namespace Celeste.Mod.EmoteMod
+namespace EmoteMod.Utility
 {
-    internal class PlayerHelper
+    internal static class PlayerHelper
     {
 
-        internal bool ForceInvincibility = false;
+        internal static bool ForceInvincibility = false;
 
-        public void Load()
+        public static void Load()
         {
             // TODO: hook death or something
         }
@@ -78,7 +81,7 @@ namespace Celeste.Mod.EmoteMod
             return anims[anim_name];
         }
 
-        public void Unload()
+        public static void Unload()
         {
         }
     }
