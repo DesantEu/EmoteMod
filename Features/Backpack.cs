@@ -10,7 +10,7 @@ using EmoteMod.Utility;
 
 namespace EmoteMod.Features
 {
-    public static class BackpackChanger
+    public static class Backpack
     {
         //backpack formatter
         public static Func<int, string> backpackFormatter = arg =>
@@ -22,28 +22,6 @@ namespace EmoteMod.Features
         public enum MadelineBackpackModes { Default, Backpack, NoBackpack, Playback };
 
         // when constructing the player set the sprite to the one we need (needs resetting)
-        internal static void PlayerSprite(On.Celeste.PlayerSprite.orig_ctor orig, PlayerSprite self, PlayerSpriteMode mode)
-        {
-            // code stolen from max (extended variant mode)
-            if (EmoteModModule.anim_by_game != 1 &&
-                    !(OuiModOptions.Instance?.Overworld.GetUI<OuiEmoteConfigMenu>().Visible ?? false))
-                if (mode == PlayerSpriteMode.Madeline || mode == PlayerSpriteMode.MadelineNoBackpack)
-                {
-                    mode = GetMode(EmoteModModule.Settings.Backpack, mode);
-                }
-
-            orig(self, mode);
-        }
-
-        // load missing animatons
-        private static void onLevelLoader(On.Celeste.LevelLoader.orig_ctor orig, LevelLoader self, Session session, Vector2? startPosition)
-        {
-            orig(self, session, startPosition);
-
-            // TODO: figure out what this is for (this is also in load)
-            // initializeRollBackpackSprites();
-        }
-
         // scroll through backpack modes
         public static void ScrollBackpack()
         {
@@ -95,7 +73,7 @@ namespace EmoteMod.Features
         }
 
 
-        private static PlayerSpriteMode GetMode(int settings, PlayerSpriteMode mode = PlayerSpriteMode.Madeline)
+        public static PlayerSpriteMode GetMode(int settings, PlayerSpriteMode mode = PlayerSpriteMode.Madeline)
         {
             if (settings == (int)MadelineBackpackModes.Backpack)
                 return PlayerSpriteMode.Madeline;
@@ -130,23 +108,6 @@ namespace EmoteMod.Features
             }
         }
 
-        public static void Load()
-        {
-            On.Celeste.PlayerSprite.ctor += PlayerSprite;
-            On.Celeste.LevelLoader.ctor += onLevelLoader;
 
-            // TODO: figure out what this is for
-            // if (Engine.Scene is Level)
-            // {
-            //     initializeRollBackpackSprites();
-            // }
-        }
-
-
-        public static void Unload()
-        {
-            On.Celeste.PlayerSprite.ctor -= PlayerSprite;
-            On.Celeste.LevelLoader.ctor -= onLevelLoader;
-        }
     }
 }

@@ -347,8 +347,8 @@ namespace EmoteMod.Module
         public int Backpack { get; set; } = 0;
         public void CreateBackpackEntry(TextMenu menu, bool inGame)
         {
-            menu.Add(new TextMenu.Slider(Dialog.Clean("settings_backpack_name"), BackpackChanger.backpackFormatter, 0, 2, EmoteModModule.Settings.Backpack)
-                .Change(id => BackpackChanger.SetBackpack(id)));
+            menu.Add(new TextMenu.Slider(Dialog.Clean("settings_backpack_name"), Features.Backpack.backpackFormatter, 0, 2, EmoteModModule.Settings.Backpack)
+                .Change(id => Features.Backpack.SetBackpack(id)));
         }
 
         // emote wheel

@@ -64,13 +64,13 @@ namespace EmoteMod.Module
                     // tobble backpack
                     else if (emote == "bp")
                     {
-                        BackpackChanger.ScrollBackpack();
+                        Backpack.ScrollBackpack();
                     }
 
                     // haha funny
                     else if (emote == "funnycommand" || emote == "fc")
                     {
-                        BackpackChanger.EnterSickoMode();
+                        Backpack.EnterSickoMode();
                     }
                 }
                 // binding emotes with console
